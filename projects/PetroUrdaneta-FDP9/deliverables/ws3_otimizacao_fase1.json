@@ -1,0 +1,56 @@
+{
+  "mix": [
+    {
+      "metodo": "ESP",
+      "pocos": 5,
+      "bpd_unit": 1900,
+      "bpd_total": 9500,
+      "capex_usd_mm": 5.7,
+      "bpd_por_usd_mm": 1666.7,
+      "rig_days_total": 60,
+      "observacao": "maiores taxas"
+    },
+    {
+      "metodo": "a_definir",
+      "pocos": 3,
+      "bpd_unit": 1900,
+      "bpd_total": 5700,
+      "capex_usd_mm": 3.42,
+      "bpd_por_usd_mm": 1666.7,
+      "rig_days_total": 36,
+      "observacao": "3 poços a definir → recomendado ESP (melhor BOPD/CAPEX)"
+    },
+    {
+      "metodo": "PCP",
+      "pocos": 11,
+      "bpd_unit": 700,
+      "bpd_total": 7700,
+      "capex_usd_mm": 5.94,
+      "bpd_por_usd_mm": 1296.3,
+      "rig_days_total": 77,
+      "observacao": "faixa média"
+    },
+    {
+      "metodo": "gas_lift",
+      "pocos": 8,
+      "bpd_unit": 475,
+      "bpd_total": 3800,
+      "capex_usd_mm": 3.04,
+      "bpd_por_usd_mm": 1250.0,
+      "rig_days_total": 40,
+      "observacao": "faixa baixa"
+    },
+    {
+      "metodo": "ePCP",
+      "pocos": 11,
+      "bpd_unit": 750,
+      "bpd_total": 8250,
+      "capex_usd_mm": 6.82,
+      "bpd_por_usd_mm": 1209.7,
+      "rig_days_total": 88,
+      "observacao": "faixa média"
+    }
+  ],
+  "total_bpd": 34950,
+  "total_capex_usd": 24920000
+}

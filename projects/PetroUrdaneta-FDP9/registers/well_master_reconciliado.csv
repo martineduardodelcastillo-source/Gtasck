@@ -1,0 +1,42 @@
+﻿poco;campo;categoria_1_base;metodo_elevacao;restricao;em_operacao;fonte
+P-016;La Paz;sim;a_definir;;sim;S03-cat1
+P-16;La Paz;nao;a_definir;;reativacao;v9-nomeado
+P-52;La Paz;nao;a_definir;aguardando_abandono;reativacao;S05-restricao
+P-61;La Paz;nao;a_definir;equip_superficie_ineconomico;reativacao;S05-restricao
+P-63;La Paz;nao;a_definir;;reativacao;v9-nomeado
+P-69;La Paz;nao;a_definir;;reativacao;v9-nomeado
+P-76;La Paz;nao;a_definir;;reativacao;v9-nomeado
+P-77;La Paz;nao;a_definir;;reativacao;v9-nomeado
+P-82;La Paz;nao;a_definir;equip_superficie_ineconomico;reativacao;S05-restricao
+P-88;La Paz;nao;a_definir;equip_superficie_ineconomico;reativacao;S05-restricao
+P-91;La Paz;nao;a_definir;alta_agua;reativacao;S05-restricao
+P-95;La Paz;nao;a_definir;comunidade_acesso;reativacao;S05-restricao
+P-108;La Paz;sim;a_definir;comunidade_acesso;sim;"S03-cat1;S05-restricao"
+P-152;La Paz;sim;a_definir;comunidade_acesso;sim;"S03-cat1;S05-restricao"
+P-161;La Paz;nao;a_definir;reparo_subsuperficie_maior;reativacao;S05-restricao
+P-162;La Paz;nao;a_definir;;reativacao;v9-nomeado
+P-163;La Paz;nao;a_definir;;reativacao;v9-nomeado
+P-173;La Paz;sim;a_definir;comunidade_acesso;sim;"S03-cat1;S05-restricao"
+P-176;La Paz;sim;a_definir;;sim;S03-cat1
+P-179;La Paz;sim;a_definir;;sim;S03-cat1
+P-180;La Paz;sim;a_definir;comunidade_acesso;sim;"S03-cat1;S05-restricao"
+P-181;La Paz;nao;a_definir;;reativacao;v9-nomeado
+P-182;La Paz;nao;a_definir;;reativacao;v9-nomeado
+P-184;La Paz;nao;a_definir;;reativacao;v9-nomeado
+P-189;La Paz;nao;a_definir;;reativacao;v9-nomeado
+P-190;La Paz;nao;a_definir;;reativacao;v9-nomeado
+P-191;La Paz;nao;a_definir;;reativacao;v9-nomeado
+P-192;La Paz;nao;a_definir;equip_superficie_ineconomico;reativacao;S05-restricao
+P-195;La Paz;nao;a_definir;;reativacao;v9-nomeado
+P-198A;La Paz;nao;a_definir;;reativacao;v9-nomeado
+P-199A;La Paz;sim;a_definir;;sim;S03-cat1
+P-201;La Paz;nao;a_definir;;reativacao;v9-nomeado
+P-204;La Paz;nao;a_definir;;reativacao;v9-nomeado
+P-205;La Paz;nao;a_definir;;reativacao;v9-nomeado
+P-207;La Paz;sim;a_definir;;sim;S03-cat1
+DM-0010;Mara;nao;gas_lift;;reativacao;S03-lift
+DM-0021;Mara;nao;gas_lift;;reativacao;S03-lift
+DM-0023;Mara;nao;gas_lift;;reativacao;S03-lift
+DM-123;Mara;nao;gas_lift;;reativacao;S03-lift
+DMM-0002;El Moján;nao;gas_lift;;reativacao;S03-lift
+DMM-003;El Moján;nao;gas_lift;;reativacao;S03-lift
