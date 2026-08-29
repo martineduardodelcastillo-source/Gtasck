@@ -1,0 +1,71 @@
+{
+  "EPF pequena (1.500 BOPD)": [
+    {
+      "diametro": "4in",
+      "v_mis": 1.45,
+      "v_erosao": 4.94,
+      "dp_bar_5km": 4.85,
+      "status": "BAIXA (acúmulo líquido)"
+    },
+    {
+      "diametro": "6in",
+      "v_mis": 0.61,
+      "v_erosao": 4.94,
+      "dp_bar_5km": 0.56,
+      "status": "BAIXA (acúmulo líquido)"
+    },
+    {
+      "diametro": "8in",
+      "v_mis": 0.33,
+      "v_erosao": 4.94,
+      "dp_bar_5km": 0.12,
+      "status": "BAIXA (acúmulo líquido)"
+    }
+  ],
+  "EPF média (3.500 BOPD)": [
+    {
+      "diametro": "4in",
+      "v_mis": 3.38,
+      "v_erosao": 4.94,
+      "dp_bar_5km": 26.4,
+      "status": "OK"
+    },
+    {
+      "diametro": "6in",
+      "v_mis": 1.43,
+      "v_erosao": 4.94,
+      "dp_bar_5km": 3.05,
+      "status": "BAIXA (acúmulo líquido)"
+    },
+    {
+      "diametro": "8in",
+      "v_mis": 0.76,
+      "v_erosao": 4.94,
+      "dp_bar_5km": 0.63,
+      "status": "BAIXA (acúmulo líquido)"
+    }
+  ],
+  "EPF grande (6.000 BOPD)": [
+    {
+      "diametro": "4in",
+      "v_mis": 5.8,
+      "v_erosao": 4.94,
+      "dp_bar_5km": 77.59,
+      "status": "EROSÃO"
+    },
+    {
+      "diametro": "6in",
+      "v_mis": 2.45,
+      "v_erosao": 4.94,
+      "dp_bar_5km": 8.98,
+      "status": "BAIXA (acúmulo líquido)"
+    },
+    {
+      "diametro": "8in",
+      "v_mis": 1.3,
+      "v_erosao": 4.94,
+      "dp_bar_5km": 1.84,
+      "status": "BAIXA (acúmulo líquido)"
+    }
+  ]
+}

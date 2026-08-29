@@ -1,0 +1,42 @@
+﻿poco;campo;lift;bpd;afe_usd;rig;rig_days;prioridade;restricao;obs
+P-016;La Paz;ESP;1900;1861000;750hp;12;1;;Reativação padrão
+P-176;La Paz;ESP;1900;1861000;750hp;12;1;;Reativação padrão
+P-179;La Paz;ESP;1900;1861000;750hp;12;1;;Reativação padrão
+P-199A;La Paz;ESP;1900;1861000;750hp;12;1;;Reativação padrão
+P-207;La Paz;ESP;1900;1861000;750hp;12;1;;Reativação padrão
+P-108;La Paz;ESP;1900;2140150;750hp;12;1;comunidade_acesso;Restrição: comunidade_acesso
+P-152;La Paz;ESP;1900;2140150;750hp;12;1;comunidade_acesso;Restrição: comunidade_acesso
+P-173;La Paz;ESP;1900;2140150;750hp;12;1;comunidade_acesso;Restrição: comunidade_acesso
+P-180;La Paz;ESP;1900;2140150;750hp;12;1;comunidade_acesso;Restrição: comunidade_acesso
+P-16;La Paz;PCP;700;1003000;350hp;7;3;;Reativação padrão
+P-63;La Paz;PCP;700;1003000;350hp;7;3;;Reativação padrão
+P-69;La Paz;PCP;700;1003000;350hp;7;3;;Reativação padrão
+P-76;La Paz;PCP;700;1003000;350hp;7;3;;Reativação padrão
+P-77;La Paz;PCP;700;1003000;350hp;7;3;;Reativação padrão
+P-162;La Paz;PCP;700;1003000;350hp;7;3;;Reativação padrão
+P-163;La Paz;PCP;700;1003000;350hp;7;3;;Reativação padrão
+P-181;La Paz;PCP;700;1003000;350hp;7;3;;Reativação padrão
+P-182;La Paz;PCP;700;1003000;350hp;7;3;;Reativação padrão
+P-184;La Paz;PCP;700;1003000;350hp;7;3;;Reativação padrão
+P-189;La Paz;PCP;700;1003000;350hp;7;3;;Reativação padrão
+P-190;La Paz;PCP;700;1003000;350hp;7;3;;Reativação padrão
+P-191;La Paz;PCP;700;1003000;350hp;7;3;;Reativação padrão
+P-195;La Paz;PCP;700;1003000;350hp;7;3;;Reativação padrão
+P-198A;La Paz;PCP;700;1003000;350hp;7;3;;Reativação padrão
+P-201;La Paz;PCP;700;1003000;350hp;7;3;;Reativação padrão
+P-204;La Paz;PCP;700;1003000;350hp;7;3;;Reativação padrão
+P-205;La Paz;PCP;700;1003000;350hp;7;3;;Reativação padrão
+DM-0010;Mara;gas_lift;475;807000;350hp;5;3;;Reativação padrão
+DM-0021;Mara;gas_lift;475;807000;350hp;5;3;;Reativação padrão
+DM-0023;Mara;gas_lift;475;807000;350hp;5;3;;Reativação padrão
+DM-123;Mara;gas_lift;475;807000;350hp;5;3;;Reativação padrão
+DMM-0002;El Moján;gas_lift;475;807000;350hp;5;3;;Reativação padrão
+DMM-003;El Moján;gas_lift;475;807000;350hp;5;3;;Reativação padrão
+P-91;La Paz;PCP;700;1103300;350hp;7;5;alta_agua;Restrição: alta_agua
+P-95;La Paz;PCP;700;1153450;350hp;7;5;comunidade_acesso;Restrição: comunidade_acesso
+P-161;La Paz;ESP;1900;2977600;750hp;12;7;reparo_subsuperficie_maior;Restrição: reparo_subsuperficie_maior
+P-61;La Paz;PCP;700;1354050;350hp;7;7;equip_superficie_ineconomico;Restrição: equip_superficie_ineconomico
+P-82;La Paz;PCP;700;1354050;350hp;7;7;equip_superficie_ineconomico;Restrição: equip_superficie_ineconomico
+P-88;La Paz;PCP;700;1354050;350hp;7;7;equip_superficie_ineconomico;Restrição: equip_superficie_ineconomico
+P-192;La Paz;PCP;700;1354050;350hp;7;7;equip_superficie_ineconomico;Restrição: equip_superficie_ineconomico
+P-52;La Paz;abandono;0;0;—;0;99;aguardando_abandono;Aguardando abandono — excluído da reativação
