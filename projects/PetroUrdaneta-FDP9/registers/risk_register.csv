@@ -1,0 +1,27 @@
+id;familia;severidade;titulo;status;bloqueia
+G-01;Gate FEED;Alta;Caso de desenvolvimento controlado (reconciliar poços/perfis);aberto;Base FEED de facilidades
+G-02;Gate FEED;Alta;PVT e amostragem de fluidos pressurizados;aberto;Freeze de bombas/linhas/tratamento
+G-03;Gate FEED;Alta;Capacidade brownfield FSB (survey/integridade/relief);aberto;AFE de upgrade do FSB
+G-04;Gate FEED;Alta;Modelo de rede multiphase (transiente + 4/6/8 pol);aberto;Compra de trunk/bombas
+G-05;Gate FEED;Alta;Pigging e dimensionamento de slug;aberto;Freeze de trunk/vaso de entrada
+G-06;Gate FEED;Alta;ESD/PSD e relief (HAZOP/LOPA/SIL/flare);aberto;Emissão para construção/PSSR
+G-07;Gate FEED;Alta;Energia e black start (lista de carga/estabilidade);aberto;Compra de geradores/switchgear
+G-08;Gate FEED;Alta;Injeção de água (spec/injetividade/fratura);aberto;AFE da planta de água
+G-09;Gate FEED;Alta;Interface Boscan (pressão/spec/rota/título);aberto;AFE do piloto de exportação
+G-10;Gate FEED;Média;Economia NGL (composição/simulação/mercado);aberto;AFE do pacote NGL
+G-11;Gate FEED;Média;LNG Palmarejo (pretreatment/Cryobox/BOG/ISO-tank);aberto;AFE de LNG
+G-12;Gate FEED;Alta;Garantia crude/export (LACT/integridade/marinho);aberto;Sanção terminal/exportação
+G-13;Gate FEED;Alta;Regulatório/social/segurança (matriz de aprovação);aberto;Construção e operação de campo
+FA-01;Flow Assurance;Alta;Commingling/back-out entre poços (pressão de manifold);aberto;FEED blocker
+FA-02;Flow Assurance;Alta;Dimensionamento de trunk (6 pol uniforme não provado);aberto;Screening only
+FA-03;Flow Assurance;Alta;Flex pipe pigável não qualificado para o projeto;aberto;Qualified option
+FA-04;Flow Assurance;Alta;Surge de líquido induzido por pig;aberto;FEED blocker
+FA-05;Flow Assurance;Alta;Bombas multiphase fora do envelope (GVF/viscosidade/areia);aberto;FEED blocker
+FA-06;Flow Assurance;Alta;Depósitos (cera/hidrato/asfalteno) indefinidos;aberto;Data absent
+FA-07;Flow Assurance;Alta;Sólidos/integridade (areia/erosão/corrosão);aberto;Data absent
+FA-08;Flow Assurance;Alta;Qualidade de separação (emulsão/espuma);aberto;Data absent
+FA-09;Flow Assurance;Alta;Sistema de água (scale/MIC/oxigênio/injetividade);aberto;Scope conflict
+FA-10;Flow Assurance;Alta;Exportação de gás (condensação/off-spec LNG);aberto;FEED blocker
+FA-11;Flow Assurance;Alta;Exportação de crude (surge/column separation);aberto;FEED blocker
+OT-01;Outros;Alta;Staging de desenvolvimento (casos distintos somados);aberto;Source reconciliation
+OT-02;Outros;Alta;FSB brownfield capacidade/integridade desconhecida;aberto;FEED blocker

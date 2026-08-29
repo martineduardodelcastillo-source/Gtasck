@@ -1,0 +1,37 @@
+poco;campo;metodo_elevacao;status;restricao;observacao
+P-016;La Paz;a_definir;reativacao;;população a reconciliar (G-01)
+P-16;La Paz;a_definir;reativacao;;população a reconciliar (G-01)
+P-52;La Paz;a_definir;aguardando_abandono;abandono;gate de desenvolvimento
+P-61;La Paz;a_definir;reativacao;equip_superficie_ineconomico;gate de desenvolvimento
+P-63;La Paz;a_definir;reativacao;;
+P-69;La Paz;a_definir;reativacao;;
+P-76;La Paz;a_definir;reativacao;;
+P-77;La Paz;a_definir;reativacao;;
+P-82;La Paz;a_definir;reativacao;equip_superficie_ineconomico;gate de desenvolvimento
+P-88;La Paz;a_definir;reativacao;equip_superficie_ineconomico;gate de desenvolvimento
+P-91;La Paz;a_definir;reativacao;alta_agua;gate de desenvolvimento
+P-95;La Paz;a_definir;reativacao;comunidade_acesso;gate de desenvolvimento
+P-108;La Paz;a_definir;reativacao;comunidade_acesso;gate de desenvolvimento
+P-152;La Paz;a_definir;reativacao;comunidade_acesso;gate de desenvolvimento
+P-161;La Paz;a_definir;reativacao;reparo_subsuperficie_maior;gate de desenvolvimento
+P-162;La Paz;a_definir;reativacao;;
+P-163;La Paz;a_definir;reativacao;;
+P-173;La Paz;a_definir;reativacao;comunidade_acesso;gate de desenvolvimento
+P-176;La Paz;a_definir;reativacao;;
+P-179;La Paz;a_definir;reativacao;;
+P-180;La Paz;a_definir;reativacao;comunidade_acesso;gate de desenvolvimento
+P-181;La Paz;a_definir;reativacao;;
+P-182;La Paz;a_definir;reativacao;;
+P-184;La Paz;a_definir;reativacao;;
+P-189;La Paz;a_definir;reativacao;;
+P-190;La Paz;a_definir;reativacao;;
+P-191;La Paz;a_definir;reativacao;;incerteza estrutural (falhas P-191/P-201)
+P-192;La Paz;a_definir;reativacao;equip_superficie_ineconomico;gate de desenvolvimento
+P-195;La Paz;a_definir;reativacao;;
+P-201;La Paz;a_definir;reativacao;;incerteza estrutural (falhas P-191/P-201)
+P-204;La Paz;a_definir;reativacao;;
+P-205;La Paz;a_definir;reativacao;;
+P-207;La Paz;a_definir;reativacao;;
+DM-0010;Mara;gas_lift;reativacao;;1 dos 6 poços Mara gas-lift
+DM-0021;Mara;gas_lift;reativacao;;1 dos 6 poços Mara gas-lift
+DM-0023;Mara;gas_lift;reativacao;;1 dos 6 poços Mara gas-lift
