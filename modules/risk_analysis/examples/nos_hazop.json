@@ -1,0 +1,18 @@
+{
+  "nodes": [
+    {
+      "node": "Nó 1 — Linha de descarga do separador S-101 (OL-101)",
+      "parameter": "flow",
+      "causes": "Falha da LCV; fechamento indevido de XV downstream; bloqueio por hidrato",
+      "consequences": "Nível alto no S-101; carry-over para linha de gás; possível sobrepressão",
+      "safeguards": "LAH-101; PSV-101; SDV na saída de gás; procedimento operacional"
+    },
+    {
+      "node": "Nó 2 — Linha de gás GL-101 para compressão",
+      "parameter": "pressure",
+      "causes": "Falha da PCV; bloqueio downstream; falha do compressor",
+      "consequences": "Sobrepressão no separador; alívio pelo PSV; flare",
+      "safeguards": "PSV-101; PAH-101; intertravamento de parada"
+    }
+  ]
+}

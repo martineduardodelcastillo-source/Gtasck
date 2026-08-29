@@ -1,0 +1,6 @@
+﻿well;lift;estimated_bpd;allocated_bpd;allocation_factor
+PO-01;ESP;1400;1176.0;0.3733
+PO-02;ESP;1100;924.0;0.2933
+PO-03;PCP;650;546.0;0.1733
+PO-04;gas_lift;420;352.8;0.112
+PO-05;rod_pump;180;151.2;0.048

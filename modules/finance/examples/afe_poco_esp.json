@@ -1,0 +1,12 @@
+{
+  "well": "PO-01",
+  "lift": "ESP",
+  "components": {
+    "xmas_tree": 180000,
+    "valves": 45000,
+    "tubing": 220000,
+    "rig_packers": 95000,
+    "artificial_lift": 480000,
+    "mob_demob_wireline": 120000
+  }
+}

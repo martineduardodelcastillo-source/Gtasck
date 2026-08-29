@@ -1,0 +1,24 @@
+{
+  "title": "P&ID — EPF Separador Trifásico S-101 (Early Production Facility)",
+  "revision": "A",
+  "equipment": [
+    { "tag": "S-101", "kind": "separator_3ph", "x": 500, "y": 380, "label": "Separador Trifásico 250 psig" },
+    { "tag": "TK-101", "kind": "tank", "x": 850, "y": 500, "label": "Tanque de Óleo API 650" },
+    { "tag": "P-101A", "kind": "pump_centrifugal", "x": 780, "y": 640, "label": "Bomba de Transferência" },
+    { "tag": "V-102", "kind": "vessel", "x": 250, "y": 300, "label": "Vaso de Entrada / Slug Catcher" }
+  ],
+  "lines": [
+    { "tag": "WL-001", "spec": "4\"-300#-FLEX (pigável)", "points": [[60, 330], [250, 330]] },
+    { "tag": "FL-101", "spec": "6\"-300#-FLEX", "points": [[310, 360], [420, 360], [420, 410], [500, 410]] },
+    { "tag": "OL-101", "spec": "4\"-150#-CS", "points": [[640, 420], [780, 420], [780, 610]] },
+    { "tag": "OL-102", "spec": "4\"-150#-CS", "points": [[798, 640], [850, 640], [850, 580]] },
+    { "tag": "GL-101", "spec": "3\"-150#-CS", "points": [[570, 380], [570, 300], [900, 300]] },
+    { "tag": "WL-101", "spec": "2\"-150#-CS", "points": [[560, 440], [560, 520], [700, 520]] }
+  ],
+  "instruments": [
+    { "tag": "PT101", "x": 470, "y": 330 },
+    { "tag": "LT101", "x": 660, "y": 350 },
+    { "tag": "FT101", "x": 700, "y": 300 },
+    { "tag": "PSV101", "x": 500, "y": 300 }
+  ]
+}

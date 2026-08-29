@@ -1,0 +1,17 @@
+{
+  "tolerance_pct": 2.0,
+  "streams": [
+    { "name": "Entrada poços (multfluxo)", "direction": "in",  "flow_bpd": 5200 },
+    { "name": "Óleo para TK-101",          "direction": "out", "flow_bpd": 3150 },
+    { "name": "Gás para compressão",       "direction": "out", "flow_bpd": 1400 },
+    { "name": "Água produzida",            "direction": "out", "flow_bpd": 580 }
+  ],
+  "fiscal_total_bpd": 3150,
+  "wells": [
+    { "well": "PO-01", "lift": "ESP",      "estimated_bpd": 1400 },
+    { "well": "PO-02", "lift": "ESP",      "estimated_bpd": 1100 },
+    { "well": "PO-03", "lift": "PCP",      "estimated_bpd": 650 },
+    { "well": "PO-04", "lift": "gas_lift", "estimated_bpd": 420 },
+    { "well": "PO-05", "lift": "rod_pump", "estimated_bpd": 180 }
+  ]
+}

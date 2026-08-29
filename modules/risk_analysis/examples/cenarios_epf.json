@@ -1,0 +1,17 @@
+{
+  "title": "Matriz de Risco 5×5 — EPF Unidade X (12 cenários)",
+  "scenarios": [
+    { "id": "C1",  "severity": 4, "likelihood": 3, "descricao": "Sobrepressão no separador S-101 por bloqueio de saída de gás" },
+    { "id": "C2",  "severity": 5, "likelihood": 2, "descricao": "Ruptura de flexpipe na linha de entrada WL-001" },
+    { "id": "C3",  "severity": 3, "likelihood": 4, "descricao": "Carry-over de líquido para linha de gás GL-101" },
+    { "id": "C4",  "severity": 2, "likelihood": 4, "descricao": "Cavitação da bomba P-101A por NPSH insuficiente" },
+    { "id": "C5",  "severity": 5, "likelihood": 1, "descricao": "Ignição de nuvem de gás em área classificada" },
+    { "id": "C6",  "severity": 3, "likelihood": 3, "descricao": "Falha do PSV-101 em posição fechada" },
+    { "id": "C7",  "severity": 2, "likelihood": 3, "descricao": "Transbordo do TK-101 por falha de LAH" },
+    { "id": "C8",  "severity": 4, "likelihood": 2, "descricao": "Slug severo no slug catcher V-102" },
+    { "id": "C9",  "severity": 1, "likelihood": 5, "descricao": "Corrosão interna em linha de água WL-101" },
+    { "id": "C10", "severity": 3, "likelihood": 2, "descricao": "Falha de energia dos geradores a gás da EPF" },
+    { "id": "C11", "severity": 4, "likelihood": 4, "descricao": "Vazamento de H2S em operação de pig" },
+    { "id": "C12", "severity": 2, "likelihood": 2, "descricao": "Erro de alinhamento de válvula em manobra" }
+  ]
+}

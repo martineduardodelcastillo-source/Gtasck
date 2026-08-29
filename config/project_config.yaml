@@ -1,0 +1,157 @@
+# ============================================================
+# Gtasck — Configuração Mestre do Projeto
+# Copiloto de Engenharia O&G para apoio ao COO
+# ============================================================
+
+project:
+  name: Gtasck
+  description: Copiloto de engenharia de óleo & gás
+  owner: COO Office
+  language: pt-BR
+  units: mixed            # SI para cálculos; campo pode usar imperial (", psig, °F)
+
+# ------------------------------------------------------------
+# Preferências permanentes de engenharia (NÃO remover)
+# ------------------------------------------------------------
+engineering_preferences:
+  flex_pipe_first: true        # Priorizar flex pipe em layouts sempre que possível
+  pfd_high_fidelity: true      # PFDs detalhados: flexpipe pigável, spools, válvulas,
+                               # sidetracks, vasos, manutenção/segurança (EPF up/downstream)
+  epf_no_test_separator: true  # EPFs NÃO incluem separador de teste
+  epp_multiflow_to_cpf: true   # Early Production Packages fluem multfluxo para a CPF
+  modular_design: true         # Engenharia sempre modular, mantendo o conceito central
+  phased_capex: true           # Produção antecipada primeiro; infraestrutura permanente diferida
+                               # Evitar CAPEX inicial alto; usar/upgrade incremental da infra existente
+                               # EPFs autossuficientes com geradores a gás (fuel gas de compressores existentes)
+  standards_compliance:        # Conformidade obrigatória
+    - API
+    - NORSOK
+    - COVENIN
+    - Venezuelan
+
+# ------------------------------------------------------------
+# Documentação obrigatória de projetos EPF
+# ------------------------------------------------------------
+epf_documentation:
+  required_sections:
+    - basis_of_design
+    - concept_engineering
+    - engineering
+    - procurement
+    - timeline
+    - FAT                      # Factory Acceptance Test
+    - hook_up
+    - mechanical_completion
+    - spare_parts_inventory    # sobressalentes e peças críticas
+    - hook_up_and_commissioning
+    - start_up_assisted_operation
+    - operation
+  required_deliverables:
+    - PFD
+    - P&ID
+    - HAZOP
+    - cause_and_effect_matrix
+    - loop_tests
+  mandatory_standards:
+    - API (todas as aplicáveis, detalhadas por seção)
+    - NORSOK Z-CR007
+
+# ------------------------------------------------------------
+# Normas por disciplina
+# ------------------------------------------------------------
+standards:
+  pid_symbology: [ISA-5.1, ISO 10628]
+  pressure_vessels: [ASME VIII Div.1]
+  piping: [ASME B31.3, ASME B31.8]
+  tanks: [API 650, API 653]
+  relief_devices: [API 520, API 521, API 526]
+  risk: [API 580, API 581, IEC 61882, CCPS]
+  offshore: [NORSOK P-001, NORSOK L-001, NORSOK Z-CR007]
+  venezuelan: [COVENIN]
+  allocation_metering: [API MPMS, ISO 5167]
+
+# ------------------------------------------------------------
+# Regras de tagueamento (ISA-5.1)
+# ------------------------------------------------------------
+tagging:
+  format: "{letra}{loop}-{sufixo}"     # ex.: PSV-101, FT-2001A
+  equipment_prefix:
+    vessel: V
+    separator: S
+    pump: P
+    compressor: C
+    tank: TK
+    heat_exchanger: E
+    valve_manual: XV
+    relief_valve: PSV
+  instrument_letters:
+    flow: F
+    pressure: P
+    temperature: T
+    level: L
+    indicator: I
+    controller: C
+    alarm: A
+    switch: S
+    transmitter: T
+
+# ------------------------------------------------------------
+# Balanço de massa e produção
+# ------------------------------------------------------------
+mass_balance:
+  closure_tolerance_pct: 2.0     # fechamento aceitável do balanço (±%)
+  streams_phases: [oil, gas, water, solids]
+  production_allocation:
+    method: by_difference        # ou pro-rated; reconciliação por poço
+    fiscal_metering_required: true
+  outputs: [excel, pdf, dashboard_feed]
+
+# ------------------------------------------------------------
+# Matriz de risco corporativa 5x5
+# ------------------------------------------------------------
+risk_matrix:
+  size: 5x5
+  severity_levels: [Insignificante, Menor, Moderado, Maior, Catastrófico]
+  likelihood_levels: [Raro, Improvável, Possível, Provável, Quase Certo]
+  bands:
+    low: { color: "#2ecc71", action: "Aceitar e monitorar" }
+    medium: { color: "#f1c40f", action: "Mitigar em prazo programado" }
+    high: { color: "#e67e22", action: "Mitigar com prioridade" }
+    critical: { color: "#e74c3c", action: "Ação imediata / parada" }
+
+# ------------------------------------------------------------
+# Finanças (módulo financeiro do COO)
+# ------------------------------------------------------------
+finance:
+  afe_per_well: true           # Cada poço exige AFE (Authorization for Expenditure) individual
+  well_cost_components:        # Custos de poço estilo AFE
+    - xmas_tree
+    - valves
+    - tubing
+    - rig_packers
+    - artificial_lift          # ESP / PCP / EPCP / gas lift downhole
+    - mob_demob_wireline
+  production_rates_by_lift:    # NUNCA usar média única; sempre por método de elevação
+    ESP:   { range_bpd: [800, 3000], note: "maiores taxas" }
+    PCP:   { range_bpd: [300, 1200], note: "faixa média" }
+    gas_lift: { range_bpd: [150, 800], note: "faixa baixa" }
+    rod_pump: { range_bpd: [20, 300],  note: "menores taxas" }
+  timeline_logic: parallel     # Duração consistente com nº de poços, atividades paralelas
+                               # e prontidão de materiais — nunca prazo fixo generalizado
+  contracting_strategy:        # 4 MSAs acionados por ordem de serviço
+    msa_well_services_epf: true
+    msa_epcm: true
+    msa_drilling: true
+    msa_compression: true
+    capex_tied_to_crude_return: true   # CAPEX sempre atrelado ao retorno em crude
+  economics:
+    metrics: [NPV, IRR, payback, lifting_cost_per_bbl, opex_per_bbl]
+    discount_rate_default: 0.12
+
+# ------------------------------------------------------------
+# Doc Factory
+# ------------------------------------------------------------
+documents:
+  letterhead: assets/letterhead.png    # aguardando upload do timbrado
+  default_outputs: [pdf, docx]
+  revision_block: true

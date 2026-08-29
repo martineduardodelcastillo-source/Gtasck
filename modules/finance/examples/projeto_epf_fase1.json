@@ -1,0 +1,9 @@
+{
+  "projeto": "EPF Fase 1 — 5 poços (produção antecipada, infra modular)",
+  "capex_usd": 8500000,
+  "annual_oil_bbl": 1149750,
+  "price_usd_bbl": 68,
+  "opex_usd_bbl": 14,
+  "years": 10,
+  "discount_rate": 0.12
+}
