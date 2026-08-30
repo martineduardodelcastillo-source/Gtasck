@@ -1,0 +1,68 @@
+{
+  "title": "PFD S-11 · EFB Storage → LACT → Palmarejo",
+  "equipment": [
+    {
+      "tag": "TK-01",
+      "kind": "tank",
+      "x": 120,
+      "y": 300,
+      "label": "EFB storage"
+    },
+    {
+      "tag": "LACT",
+      "kind": "vessel",
+      "x": 300,
+      "y": 300,
+      "label": "LACT"
+    },
+    {
+      "tag": "TK-02",
+      "kind": "tank",
+      "x": 480,
+      "y": 300,
+      "label": "Palmarejo"
+    }
+  ],
+  "lines": [
+    {
+      "tag": "S-11",
+      "points": [
+        [
+          120,
+          360
+        ],
+        [
+          300,
+          360
+        ]
+      ],
+      "spec": "6\"-150#-CS"
+    },
+    {
+      "tag": "S-11",
+      "points": [
+        [
+          300,
+          360
+        ],
+        [
+          480,
+          360
+        ]
+      ],
+      "spec": "6\"-150#-CS"
+    }
+  ],
+  "instruments": [
+    {
+      "tag": "PSV111",
+      "x": 210,
+      "y": 320
+    },
+    {
+      "tag": "ESD111",
+      "x": 390,
+      "y": 320
+    }
+  ]
+}

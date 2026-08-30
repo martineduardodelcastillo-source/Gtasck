@@ -1,0 +1,52 @@
+{
+  "title": "PFD S-07 · Separador → Compressão (Gás)",
+  "equipment": [
+    {
+      "tag": "S-3PH",
+      "kind": "separator_3ph",
+      "x": 120,
+      "y": 300,
+      "label": "Separador trifásico"
+    },
+    {
+      "tag": "C-01",
+      "kind": "pump_centrifugal",
+      "x": 420,
+      "y": 360,
+      "label": "Compressor"
+    }
+  ],
+  "lines": [
+    {
+      "tag": "S-07",
+      "points": [
+        [
+          120,
+          330
+        ],
+        [
+          420,
+          330
+        ]
+      ],
+      "spec": "4\"-150#-CS"
+    }
+  ],
+  "instruments": [
+    {
+      "tag": "PSV107",
+      "x": 260,
+      "y": 290
+    },
+    {
+      "tag": "ESD107",
+      "x": 340,
+      "y": 290
+    },
+    {
+      "tag": "AS107",
+      "x": 260,
+      "y": 370
+    }
+  ]
+}

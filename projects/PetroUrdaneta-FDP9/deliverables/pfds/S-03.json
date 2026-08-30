@@ -1,0 +1,68 @@
+{
+  "title": "PFD S-03 · Booster VFD → Trunkline",
+  "equipment": [
+    {
+      "tag": "P-01",
+      "kind": "pump_centrifugal",
+      "x": 120,
+      "y": 360,
+      "label": "Booster VFD"
+    },
+    {
+      "tag": "XV-103",
+      "kind": "valve_gate",
+      "x": 260,
+      "y": 360,
+      "label": "Check valve"
+    },
+    {
+      "tag": "TL-01",
+      "kind": "vessel",
+      "x": 420,
+      "y": 300,
+      "label": "Trunkline"
+    }
+  ],
+  "lines": [
+    {
+      "tag": "S-03",
+      "points": [
+        [
+          120,
+          360
+        ],
+        [
+          260,
+          360
+        ]
+      ],
+      "spec": "4\"-150#-CS"
+    },
+    {
+      "tag": "S-03",
+      "points": [
+        [
+          260,
+          360
+        ],
+        [
+          420,
+          360
+        ]
+      ],
+      "spec": "4\"-150#-CS"
+    }
+  ],
+  "instruments": [
+    {
+      "tag": "PSV103",
+      "x": 200,
+      "y": 320
+    },
+    {
+      "tag": "ESD103",
+      "x": 330,
+      "y": 320
+    }
+  ]
+}

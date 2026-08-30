@@ -1,0 +1,52 @@
+{
+  "title": "PFD S-09 · Separador → Tratamento de Água",
+  "equipment": [
+    {
+      "tag": "S-3PH",
+      "kind": "separator_3ph",
+      "x": 120,
+      "y": 300,
+      "label": "Separador trifásico"
+    },
+    {
+      "tag": "WT-01",
+      "kind": "vessel",
+      "x": 420,
+      "y": 300,
+      "label": "Tratamento de água"
+    }
+  ],
+  "lines": [
+    {
+      "tag": "S-09",
+      "points": [
+        [
+          120,
+          390
+        ],
+        [
+          420,
+          390
+        ]
+      ],
+      "spec": "4\"-150#-CS"
+    }
+  ],
+  "instruments": [
+    {
+      "tag": "PSV109",
+      "x": 260,
+      "y": 350
+    },
+    {
+      "tag": "LAHH109",
+      "x": 260,
+      "y": 430
+    },
+    {
+      "tag": "ESD109",
+      "x": 340,
+      "y": 350
+    }
+  ]
+}

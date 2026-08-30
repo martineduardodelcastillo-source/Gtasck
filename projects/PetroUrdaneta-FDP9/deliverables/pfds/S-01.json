@@ -1,0 +1,89 @@
+{
+  "title": "PFD S-01 · Poço → EPF Manifold",
+  "equipment": [
+    {
+      "tag": "W-01",
+      "kind": "vessel",
+      "x": 120,
+      "y": 300,
+      "label": "Poço (wellhead)"
+    },
+    {
+      "tag": "XV-101",
+      "kind": "valve_gate",
+      "x": 260,
+      "y": 360,
+      "label": "Wing valve"
+    },
+    {
+      "tag": "SCSSV",
+      "kind": "valve_gate",
+      "x": 200,
+      "y": 360,
+      "label": "SCSSV"
+    },
+    {
+      "tag": "M-01",
+      "kind": "vessel",
+      "x": 420,
+      "y": 300,
+      "label": "EPF manifold"
+    }
+  ],
+  "lines": [
+    {
+      "tag": "S-01",
+      "points": [
+        [
+          120,
+          360
+        ],
+        [
+          200,
+          360
+        ]
+      ],
+      "spec": "3\"-150#-CS"
+    },
+    {
+      "tag": "S-01",
+      "points": [
+        [
+          200,
+          360
+        ],
+        [
+          260,
+          360
+        ]
+      ],
+      "spec": "3\"-150#-CS"
+    },
+    {
+      "tag": "S-01",
+      "points": [
+        [
+          260,
+          360
+        ],
+        [
+          420,
+          360
+        ]
+      ],
+      "spec": "3\"-150#-CS"
+    }
+  ],
+  "instruments": [
+    {
+      "tag": "PSV101",
+      "x": 330,
+      "y": 320
+    },
+    {
+      "tag": "PI101",
+      "x": 330,
+      "y": 400
+    }
+  ]
+}

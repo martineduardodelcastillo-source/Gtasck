@@ -1,0 +1,52 @@
+{
+  "title": "PFD S-02 · EPF Manifold → Booster VFD",
+  "equipment": [
+    {
+      "tag": "M-01",
+      "kind": "vessel",
+      "x": 120,
+      "y": 300,
+      "label": "EPF manifold"
+    },
+    {
+      "tag": "P-01",
+      "kind": "pump_centrifugal",
+      "x": 420,
+      "y": 360,
+      "label": "Booster VFD"
+    }
+  ],
+  "lines": [
+    {
+      "tag": "S-02",
+      "points": [
+        [
+          120,
+          360
+        ],
+        [
+          420,
+          360
+        ]
+      ],
+      "spec": "4\"-150#-CS"
+    }
+  ],
+  "instruments": [
+    {
+      "tag": "PSV102",
+      "x": 260,
+      "y": 320
+    },
+    {
+      "tag": "LAHH102",
+      "x": 260,
+      "y": 400
+    },
+    {
+      "tag": "ESD102",
+      "x": 340,
+      "y": 320
+    }
+  ]
+}

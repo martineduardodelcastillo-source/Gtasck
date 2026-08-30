@@ -1,0 +1,94 @@
+{
+  "title": "PFD S-10 · Compressão → Fuel Gas / Gas Lift / Boscan",
+  "equipment": [
+    {
+      "tag": "C-01",
+      "kind": "pump_centrifugal",
+      "x": 120,
+      "y": 360,
+      "label": "Compressor"
+    },
+    {
+      "tag": "FG-01",
+      "kind": "vessel",
+      "x": 420,
+      "y": 240,
+      "label": "Fuel gas"
+    },
+    {
+      "tag": "GL-01",
+      "kind": "vessel",
+      "x": 420,
+      "y": 360,
+      "label": "Gas lift"
+    },
+    {
+      "tag": "BX-01",
+      "kind": "vessel",
+      "x": 420,
+      "y": 480,
+      "label": "Boscan export"
+    }
+  ],
+  "lines": [
+    {
+      "tag": "S-10",
+      "points": [
+        [
+          120,
+          360
+        ],
+        [
+          420,
+          240
+        ]
+      ],
+      "spec": "3\"-150#-CS"
+    },
+    {
+      "tag": "S-10",
+      "points": [
+        [
+          120,
+          360
+        ],
+        [
+          420,
+          360
+        ]
+      ],
+      "spec": "3\"-150#-CS"
+    },
+    {
+      "tag": "S-10",
+      "points": [
+        [
+          120,
+          360
+        ],
+        [
+          420,
+          480
+        ]
+      ],
+      "spec": "3\"-150#-CS"
+    }
+  ],
+  "instruments": [
+    {
+      "tag": "PSV110",
+      "x": 260,
+      "y": 320
+    },
+    {
+      "tag": "ESD110",
+      "x": 340,
+      "y": 320
+    },
+    {
+      "tag": "AS110",
+      "x": 260,
+      "y": 400
+    }
+  ]
+}

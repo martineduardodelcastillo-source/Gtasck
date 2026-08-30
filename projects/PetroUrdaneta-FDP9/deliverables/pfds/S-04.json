@@ -1,0 +1,52 @@
+{
+  "title": "PFD S-04 · Trunkline → FSB Pig Receiver",
+  "equipment": [
+    {
+      "tag": "TL-01",
+      "kind": "vessel",
+      "x": 120,
+      "y": 300,
+      "label": "Trunkline"
+    },
+    {
+      "tag": "PR-01",
+      "kind": "vessel",
+      "x": 420,
+      "y": 300,
+      "label": "Pig receiver"
+    }
+  ],
+  "lines": [
+    {
+      "tag": "S-04",
+      "points": [
+        [
+          120,
+          360
+        ],
+        [
+          420,
+          360
+        ]
+      ],
+      "spec": "6\"-150#-CS"
+    }
+  ],
+  "instruments": [
+    {
+      "tag": "PSV104",
+      "x": 260,
+      "y": 320
+    },
+    {
+      "tag": "ESD104",
+      "x": 340,
+      "y": 320
+    },
+    {
+      "tag": "PS104",
+      "x": 260,
+      "y": 400
+    }
+  ]
+}

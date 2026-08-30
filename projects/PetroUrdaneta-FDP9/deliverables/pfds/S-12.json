@@ -1,0 +1,52 @@
+{
+  "title": "PFD S-12 · Tratamento → Reinjeção (Água)",
+  "equipment": [
+    {
+      "tag": "WT-01",
+      "kind": "vessel",
+      "x": 120,
+      "y": 300,
+      "label": "Tratamento de água"
+    },
+    {
+      "tag": "WI-01",
+      "kind": "vessel",
+      "x": 420,
+      "y": 300,
+      "label": "Reinjeção"
+    }
+  ],
+  "lines": [
+    {
+      "tag": "S-12",
+      "points": [
+        [
+          120,
+          360
+        ],
+        [
+          420,
+          360
+        ]
+      ],
+      "spec": "4\"-150#-CS"
+    }
+  ],
+  "instruments": [
+    {
+      "tag": "PSV112",
+      "x": 260,
+      "y": 320
+    },
+    {
+      "tag": "LAHH112",
+      "x": 260,
+      "y": 400
+    },
+    {
+      "tag": "ESD112",
+      "x": 340,
+      "y": 320
+    }
+  ]
+}

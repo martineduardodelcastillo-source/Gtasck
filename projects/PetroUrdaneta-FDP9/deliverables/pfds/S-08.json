@@ -1,0 +1,52 @@
+{
+  "title": "PFD S-08 · Separador → EFB Storage (Óleo)",
+  "equipment": [
+    {
+      "tag": "S-3PH",
+      "kind": "separator_3ph",
+      "x": 120,
+      "y": 300,
+      "label": "Separador trifásico"
+    },
+    {
+      "tag": "TK-01",
+      "kind": "tank",
+      "x": 420,
+      "y": 300,
+      "label": "EFB storage"
+    }
+  ],
+  "lines": [
+    {
+      "tag": "S-08",
+      "points": [
+        [
+          120,
+          360
+        ],
+        [
+          420,
+          360
+        ]
+      ],
+      "spec": "6\"-150#-CS"
+    }
+  ],
+  "instruments": [
+    {
+      "tag": "PSV108",
+      "x": 260,
+      "y": 320
+    },
+    {
+      "tag": "LAHH108",
+      "x": 260,
+      "y": 400
+    },
+    {
+      "tag": "ESD108",
+      "x": 340,
+      "y": 320
+    }
+  ]
+}

@@ -1,0 +1,57 @@
+{
+  "title": "PFD S-06 · Vaso de Slug → Separador Trifásico",
+  "equipment": [
+    {
+      "tag": "SV-01",
+      "kind": "vessel",
+      "x": 120,
+      "y": 300,
+      "label": "Vaso de slug"
+    },
+    {
+      "tag": "S-3PH",
+      "kind": "separator_3ph",
+      "x": 420,
+      "y": 300,
+      "label": "Separador trifásico"
+    }
+  ],
+  "lines": [
+    {
+      "tag": "S-06",
+      "points": [
+        [
+          120,
+          360
+        ],
+        [
+          420,
+          360
+        ]
+      ],
+      "spec": "6\"-150#-CS"
+    }
+  ],
+  "instruments": [
+    {
+      "tag": "PSV106",
+      "x": 260,
+      "y": 320
+    },
+    {
+      "tag": "LAHH106",
+      "x": 260,
+      "y": 400
+    },
+    {
+      "tag": "LALL106",
+      "x": 340,
+      "y": 400
+    },
+    {
+      "tag": "ESD106",
+      "x": 340,
+      "y": 320
+    }
+  ]
+}
