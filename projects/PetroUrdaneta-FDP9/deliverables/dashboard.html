@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Dashboard do COO · FDP-9 PetroUrdaneta</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    background: #0f172a;
+    color: #e2e8f0;
+    min-height: 100vh;
+    padding: 16px;
+  }
+  .container { max-width: 1200px; margin: 0 auto; }
+  header {
+    text-align: center;
+    margin-bottom: 24px;
+    padding: 20px;
+    background: linear-gradient(135deg, #1e293b 0%, #0f172a 100%);
+    border-radius: 16px;
+    border: 1px solid #334155;
+  }
+  header h1 { font-size: 1.5rem; font-weight: 700; color: #f1f5f9; }
+  header p { color: #94a3b8; font-size: 0.875rem; margin-top: 4px; }
+  .grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+    gap: 12px;
+    margin-bottom: 24px;
+  }
+  .card {
+    background: #1e293b;
+    border: 1px solid #334155;
+    border-radius: 12px;
+    padding: 16px;
+    text-align: center;
+    transition: transform 0.2s, border-color 0.2s;
+  }
+  .card:hover { transform: translateY(-2px); border-color: #3b82f6; }
+  .card .value { font-size: 1.75rem; font-weight: 700; color: #3b82f6; }
+  .card .label { font-size: 0.75rem; color: #94a3b8; margin-top: 4px; text-transform: uppercase; letter-spacing: 0.05em; }
+  .card.green .value { color: #22c55e; }
+  .card.yellow .value { color: #eab308; }
+  .card.red .value { color: #ef4444; }
+  .section {
+    background: #1e293b;
+    border: 1px solid #334155;
+    border-radius: 12px;
+    padding: 20px;
+    margin-bottom: 16px;
+  }
+  .section h2 { font-size: 1.125rem; font-weight: 600; margin-bottom: 16px; color: #f1f5f9; }
+  .progress-bar {
+    background: #334155;
+    border-radius: 8px;
+    height: 8px;
+    overflow: hidden;
+    margin-top: 8px;
+  }
+  .progress-bar .fill {
+    background: linear-gradient(90deg, #3b82f6, #22c55e);
+    height: 100%;
+    border-radius: 8px;
+    transition: width 0.5s;
+  }
+  table { width: 100%; border-collapse: collapse; font-size: 0.875rem; }
+  th, td { padding: 10px 12px; text-align: left; border-bottom: 1px solid #334155; }
+  th { color: #94a3b8; font-weight: 600; text-transform: uppercase; font-size: 0.75rem; letter-spacing: 0.05em; }
+  td { color: #e2e8f0; }
+  .badge {
+    display: inline-block;
+    padding: 2px 8px;
+    border-radius: 9999px;
+    font-size: 0.75rem;
+    font-weight: 600;
+  }
+  .badge.green { background: #166534; color: #bbf7d0; }
+  .badge.yellow { background: #854d0e; color: #fef08a; }
+  .badge.red { background: #991b1b; color: #fecaca; }
+  .badge.blue { background: #1e40af; color: #bfdbfe; }
+  footer {
+    text-align: center;
+    color: #64748b;
+    font-size: 0.75rem;
+    margin-top: 24px;
+    padding: 16px;
+  }
+  @media (max-width: 640px) {
+    .grid { grid-template-columns: repeat(2, 1fr); }
+    .card .value { font-size: 1.5rem; }
+    header h1 { font-size: 1.25rem; }
+  }
+</style>
+</head>
+<body>
+<div class="container">
+  <header>
+    <h1>🛢️ Dashboard do COO</h1>
+    <p>FDP-9 · PetroUrdaneta · Atualizado em <span id="data">30/08/2026</span></p>
+  </header>
+
+  <div class="grid">
+    <div class="card">
+      <div class="value" id="mudancas">26</div>
+      <div class="label">Mudanças</div>
+    </div>
+    <div class="card green">
+      <div class="value" id="gates">4/13</div>
+      <div class="label">Gates FEED</div>
+    </div>
+    <div class="card">
+      <div class="value" id="pocos">41</div>
+      <div class="label">Poços</div>
+    </div>
+    <div class="card yellow">
+      <div class="value" id="restricao">12</div>
+      <div class="label">Com restrição</div>
+    </div>
+    <div class="card green">
+      <div class="value" id="producao">38.650</div>
+      <div class="label">BOPD (plano)</div>
+    </div>
+    <div class="card">
+      <div class="value" id="capex">US$ 51,4</div>
+      <div class="label">CAPEX (MM)</div>
+    </div>
+  </div>
+
+  <div class="section">
+    <h2>📊 Progresso dos Gates FEED</h2>
+    <div style="display: flex; justify-content: space-between; margin-bottom: 8px;">
+      <span>Gates fechados</span>
+      <span><strong>4 / 13</strong> (31%)</span>
+    </div>
+    <div class="progress-bar">
+      <div class="fill" style="width: 31%"></div>
+    </div>
+  </div>
+
+  <div class="section">
+    <h2>📋 Mudanças por Tipo</h2>
+    <table>
+      <thead>
+        <tr><th>Tipo</th><th>Qtd</th><th>Status</th></tr>
+      </thead>
+      <tbody>
+        <tr><td>Decisão</td><td>14</td><td><span class="badge blue">Ativo</span></td></tr>
+        <tr><td>Melhoria</td><td>7</td><td><span class="badge green">OK</span></td></tr>
+        <tr><td>Gate fechado</td><td>4</td><td><span class="badge green">OK</span></td></tr>
+        <tr><td>Correção</td><td>1</td><td><span class="badge yellow">Revisão</span></td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="section">
+    <h2>🛢️ Produção e CAPEX</h2>
+    <table>
+      <thead>
+        <tr><th>Métrica</th><th>Valor</th></tr>
+      </thead>
+      <tbody>
+        <tr><td>Produção alvo Fase 1</td><td>13.500 BOPD</td></tr>
+        <tr><td>Produção plano reativação</td><td>38.650 BOPD</td></tr>
+        <tr><td>CAPEX plano reativação</td><td>US$ 51,4 MM</td></tr>
+        <tr><td>CAPEX tender gates (G-02..G-06)</td><td>US$ 2,92 MM</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="section">
+    <h2>⚠️ Gates Abertos (9)</h2>
+    <table>
+      <thead>
+        <tr><th>Gate</th><th>Título</th><th>Status</th></tr>
+      </thead>
+      <tbody>
+        <tr><td>G-05</td><td>Pigging e slug</td><td><span class="badge yellow">Aberto</span></td></tr>
+        <tr><td>G-06</td><td>ESD/PSD e relief</td><td><span class="badge yellow">Aberto</span></td></tr>
+        <tr><td>G-07</td><td>Energia e black start</td><td><span class="badge yellow">Aberto</span></td></tr>
+        <tr><td>G-08</td><td>Injeção de água</td><td><span class="badge yellow">Aberto</span></td></tr>
+        <tr><td>G-09</td><td>Interface Boscan</td><td><span class="badge yellow">Aberto</span></td></tr>
+        <tr><td>G-10</td><td>Economia NGL</td><td><span class="badge yellow">Aberto</span></td></tr>
+        <tr><td>G-11</td><td>LNG Palmarejo</td><td><span class="badge yellow">Aberto</span></td></tr>
+        <tr><td>G-12</td><td>Garantia crude/export</td><td><span class="badge yellow">Aberto</span></td></tr>
+        <tr><td>G-13</td><td>Regulatório/social</td><td><span class="badge red">Contínuo</span></td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <footer>
+    Gerado por Gtasck (copiloto do COO) · <a href="https://github.com/martineduardodelcastillo-source/Gtasck" style="color: #3b82f6;">GitHub</a>
+  </footer>
+</div>
+</body>
+</html>
