@@ -1,12 +1,12 @@
 # Dashboard do COO · FDP-9 PetroUrdaneta
 
-**Atualizado em:** 2026-08-29
+**Atualizado em:** 2026-08-30
 
 ## KPIs principais
 
 | KPI | Valor |
 |---|---:|
-| Mudanças rastreadas | 17 |
+| Mudanças rastreadas | 26 |
 | Gates FEED fechados | 4 / 13 |
 | Gates abertos | 9 |
 | Poços no well master | 41 |
@@ -21,6 +21,6 @@
 | Tipo | Qtd |
 |---|---:|
 | correcao | 1 |
-| decisao | 7 |
+| decisao | 14 |
 | gate_fechado | 4 |
-| melhoria | 5 |
+| melhoria | 7 |
