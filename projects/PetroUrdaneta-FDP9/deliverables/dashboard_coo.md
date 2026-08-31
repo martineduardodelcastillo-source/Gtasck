@@ -1,6 +1,6 @@
 # Dashboard do COO · FDP-9 PetroUrdaneta
 
-**Atualizado em:** 2026-08-30
+**Atualizado em:** 2026-08-31
 
 ## KPIs principais
 
