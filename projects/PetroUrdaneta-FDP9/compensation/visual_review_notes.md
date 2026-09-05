@@ -18,3 +18,7 @@ La exportación final quedó en **cuatro páginas**: Resumen, Supuestos, Persona
 ## Cierre de revisión
 
 Después de compactar los espacios de la hoja Definiciones, el libro volvió a validarse y la exportación se mantuvo en **cuatro páginas tamaño carta horizontal**. La nota de cumplimiento conserva el texto completo según la extracción de la página y dispone de mayor margen respecto del pie de página. Revisión visual cerrada sin incidencias críticas.
+
+## Actualización mensual y fiscal — 5 de septiembre de 2026
+
+Se añadió la hoja **Mensual**, que presenta M1–M12 por persona, un total consolidado y tres escenarios comparables desde M7. La exportación final ahora contiene **cinco páginas tamaño carta horizontal**. La nueva página mensual mantiene encabezados, valores, tratamiento fiscal y totales sin superposición ni recortes; su densidad es adecuada para una hoja analítica. La hoja Definiciones incluye expresamente que el expatriado recibe protección fiscal empresarial y que el repatriado asume su impuesto personal. La extracción de texto de la página final confirmó que la nota de cumplimiento se conserva completa.

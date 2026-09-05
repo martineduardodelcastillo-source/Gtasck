@@ -168,22 +168,24 @@ def build_supuestos(wb):
         (9, "Meses de la etapa 1 — Consultor", 6, INTEGER, "Duración solicitada por la gerencia: primeros seis meses como consultor."),
         (10, "Meses de la etapa 2 — Repatriado / Expatriado", 6, INTEGER, "Segundo bloque presupuestario del año: meses 7 a 12."),
         (11, "Factor de Tax & Social en la etapa 1", 0.0, PERCENT, "Supuesto gerencial: no se carga Tax & Social venezolano durante la etapa de consultoría. Requiere validación legal y fiscal independiente."),
+        (12, "Factor de Tax & Social pagado por la empresa — Repatriado M7+", 0.0, PERCENT, "Supuesto gerencial: el repatriado asume su impuesto personal. Ajustar si existen contribuciones patronales obligatorias u otras cargas de la empresa."),
+        (13, "Factor de Tax & Social pagado por la empresa — Expatriado M7+", 1.0, PERCENT, "Supuesto gerencial: la empresa cubre o neutraliza el impuesto del país de trabajo para el expatriado. No incluye obligaciones del país de origen salvo política expresa."),
     ]
     for row, label, value, fmt, note in labels:
         ws.cell(row, 3, label).font = Font(name="Arial", size=10, color=BLACK)
         ws.cell(row, 4, value)
         format_input(ws.cell(row, 4), fmt, assumption_comment(note), Alignment(horizontal="right", vertical="center"))
-    apply_body_borders(ws, 9, 11, 3, 4)
+    apply_body_borders(ws, 9, 13, 3, 4)
 
-    section_bar(ws, 14, "POLÍTICA AUTOMÁTICA DE VIVIENDA POR CIUDAD", 3, 6)
-    table_header(ws, 15, 3, ["Ciudad", "Housing automático", "Racional presupuestario", "Editable"])
+    section_bar(ws, 16, "POLÍTICA AUTOMÁTICA DE VIVIENDA POR CIUDAD", 3, 6)
+    table_header(ws, 17, 3, ["Ciudad", "Housing automático", "Racional presupuestario", "Editable"])
     city_rows = [
         ("Caracas", "Sí", "Se presupone allowance si la persona debe residir en Caracas.", "Sí"),
         ("Maracaibo", "No", "Se presupone sin allowance para repatriados radicados en Maracaibo.", "Sí"),
         ("Otro", "Sí", "Enfoque conservador hasta confirmar alojamiento.", "Sí"),
         ("Por definir", "Por definir", "El cálculo conservador incluye vivienda si el paquete es repatriado.", "Sí"),
     ]
-    for idx, row_values in enumerate(city_rows, start=16):
+    for idx, row_values in enumerate(city_rows, start=18):
         for col, value in enumerate(row_values, start=3):
             ws.cell(idx, col, value)
             ws.cell(idx, col).font = Font(name="Arial", size=10, color=BLACK)
@@ -195,44 +197,44 @@ def build_supuestos(wb):
             ),
             alignment=Alignment(horizontal="center", vertical="center"),
         )
-    apply_body_borders(ws, 16, 19, 3, 6)
+    apply_body_borders(ws, 18, 21, 3, 6)
 
-    section_bar(ws, 22, "COMPONENTES DE CADA PAQUETE", 3, 8)
-    table_header(ws, 23, 3, ["Componente", "Consultor M1–M6", "Repatriado M7+", "Expatriado M7+", "Criterio", "Observación"])
+    section_bar(ws, 24, "COMPONENTES DE CADA PAQUETE", 3, 8)
+    table_header(ws, 25, 3, ["Componente", "Consultor M1–M6", "Repatriado M7+", "Expatriado M7+", "Criterio", "Observación"])
     package_rows = [
         ("Compensación base", "Sí — honorario prorrateado", "Sí — salario local", "Sí — salario base", "Valor fuente por persona", "El modelo usa 6/12 del importe anual en cada etapa."),
         ("Housing", "Sí", "Condicional por ciudad / override", "Sí", "Valor fuente por persona", "Caracas = Sí y Maracaibo = No como política inicial editable."),
         ("Seguro médico", "Sí", "Sí", "Sí", "Valor fuente por persona", "Prorrateado por meses."),
         ("Home leave", "Sí", "No", "Sí", "Valor fuente por persona", "Se elimina en el paquete de repatriado."),
         ("Vehículo", "Sí", "Sí", "Sí", "Valor fuente por persona", "Prorrateado por meses."),
-        ("Tax & Social", "No", "Sí", "Sí", "Valor fuente por persona", "M1–M6 usa factor 0%; M7+ conserva el valor anual prorrateado."),
+        ("Impuesto del país de trabajo", "No cubierto en el modelo", "Lo asume el empleado", "Lo cubre / neutraliza la empresa", "Factores editables", "Repatriado: factor empresa 0%; expatriado: factor empresa 100% por defecto."),
         ("Costos únicos de transición", "No incluidos", "Entrada individual", "Entrada individual", "Cotizaciones pendientes", "El modelo parte de $0 hasta recibir presupuestos de viaje, mudanza, permisos y alojamiento temporal."),
     ]
-    for r, values in enumerate(package_rows, start=24):
+    for r, values in enumerate(package_rows, start=26):
         for c, value in enumerate(values, start=3):
             cell = ws.cell(r, c, value)
             cell.font = Font(name="Arial", size=9, color=BLACK)
             cell.alignment = Alignment(horizontal="left", vertical="center", wrap_text=True)
         ws.row_dimensions[r].height = 34
-    apply_body_borders(ws, 24, 30, 3, 8)
+    apply_body_borders(ws, 26, 32, 3, 8)
 
-    section_bar(ws, 33, "ADVERTENCIA DE CUMPLIMIENTO", 3, 10)
+    section_bar(ws, 35, "ADVERTENCIA DE CUMPLIMIENTO", 3, 10)
     warning = (
         "El tratamiento de los meses 1–6 como consultoría sin Tax & Social venezolano es un supuesto "
         "presupuestario indicado por la gerencia, no una conclusión jurídica. La condición migratoria de turista "
         "no acredita por sí sola autorización para trabajar ni exención fiscal. Antes de implementar el esquema, "
         "se requiere validación escrita de asesores venezolanos de inmigración, derecho laboral, nómina y tributos."
     )
-    ws.merge_cells(start_row=34, start_column=3, end_row=36, end_column=10)
-    ws.cell(34, 3, warning)
-    ws.cell(34, 3).font = Font(name="Arial", size=10, bold=True, color=RED)
-    ws.cell(34, 3).alignment = Alignment(horizontal="left", vertical="top", wrap_text=True)
-    ws.row_dimensions[34].height = 30
-    ws.row_dimensions[35].height = 30
+    ws.merge_cells(start_row=36, start_column=3, end_row=38, end_column=10)
+    ws.cell(36, 3, warning)
+    ws.cell(36, 3).font = Font(name="Arial", size=10, bold=True, color=RED)
+    ws.cell(36, 3).alignment = Alignment(horizontal="left", vertical="top", wrap_text=True)
     ws.row_dimensions[36].height = 30
+    ws.row_dimensions[37].height = 30
+    ws.row_dimensions[38].height = 30
 
-    ws.print_area = "B2:J36"
-    auto_fit(ws, 3, 10, [(9, 11), (15, 19), (23, 30)], min_width=12, max_width=34)
+    ws.print_area = "B2:J38"
+    auto_fit(ws, 3, 10, [(9, 13), (17, 21), (25, 32)], min_width=12, max_width=34)
     return ws
 
 
@@ -307,8 +309,8 @@ def build_personal(wb):
         ws.cell(excel_row, 25).alignment = Alignment(horizontal="center", vertical="center")
 
         stage2 = (
-            f'=IF(V{excel_row}="Expatriado",L{excel_row}/12*\'Supuestos\'!$D$10,'
-            f'IF(V{excel_row}="Repatriado",(F{excel_row}+H{excel_row}+J{excel_row}+K{excel_row}+'
+            f'=IF(V{excel_row}="Expatriado",(F{excel_row}+G{excel_row}+H{excel_row}+I{excel_row}+J{excel_row}+K{excel_row}*\'Supuestos\'!$D$13)/12*\'Supuestos\'!$D$10,'
+            f'IF(V{excel_row}="Repatriado",(F{excel_row}+H{excel_row}+J{excel_row}+K{excel_row}*\'Supuestos\'!$D$12+'
             f'IF(Y{excel_row}="No",0,G{excel_row}))/12*\'Supuestos\'!$D$10,0))'
         )
         ws.cell(excel_row, 27, stage2)
@@ -320,8 +322,8 @@ def build_personal(wb):
         ws.cell(excel_row, 30, f"=M{excel_row}-AC{excel_row}")
         format_formula(ws.cell(excel_row, 30), CURRENCY)
         ws.cell(excel_row, 31, (
-            f'=IF(V{excel_row}="Expatriado",M{excel_row},IF(V{excel_row}="Repatriado",'
-            f'F{excel_row}+H{excel_row}+J{excel_row}+K{excel_row}+IF(Y{excel_row}="No",0,G{excel_row}),0))'
+            f'=IF(V{excel_row}="Expatriado",F{excel_row}+G{excel_row}+H{excel_row}+I{excel_row}+J{excel_row}+K{excel_row}*\'Supuestos\'!$D$13,IF(V{excel_row}="Repatriado",'
+            f'F{excel_row}+H{excel_row}+J{excel_row}+K{excel_row}*\'Supuestos\'!$D$12+IF(Y{excel_row}="No",0,G{excel_row}),0))'
         ))
         format_formula(ws.cell(excel_row, 31), CURRENCY)
         ws.cell(excel_row, 32, (
@@ -363,6 +365,123 @@ def build_personal(wb):
     ws.column_dimensions["D"].width = 33
     ws.column_dimensions["E"].width = 23
     ws.column_dimensions["AF"].width = 18
+    return ws
+
+
+def build_mensual(wb):
+    ws = wb.create_sheet("Mensual")
+    setup_sheet(
+        ws,
+        "Costo mensual por persona",
+        "M1–M6 como consultor | M7–M12 según paquete seleccionado; los costos únicos se cargan en M7",
+        "USD | Expatriado: empresa cubre / neutraliza impuesto del país de trabajo; Repatriado: empleado asume su impuesto personal",
+        20,
+    )
+
+    section_bar(ws, 8, "DETALLE MENSUAL POR PERSONA — ESCENARIO SELECCIONADO", 3, 20)
+    month_headers = ["Person", "Position", "Package M7+", "City", "M1", "M2", "M3", "M4", "M5", "M6", "M7", "M8", "M9", "M10", "M11", "M12", "Year 1", "Tratamiento fiscal M7+"]
+    table_header(ws, 10, 3, month_headers)
+
+    for target_row, source_row in enumerate(range(11, 20), start=11):
+        links = {
+            3: f"='Personal'!E{source_row}",
+            4: f"='Personal'!D{source_row}",
+            5: f"='Personal'!V{source_row}",
+            6: f"='Personal'!W{source_row}",
+        }
+        for col, formula in links.items():
+            ws.cell(target_row, col, formula)
+            format_formula(ws.cell(target_row, col), cross_sheet=True)
+            ws.cell(target_row, col).alignment = Alignment(horizontal="left", vertical="center", wrap_text=True)
+
+        for col in range(7, 13):
+            ws.cell(target_row, col, f"='Personal'!U{source_row}/'Supuestos'!$D$9")
+            format_formula(ws.cell(target_row, col), CURRENCY_FIRST if col == 7 else CURRENCY, cross_sheet=True)
+        ws.cell(target_row, 13, f"='Personal'!AA{source_row}/'Supuestos'!$D$10+'Personal'!Z{source_row}")
+        format_formula(ws.cell(target_row, 13), CURRENCY, cross_sheet=True)
+        for col in range(14, 19):
+            ws.cell(target_row, col, f"='Personal'!AA{source_row}/'Supuestos'!$D$10")
+            format_formula(ws.cell(target_row, col), CURRENCY, cross_sheet=True)
+        ws.cell(target_row, 19, f"=SUM(G{target_row}:R{target_row})")
+        format_formula(ws.cell(target_row, 19), CURRENCY, bold=True)
+        ws.cell(target_row, 20, (
+            f'=IF(E{target_row}="Expatriado","Empresa cubre / neutraliza impuesto del país de trabajo",'
+            f'IF(E{target_row}="Repatriado","Empleado asume impuesto personal","Definir paquete"))'
+        ))
+        format_formula(ws.cell(target_row, 20))
+        ws.cell(target_row, 20).alignment = Alignment(horizontal="left", vertical="center", wrap_text=True)
+        ws.row_dimensions[target_row].height = 30
+
+    total_row = 21
+    ws.cell(total_row, 3, "TOTAL — 9 POSICIONES")
+    ws.cell(total_row, 3).font = Font(name="Arial", size=10, bold=True, color=BLACK)
+    ws.merge_cells(start_row=total_row, start_column=3, end_row=total_row, end_column=6)
+    for col in range(7, 20):
+        letter = ws.cell(1, col).column_letter
+        ws.cell(total_row, col, f"=SUM({letter}11:{letter}19)")
+        format_formula(ws.cell(total_row, col), CURRENCY_FIRST if col == 7 else CURRENCY, bold=True)
+    for col in range(3, 21):
+        ws.cell(total_row, col).border = Border(top=MEDIUM_GREEN, bottom=DOUBLE_BLACK)
+    ws.row_dimensions[total_row].height = 24
+
+    section_bar(ws, 24, "COSTO TOTAL POR MES — COMPARACIÓN DE ESCENARIOS", 3, 20)
+    scenario_headers = ["Escenario", "M1", "M2", "M3", "M4", "M5", "M6", "M7", "M8", "M9", "M10", "M11", "M12", "Year 1", "Tratamiento fiscal desde M7"]
+    table_header(ws, 25, 3, scenario_headers)
+    scenario_labels = [
+        (26, "Selección actual por persona", "Actual"),
+        (27, "Todos expatriados", "Expat"),
+        (28, "Todos repatriados — con housing", "RepatHousing"),
+        (29, "Todos repatriados — sin housing", "RepatNoHousing"),
+    ]
+    for row, label, scenario_type in scenario_labels:
+        ws.cell(row, 3, label)
+        ws.cell(row, 3).font = Font(name="Arial", size=10, color=BLACK, bold=(row == 26))
+        ws.cell(row, 3).alignment = Alignment(horizontal="left", vertical="center")
+        for col in range(4, 10):
+            ws.cell(row, col, "='Personal'!U21/'Supuestos'!$D$9")
+            format_formula(ws.cell(row, col), CURRENCY_FIRST if col == 4 else CURRENCY, cross_sheet=True, bold=(row == 26))
+
+        if scenario_type == "Actual":
+            ws.cell(row, 10, "=M21")
+            for col, source_col in zip(range(11, 16), range(14, 19)):
+                source_letter = ws.cell(1, source_col).column_letter
+                ws.cell(row, col, f"={source_letter}21")
+            tax_text = "Según selección individual"
+        elif scenario_type == "Expat":
+            recurring = "=(SUM('Personal'!F11:F19)+SUM('Personal'!G11:G19)+SUM('Personal'!H11:H19)+SUM('Personal'!I11:I19)+SUM('Personal'!J11:J19)+SUM('Personal'!K11:K19)*'Supuestos'!$D$13)/12"
+            for col in range(10, 16):
+                ws.cell(row, col, recurring)
+            tax_text = "Empresa cubre / neutraliza impuesto del país de trabajo"
+        elif scenario_type == "RepatHousing":
+            recurring = "=(SUM('Personal'!F11:F19)+SUM('Personal'!G11:G19)+SUM('Personal'!H11:H19)+SUM('Personal'!J11:J19)+SUM('Personal'!K11:K19)*'Supuestos'!$D$12)/12"
+            for col in range(10, 16):
+                ws.cell(row, col, recurring)
+            tax_text = "Empleado asume impuesto personal"
+        else:
+            recurring = "=(SUM('Personal'!F11:F19)+SUM('Personal'!H11:H19)+SUM('Personal'!J11:J19)+SUM('Personal'!K11:K19)*'Supuestos'!$D$12)/12"
+            for col in range(10, 16):
+                ws.cell(row, col, recurring)
+            tax_text = "Empleado asume impuesto personal"
+
+        for col in range(10, 16):
+            format_formula(ws.cell(row, col), CURRENCY, cross_sheet=(scenario_type != "Actual"), bold=(row == 26))
+        ws.cell(row, 16, f"=SUM(D{row}:O{row})")
+        format_formula(ws.cell(row, 16), CURRENCY, bold=(row == 26))
+        ws.cell(row, 17, tax_text)
+        ws.cell(row, 17).font = Font(name="Arial", size=9, color=BLACK)
+        ws.cell(row, 17).alignment = Alignment(horizontal="left", vertical="center", wrap_text=True)
+        ws.row_dimensions[row].height = 30
+
+    apply_body_borders(ws, 11, 19, 3, 20)
+    apply_body_borders(ws, 26, 29, 3, 17)
+    ws.freeze_panes = "G11"
+    ws.print_title_rows = "10:10"
+    ws.print_area = "B2:T29"
+    auto_fit(ws, 3, 20, [(10, 21), (25, 29)], min_width=11, max_width=26)
+    ws.column_dimensions["C"].width = 24
+    ws.column_dimensions["D"].width = 34
+    ws.column_dimensions["T"].width = 30
+    ws.column_dimensions["Q"].width = max(ws.column_dimensions["Q"].width or 0, 13)
     return ws
 
 
@@ -412,25 +531,25 @@ def build_resumen(wb):
             "='Personal'!AE21",
         ),
         (
-            "Todos expatriados",
+            "Todos expatriados — empresa cubre impuesto",
             "='Personal'!U21",
-            "='Personal'!M21/12*'Supuestos'!$D$10",
+            "=(SUM('Personal'!F11:F19)+SUM('Personal'!G11:G19)+SUM('Personal'!H11:H19)+SUM('Personal'!I11:I19)+SUM('Personal'!J11:J19)+SUM('Personal'!K11:K19)*'Supuestos'!$D$13)/12*'Supuestos'!$D$10",
             "=D22+E22",
             "='Personal'!M21-F22",
-            "='Personal'!M21",
+            "=E22/'Supuestos'!$D$10*12",
         ),
         (
-            "Todos repatriados — con housing",
+            "Todos repatriados — con housing; empleado paga impuesto",
             "='Personal'!U21",
-            "=(SUM('Personal'!F11:F19)+SUM('Personal'!G11:G19)+SUM('Personal'!H11:H19)+SUM('Personal'!J11:J19)+SUM('Personal'!K11:K19))/12*'Supuestos'!$D$10",
+            "=(SUM('Personal'!F11:F19)+SUM('Personal'!G11:G19)+SUM('Personal'!H11:H19)+SUM('Personal'!J11:J19)+SUM('Personal'!K11:K19)*'Supuestos'!$D$12)/12*'Supuestos'!$D$10",
             "=D23+E23",
             "='Personal'!M21-F23",
             "=E23/'Supuestos'!$D$10*12",
         ),
         (
-            "Todos repatriados — sin housing",
+            "Todos repatriados — sin housing; empleado paga impuesto",
             "='Personal'!U21",
-            "=(SUM('Personal'!F11:F19)+SUM('Personal'!H11:H19)+SUM('Personal'!J11:J19)+SUM('Personal'!K11:K19))/12*'Supuestos'!$D$10",
+            "=(SUM('Personal'!F11:F19)+SUM('Personal'!H11:H19)+SUM('Personal'!J11:J19)+SUM('Personal'!K11:K19)*'Supuestos'!$D$12)/12*'Supuestos'!$D$10",
             "=D24+E24",
             "='Personal'!M21-F24",
             "=E24/'Supuestos'!$D$10*12",
@@ -493,8 +612,8 @@ def build_resumen(wb):
         "1. Designar por persona si desde el mes 7 será Repatriado o Expatriado.",
         "2. Confirmar ciudad de residencia: Caracas, Maracaibo u otra.",
         "3. Validar la política inicial: Caracas con housing; Maracaibo sin housing para repatriados.",
-        "4. Incorporar costos únicos cotizados: viaje, mudanza, permisos, asesoría, alojamiento temporal y settling-in.",
-        "5. Obtener dictamen escrito de inmigración, laboral y fiscal antes de implementar la etapa de consultoría.",
+        "4. Confirmar por escrito que el expatriado recibe protección / gross-up fiscal y que el repatriado asume su impuesto personal.",
+        "5. Incorporar costos únicos cotizados y obtener dictamen escrito de inmigración, laboral y fiscal.",
     ]
     for row_idx, text in enumerate(decisions, start=41):
         ws.merge_cells(start_row=row_idx, start_column=3, end_row=row_idx, end_column=12)
@@ -538,7 +657,8 @@ def build_definiciones(wb):
             14,
             "PAQUETE REPATRIADO — DESDE EL MES 7",
             [
-                "Compensación recurrente: salario base, seguro médico, vehículo y Tax & Social.",
+                "Compensación recurrente pagada por la empresa: salario base, seguro médico y vehículo.",
+                "Impuesto personal: lo asume el repatriado. El factor de Tax & Social pagado por la empresa es 0% por defecto, salvo cargas patronales obligatorias.",
                 "Housing: condicional. Política inicial editable: Caracas = Sí; Maracaibo = No. Un override individual prevalece sobre la regla automática.",
                 "Home leave: no se incluye, porque la persona pasa a una condición local / repatriada.",
                 "Costos únicos: viaje de retorno, mudanza de efectos personales, permisos, asesoría, alojamiento temporal y settling-in. Se mantienen en $0 hasta contar con cotizaciones.",
@@ -549,7 +669,8 @@ def build_definiciones(wb):
             21,
             "PAQUETE EXPATRIADO — DESDE EL MES 7",
             [
-                "Compensación recurrente: paquete anual fuente completo prorrateado — salario base, housing, seguro médico, home leave, vehículo y Tax & Social.",
+                "Compensación recurrente: salario base, housing, seguro médico, home leave y vehículo.",
+                "Protección fiscal: la empresa cubre o neutraliza el impuesto del país de trabajo mediante pago, gross-up o tax equalization; el factor presupuestario es 100% del Tax & Social fuente.",
                 "Costos únicos: incorporar, cuando correspondan, regularización migratoria, asesoría fiscal, alojamiento temporal y otros costos de movilidad no incluidos en la tabla fuente.",
                 "Uso recomendado: personas que conservan una asignación internacional, vínculo de empleo extranjero o política de tax equalization / gross-up.",
             ],
@@ -599,7 +720,7 @@ def final_checks(wb):
     assert sum(row[6] for row in PEOPLE) == 104000
     assert sum(row[4] for row in PEOPLE) == 198000
     assert SOURCE_IMAGE.exists(), f"Source image missing: {SOURCE_IMAGE}"
-    assert wb.sheetnames == ["Resumen", "Supuestos", "Personal", "Definiciones"]
+    assert wb.sheetnames == ["Resumen", "Supuestos", "Personal", "Mensual", "Definiciones"]
 
 
 def main():
@@ -608,6 +729,7 @@ def main():
     wb.remove(wb.active)
     build_supuestos(wb)
     build_personal(wb)
+    build_mensual(wb)
     build_resumen(wb)
     build_definiciones(wb)
     final_checks(wb)
