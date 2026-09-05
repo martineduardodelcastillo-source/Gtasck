@@ -26,3 +26,13 @@ Se añadió la hoja **Mensual**, que presenta M1–M12 por persona, un total con
 ## Divulgación mensual en Personal — 5 de septiembre de 2026
 
 La pestaña **Personal** ahora incluye, en cada fila, `Monthly Cost M1–M6`, `Selected Monthly M7+` y `M7 incl. Transition`. La columna de M7+ toma automáticamente el costo recurrente correspondiente a la selección individual **Repatriado / Expatriado**, y la columna M7 suma el costo único de transición. La exportación visual confirmó que las tres columnas aparecen completas, alineadas con cada persona y conciliadas con los totales anuales.
+
+## Paquetes individuales confirmados — revisión final
+
+La vista previa final conserva el gráfico de escenarios y muestra KPIs actualizados en Resumen: Etapa 1 $1.012.200, Etapa 2 $1.150.200, Año 1 $2.162.400, ahorro $234.400 y run-rate $2.300.400. El detalle ejecutivo refleja las clasificaciones manuales preservadas y las nuevas asignaciones. En Personal aparecen completas las columnas `Annual Bonus M7+`, `Stock Options Annual Value (TBD)` y `Vacation Days`, además de las columnas mensuales previamente incorporadas. No se observaron recortes de datos, gráficos perdidos ni superposiciones críticas; la hoja Personal conserva la escala reducida esperada por su amplitud analítica.
+
+## Puente de costos — revisión visual
+
+El Resumen incorpora un puente contra el escenario previo: $2.243.600 anterior, $2.168.400 seleccionado y ahorro neto de $75.200. La tabla reconcilia cada persona y muestra los sobrecostos de $8.400 de Juan y Félix, frente a los ahorros de Alexander, Alan, JJI, Jose Miguel y TBD. La primera exportación dividió la tabla entre dos páginas, por lo que se ajustará un salto de página antes del puente para conservar título y encabezados junto al detalle.
+
+El salto de página final fue verificado: el puente comienza en la página 2 con título, encabezados y las nueve conciliaciones individuales, terminando en el total de ahorro neto de $75.200. La exportación completa contiene seis páginas tamaño carta horizontal.

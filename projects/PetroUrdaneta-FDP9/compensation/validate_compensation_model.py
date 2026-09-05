@@ -7,77 +7,176 @@ from openpyxl import load_workbook
 BASE = Path(__file__).resolve().parent
 BOOK = BASE / "modelo_paquetes_personal_2_etapas.xlsx"
 SOURCE = BASE / "source" / "package_source_2026-09-05.jpeg"
+BACKUP = BASE / "backups" / "modelo_paquetes_personal_2_etapas_before_personnel_assignments_2026-09-05.xlsx"
 
 
-def close(actual, expected, label):
+def close(actual, expected, label, tolerance=0.01):
     assert actual is not None, f"{label}: valor calculado ausente"
-    assert isclose(float(actual), float(expected), rel_tol=0, abs_tol=0.01), (
+    assert isclose(float(actual), float(expected), rel_tol=0, abs_tol=tolerance), (
         f"{label}: esperado {expected}, obtenido {actual}"
     )
+
+
+def locate_person_rows(ws):
+    names = {
+        "Martin del Castillo",
+        "Juan Conde",
+        "Alexander Stulme",
+        "Félix Valderrama",
+        "Alan McKeon",
+        "JJI",
+        "Marcelo Dantas",
+        "Jose Miguel",
+        "TBD",
+    }
+    result = {}
+    for row in range(1, ws.max_row + 1):
+        value = ws.cell(row, 5).value
+        if isinstance(value, str) and value.strip() in names:
+            result[value.strip()] = row
+    return result
+
+
+def locate_total_row(ws):
+    for row in range(1, ws.max_row + 1):
+        if ws.cell(row, 4).value == "TOTAL — 9 POSICIONES":
+            return row
+    raise AssertionError("No se encontró la fila total en Personal")
+
+
+def value_right_of_label(ws, label):
+    for row in ws.iter_rows():
+        for cell in row:
+            if cell.value == label:
+                return ws.cell(cell.row, cell.column + 1).value
+    raise AssertionError(f"No se encontró la etiqueta {label!r} en {ws.title}")
 
 
 def main():
     assert BOOK.exists(), f"No existe {BOOK}"
     assert SOURCE.exists(), f"No existe {SOURCE}"
+    assert BACKUP.exists(), f"No existe el respaldo {BACKUP}"
 
     formula_wb = load_workbook(BOOK, data_only=False)
     value_wb = load_workbook(BOOK, data_only=True)
     assert formula_wb.sheetnames == ["Resumen", "Supuestos", "Personal", "Mensual", "Definiciones"]
 
+    personal_f = formula_wb["Personal"]
     personal = value_wb["Personal"]
-    resumen = value_wb["Resumen"]
+    rows = locate_person_rows(personal)
+    total_row = locate_total_row(personal)
+    assert set(rows) == {
+        "Martin del Castillo", "Juan Conde", "Alexander Stulme", "Félix Valderrama",
+        "Alan McKeon", "JJI", "Marcelo Dantas", "Jose Miguel", "TBD",
+    }
+
+    juan = rows["Juan Conde"]
+    alex = rows["Alexander Stulme"]
+    felix = rows["Félix Valderrama"]
+    alan = rows["Alan McKeon"]
+    jji = rows["JJI"]
+    marcelo = rows["Marcelo Dantas"]
+    jose = rows["Jose Miguel"]
+    tbd = rows["TBD"]
+
+    assert personal[f"V{juan}"].value == "Repatriado"
+    assert personal[f"W{juan}"].value == "Maracaibo"
+    assert personal[f"Y{juan}"].value == "Sí"
+    close(personal[f"AJ{juan}"].value, 72_000, "Juan — bonus anual")
+    assert personal[f"AK{juan}"].value == "TBD"
+    close(personal[f"AL{juan}"].value, 13, "Juan — días de vacaciones")
+    close(personal[f"AH{juan}"].value, 28_500, "Juan — costo mensual M7+")
+
+    assert personal[f"V{alex}"].value == "Repatriado"
+    assert personal[f"W{alex}"].value == "Maracaibo"
+    assert personal[f"Y{alex}"].value == "No"
+    close(personal[f"AJ{alex}"].value, 60_000, "Alexander — bonus anual")
+    assert personal[f"AK{alex}"].value == "TBD"
+    close(personal[f"AL{alex}"].value, 13, "Alexander — días de vacaciones")
+    close(personal[f"AH{alex}"].value, 22_500, "Alexander — costo mensual M7+")
+
+    assert personal[f"V{felix}"].value == "Repatriado"
+    assert personal[f"W{felix}"].value == "Maracaibo"
+    assert personal[f"Y{felix}"].value == "Sí"
+    close(personal[f"AJ{felix}"].value, 72_000, "Félix — bonus anual")
+    assert personal[f"AK{felix}"].value == "TBD"
+    close(personal[f"AL{felix}"].value, 13, "Félix — días de vacaciones")
+    close(personal[f"AH{felix}"].value, 28_500, "Félix — costo mensual M7+")
+
+    assert personal[f"V{alan}"].value == "Expatriado"
+    close(personal[f"G{alan}"].value, 24_000, "Alan — housing anual de consultoría")
+    close(personal[f"AM{alan}"].value, 12_000, "Alan — housing anual M7+")
+    close(personal[f"AH{alan}"].value, 22_500, "Alan — costo mensual M7+")
+
+    assert personal[f"V{jji}"].value == "Remote"
+    for col, label in (("G", "housing"), ("H", "medical"), ("I", "home leave"), ("J", "vehicle"), ("K", "tax")):
+        close(personal[f"{col}{jji}"].value, 0, f"JJI — {label}")
+    close(personal[f"AG{jji}"].value, 10_000, "JJI — mensual consultor")
+    close(personal[f"AH{jji}"].value, 10_000, "JJI — mensual remote")
+
+    assert personal[f"V{marcelo}"].value == "On rotation"
+    assert personal[f"V{jose}"].value == "Local"
+    assert personal[f"Y{jose}"].value == "Sí"
+    assert personal[f"V{tbd}"].value == "Local"
+
+    close(personal[f"L{total_row}"].value, 2_322_800, "Paquete anual calculado tras cambios de beneficios")
+    close(personal[f"M{total_row}"].value, 2_396_800, "Paquete anual fuente declarado")
+    close(personal[f"N{total_row}"].value, -74_000, "Variación vs. fuente")
+    close(personal[f"U{total_row}"].value, 1_018_200, "Etapa 1 seleccionada")
+    close(personal[f"AB{total_row}"].value, 1_150_200, "Etapa 2 seleccionada")
+    close(personal[f"AC{total_row}"].value, 2_168_400, "Año 1 seleccionado")
+    close(personal[f"AD{total_row}"].value, 228_400, "Ahorro Año 1 vs. fuente")
+    close(personal[f"AE{total_row}"].value, 2_300_400, "Run-rate seleccionado")
+    close(personal[f"AG{total_row}"].value, 169_700, "Mensual consultor consolidado")
+    close(personal[f"AH{total_row}"].value, 191_700, "Mensual M7+ seleccionado")
+    close(personal[f"AJ{total_row}"].value, 204_000, "Bonus anual total")
+    close(personal[f"AL{total_row}"].value, 39, "Vacaciones totales divulgadas")
+    close(personal[f"AM{total_row}"].value, 12_000, "Housing anual override total M7+")
+
     mensual = value_wb["Mensual"]
-    supuestos = value_wb["Supuestos"]
-    personal_formulas = formula_wb["Personal"]
+    # The detailed monthly schedule must reconcile to Personal by person and year.
+    monthly_person_rows = {}
+    for row in range(1, mensual.max_row + 1):
+        value = mensual.cell(row, 3).value
+        if isinstance(value, str) and value.strip() in rows:
+            monthly_person_rows[value.strip()] = row
+    assert set(monthly_person_rows) == set(rows)
+    for person, p_row in rows.items():
+        m_row = monthly_person_rows[person]
+        close(mensual[f"S{m_row}"].value, personal[f"AC{p_row}"].value, f"Mensual vs. Personal — {person}")
 
-    assert 'V11="Expatriado"' in personal_formulas["AA11"].value
-    assert 'V11="Repatriado"' in personal_formulas["AA11"].value
-    assert personal_formulas["AH11"].value.replace("'", "") == "=AA11/Supuestos!$D$10"
-    assert personal_formulas["AI11"].value == "=AH11+Z11"
+    selected_monthly_row = None
+    for row in range(1, mensual.max_row + 1):
+        if mensual.cell(row, 3).value == "Selección actual por persona":
+            selected_monthly_row = row
+            break
+    assert selected_monthly_row is not None
+    close(mensual[f"D{selected_monthly_row}"].value, 169_700, "Mensual consolidado M1")
+    close(mensual[f"J{selected_monthly_row}"].value, 191_700, "Mensual consolidado M7")
+    close(mensual[f"P{selected_monthly_row}"].value, 2_168_400, "Mensual consolidado Año 1")
 
-    close(supuestos["D12"].value, 0, "Factor empresa — repatriado")
-    close(supuestos["D13"].value, 1, "Factor empresa — expatriado")
-    close(personal["L21"].value, 2_396_800, "Paquete anual calculado")
-    close(personal["M21"].value, 2_396_800, "Paquete anual declarado")
-    close(personal["N21"].value, 0, "Variación fuente")
-    close(personal["U21"].value, 1_045_200, "Etapa 1")
-    close(personal["AB21"].value, 1_198_400, "Etapa 2 seleccionada")
-    close(personal["AC21"].value, 2_243_600, "Año 1 seleccionado")
-    close(personal["AD21"].value, 153_200, "Ahorro Año 1 seleccionado")
-    close(personal["AE21"].value, 2_396_800, "Run-rate seleccionado")
-    close(personal["AG21"].value, 174_200, "Personal — mensual consultor consolidado")
-    close(personal["AH21"].value, 199_733.333333, "Personal — mensual M7+ seleccionado")
-    close(personal["AI21"].value, 199_733.333333, "Personal — M7 con transición")
-    close(personal["AG11"].value, 37_666.666667, "Martin — mensual consultor")
-    close(personal["AH11"].value, 43_666.666667, "Martin — mensual M7+ expatriado")
-    close(personal["AI11"].value, 43_666.666667, "Martin — M7 con transición")
+    resumen = value_wb["Resumen"]
+    close(value_right_of_label(resumen, "Etapa 1 — Consultor M1–M6"), 1_018_200, "Resumen — Etapa 1")
+    close(value_right_of_label(resumen, "Etapa 2 — Selección M7–M12"), 1_150_200, "Resumen — Etapa 2")
+    close(value_right_of_label(resumen, "Costo total Año 1"), 2_168_400, "Resumen — Año 1")
 
-    close(resumen["F22"].value, 2_243_600, "Todos expatriados — Año 1")
-    close(resumen["F23"].value, 2_038_400, "Todos repatriados con housing — Año 1")
-    close(resumen["G23"].value, 358_400, "Todos repatriados con housing — ahorro")
-    close(resumen["H23"].value, 1_986_400, "Todos repatriados con housing — run-rate")
-    close(resumen["F24"].value, 1_939_400, "Todos repatriados sin housing — Año 1")
-    close(resumen["G24"].value, 457_400, "Todos repatriados sin housing — ahorro")
-    close(resumen["H24"].value, 1_788_400, "Todos repatriados sin housing — run-rate")
-
-    for cell in ("D27", "E27", "F27", "G27", "H27", "I27"):
-        close(mensual[cell].value, 174_200, f"Consultoría mensual consolidada {cell}")
-    for cell in ("J27", "K27", "L27", "M27", "N27", "O27"):
-        close(mensual[cell].value, 199_733.333333, f"Expatriados mensuales {cell}")
-    for cell in ("J28", "K28", "L28", "M28", "N28", "O28"):
-        close(mensual[cell].value, 165_533.333333, f"Repatriados con housing mensuales {cell}")
-    for cell in ("J29", "K29", "L29", "M29", "N29", "O29"):
-        close(mensual[cell].value, 149_033.333333, f"Repatriados sin housing mensuales {cell}")
-    close(mensual["P27"].value, 2_243_600, "Mensual — Año 1 expatriados")
-    close(mensual["P28"].value, 2_038_400, "Mensual — Año 1 repatriados con housing")
-    close(mensual["P29"].value, 1_939_400, "Mensual — Año 1 repatriados sin housing")
-    close(mensual["S21"].value, personal["AC21"].value, "Detalle mensual vs. Personal")
+    bridge_start = None
+    for row in range(1, resumen.max_row + 1):
+        if resumen.cell(row, 3).value == "PUENTE DE COSTO — ESCENARIO PREVIO VS. PAQUETES INDIVIDUALES":
+            bridge_start = row
+            break
+    assert bridge_start is not None
+    bridge_total = bridge_start + 11
+    close(resumen[f"D{bridge_total}"].value, 2_243_600, "Puente — escenario previo")
+    close(resumen[f"E{bridge_total}"].value, 2_168_400, "Puente — escenario seleccionado")
+    close(resumen[f"F{bridge_total}"].value, 75_200, "Puente — ahorro neto")
+    close(resumen[f"F{bridge_start + 3}"].value, -8_400, "Puente — Juan sobrecosto")
+    close(resumen[f"F{bridge_start + 5}"].value, -8_400, "Puente — Félix sobrecosto")
 
     formula_count = 0
     error_cells = []
     uncached_formula_cells = []
     blue_without_comment = []
-
     for sheet_name in formula_wb.sheetnames:
         fws = formula_wb[sheet_name]
         vws = value_wb[sheet_name]
@@ -95,22 +194,19 @@ def main():
                     if cell.comment is None:
                         blue_without_comment.append(f"{sheet_name}!{cell.coordinate}")
 
-    assert formula_count >= 500, f"Número inesperado de fórmulas: {formula_count}"
+    assert formula_count >= 545, f"Número inesperado de fórmulas: {formula_count}"
     assert not error_cells, f"Errores de fórmula: {error_cells}"
     assert not uncached_formula_cells, f"Fórmulas sin valor calculado: {uncached_formula_cells[:20]}"
     assert not blue_without_comment, f"Entradas azules sin comentario: {blue_without_comment[:20]}"
-    assert len(formula_wb["Personal"].data_validations.dataValidation) == 3
 
     print("VALIDATION PASSED")
     print(f"Formulas checked: {formula_count}")
-    print("Source total: $2,396,800")
-    print("Monthly consultant total M1–M6: $174,200")
-    print("Monthly expatriate total M7–M12: $199,733.33")
-    print("Monthly repatriate total with housing M7–M12: $165,533.33")
-    print("Monthly repatriate total without housing M7–M12: $149,033.33")
-    print("Year 1 — all expatriates: $2,243,600")
-    print("Year 1 — all repatriates with housing: $2,038,400")
-    print("Year 1 — all repatriates without housing: $1,939,400")
+    print("Selected Stage 1: $1,018,200")
+    print("Selected Stage 2: $1,150,200")
+    print("Selected Year 1: $2,168,400")
+    print("Selected monthly M7+: $191,700")
+    print("Annual bonus disclosed: $204,000")
+    print("Stock options: TBD and excluded from cost")
 
 
 if __name__ == "__main__":

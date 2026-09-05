@@ -8,180 +8,170 @@ REPORT = BASE / "RECOMENDACION_PAQUETES_PERSONAL.md"
 
 
 def money(value):
-    return f"${value:,.0f}"
+    amount = float(value)
+    if amount < 0:
+        return f"(${abs(amount):,.0f})"
+    return f"${amount:,.0f}"
+
+
+def locate_people(ws):
+    result = {}
+    for row in range(1, ws.max_row + 1):
+        value = ws.cell(row, 5).value
+        if isinstance(value, str) and value.strip() in {
+            "Martin del Castillo", "Juan Conde", "Alexander Stulme", "Félix Valderrama",
+            "Alan McKeon", "JJI", "Marcelo Dantas", "Jose Miguel", "TBD",
+        }:
+            result[value.strip()] = row
+    return result
+
+
+def total_row(ws):
+    for row in range(1, ws.max_row + 1):
+        if ws.cell(row, 4).value == "TOTAL — 9 POSICIONES":
+            return row
+    raise ValueError("No se encontró la fila total")
 
 
 def main():
     wb = load_workbook(BOOK, data_only=True)
     personal = wb["Personal"]
-    resumen = wb["Resumen"]
-    mensual = wb["Mensual"]
-    supuestos = wb["Supuestos"]
+    people = locate_people(personal)
+    total = total_row(personal)
 
-    expat_tax_factor = float(supuestos["D13"].value)
-    repat_tax_factor = float(supuestos["D12"].value)
     rows = []
-    for row in range(11, 20):
-        person = personal.cell(row, 5).value
-        position = personal.cell(row, 4).value
-        base = float(personal.cell(row, 6).value)
-        housing = float(personal.cell(row, 7).value)
-        medical = float(personal.cell(row, 8).value)
-        leave = float(personal.cell(row, 9).value)
-        vehicle = float(personal.cell(row, 10).value)
-        tax = float(personal.cell(row, 11).value)
-        consultant_monthly = float(personal.cell(row, 21).value) / 6
-        expat_monthly = (base + housing + medical + leave + vehicle + tax * expat_tax_factor) / 12
-        repat_housing_monthly = (base + housing + medical + vehicle + tax * repat_tax_factor) / 12
-        repat_no_housing_monthly = (base + medical + vehicle + tax * repat_tax_factor) / 12
+    for person, row in sorted(people.items(), key=lambda item: personal.cell(item[1], 3).value):
+        stock = personal[f"AK{row}"].value
+        stock_display = "TBD" if stock == "TBD" else money(stock or 0)
         rows.append(
-            (
-                person,
-                position,
-                consultant_monthly,
-                expat_monthly,
-                repat_housing_monthly,
-                repat_no_housing_monthly,
-                consultant_monthly * 6 + expat_monthly * 6,
-                consultant_monthly * 6 + repat_housing_monthly * 6,
-                consultant_monthly * 6 + repat_no_housing_monthly * 6,
-            )
+            {
+                "person": person,
+                "position": personal[f"D{row}"].value,
+                "package": personal[f"V{row}"].value,
+                "city": personal[f"W{row}"].value,
+                "housing": personal[f"Y{row}"].value,
+                "monthly_consultant": personal[f"AG{row}"].value,
+                "monthly_selected": personal[f"AH{row}"].value,
+                "year1": personal[f"AC{row}"].value,
+                "bonus": personal[f"AJ{row}"].value or 0,
+                "stock": stock_display,
+                "vacation": personal[f"AL{row}"].value or 0,
+            }
         )
 
-    source_total = float(personal["M21"].value)
-    stage1_total = float(personal["U21"].value)
-    expat_year1 = float(resumen["F22"].value)
-    repat_housing_year1 = float(resumen["F23"].value)
-    repat_no_housing_year1 = float(resumen["F24"].value)
-    expat_savings = float(resumen["G22"].value)
-    repat_housing_savings = float(resumen["G23"].value)
-    repat_no_housing_savings = float(resumen["G24"].value)
-    expat_run_rate = float(resumen["H22"].value)
-    repat_housing_run_rate = float(resumen["H23"].value)
-    repat_no_housing_run_rate = float(resumen["H24"].value)
-    consultant_monthly_total = float(mensual["D27"].value)
-    expat_monthly_total = float(mensual["J27"].value)
-    repat_housing_monthly_total = float(mensual["J28"].value)
-    repat_no_housing_monthly_total = float(mensual["J29"].value)
+    prior_year1 = {
+        "Martin del Castillo": 488000,
+        "Juan Conde": 303600,
+        "Alexander Stulme": 264000,
+        "Félix Valderrama": 303600,
+        "Alan McKeon": 264000,
+        "JJI": 184000,
+        "Marcelo Dantas": 264000,
+        "Jose Miguel": 81200,
+        "TBD": 91200,
+    }
+    bridge_reasons = {
+        "Martin del Castillo": "Sin cambio.",
+        "Juan Conde": "El bonus de 4 meses supera el ahorro fiscal y de home leave.",
+        "Alexander Stulme": "Sin housing, impuesto ni home leave; el bonus absorbe parte del ahorro.",
+        "Félix Valderrama": "El bonus de 4 meses supera el ahorro fiscal y de home leave.",
+        "Alan McKeon": "Housing M7+ baja de $2.000 a $1.000 por mes.",
+        "JJI": "Remote con salario base solamente.",
+        "Marcelo Dantas": "Sin cambio provisional.",
+        "Jose Miguel": "Local con housing; impuesto personal a su cargo.",
+        "TBD": "Local provisional sin impuesto empresarial ni home leave.",
+    }
+
+    source_total = personal[f"M{total}"].value
+    stage1 = personal[f"U{total}"].value
+    stage2 = personal[f"AB{total}"].value
+    year1 = personal[f"AC{total}"].value
+    savings = personal[f"AD{total}"].value
+    run_rate = personal[f"AE{total}"].value
+    monthly_stage1 = personal[f"AG{total}"].value
+    monthly_stage2 = personal[f"AH{total}"].value
+    bonus_total = personal[f"AJ{total}"].value
 
     lines = [
-        "# Recomendación de paquetes de personal en dos etapas",
+        "# Paquetes individuales de personal — escenario seleccionado",
         "",
         "**Fecha de referencia:** 5 de septiembre de 2026  ",
-        "**Alcance:** nueve posiciones del equipo de PetroUrdaneta  ",
-        "**Moneda:** dólares estadounidenses (USD)",
+        "**Moneda:** dólares estadounidenses (USD)  ",
+        "**Alcance:** nueve posiciones",
         "",
-        "## Recomendación ejecutiva",
+        "## Resumen ejecutivo",
         "",
-        "Se recomienda estructurar el presupuesto individual en dos etapas. Durante los **meses 1 a 6**, cada persona se modela como consultor y recibe el equivalente mensual de compensación base, housing, seguro médico, home leave y vehículo. Conforme a la instrucción gerencial, el modelo asigna **0% de Tax & Social venezolano** en esta etapa. El costo agregado es **" + money(consultant_monthly_total) + " por mes** y **" + money(stage1_total) + " durante los seis meses**.",
+        f"El escenario seleccionado cuesta **{money(monthly_stage1)} por mes durante M1–M6** y **{money(monthly_stage2)} por mes recurrente desde M7**. La etapa 1 totaliza **{money(stage1)}**, la etapa 2 totaliza **{money(stage2)}** y el costo del Año 1 es **{money(year1)}**, antes de valorar stock options y costos únicos de transición. Frente al paquete anual fuente de **{money(source_total)}**, el ahorro presupuestario de Año 1 es **{money(savings)}**. El run-rate anual desde M13 es **{money(run_rate)}**.",
         "",
-        "Desde el **mes 7**, cada persona debe clasificarse como **repatriado** o **expatriado**. El **expatriado** conserva housing y home leave, y la empresa cubre o neutraliza el impuesto del país de trabajo mediante pago, gross-up o tax equalization. El **repatriado** pasa a condiciones locales: conserva salario base, seguro médico y vehículo; el housing depende de la ciudad; no recibe home leave; y **asume su impuesto personal**. La política inicial propone **Caracas con housing** y **Maracaibo sin housing**, con override individual.",
+        "## Por qué el costo no bajó más",
         "",
-        "El libro parte de un escenario conservador con las nueve personas como expatriadas y la ciudad **Por definir**. Los costos únicos de transición se cargan en el mes 7 y comienzan en **$0** hasta recibir cotizaciones.",
+        "La comparación directa debe hacerse contra el escenario anterior de Año 1, que costaba **$2.243.600** con las nueve personas como expatriadas desde M7. El escenario individual actualizado cuesta **" + money(year1) + "**, por lo que la reducción neta es **$75.200**. El ahorro es menor de lo esperado porque los bonus anuales de Juan, Alexander y Félix suman **$204.000**; durante M7–M12 se reconoce un costo de **$102.000**, que compensa gran parte del ahorro por impuestos, home leave y housing.",
         "",
-        "## Beneficios: repatriado versus expatriado",
-        "",
-        "| Elemento | Repatriado | Expatriado | Diferencia práctica |",
-        "|---|---|---|---|",
-        "| Impuesto del país de trabajo | Lo asume el empleado | La empresa lo cubre o neutraliza | La protección fiscal es el beneficio económico principal del expatriado |",
-        "| Housing | Condicional según ciudad o situación individual | Incluido | El expatriado mantiene protección de vivienda |",
-        "| Home leave | No incluido | Incluido | El expatriado conserva viajes periódicos al país de origen |",
-        "| Seguro médico | Incluido | Incluido | Sin diferencia en el modelo base |",
-        "| Vehículo | Incluido | Incluido | Sin diferencia en el modelo base |",
-        "| Condición contractual | Local / repatriada | Asignación internacional | Cambian nómina, política de movilidad y responsabilidades fiscales |",
-        "| Costos de transición | Repatriación, mudanza y settling-in según cotización | Regularización, asesoría fiscal y movilidad según cotización | Se registran individualmente en M7 |",
-        "",
-        "> **Interpretación:** decir que el expatriado “no paga impuesto” significa, para este presupuesto, que la empresa protege su ingreso neto frente al impuesto del país de trabajo. No significa que legalmente no exista impuesto ni que no haya obligaciones en el país de origen.",
-        "",
-        "## Paquetes propuestos",
-        "",
-        "| Componente | Consultor — M1 a M6 | Repatriado — M7+ | Expatriado — M7+ |",
-        "|---|---|---|---|",
-        "| Compensación base | Honorario mensual equivalente | Salario local | Salario base de asignación |",
-        "| Housing | Incluido por seis meses | Condicional: Caracas Sí / Maracaibo No, editable | Incluido |",
-        "| Seguro médico | Incluido | Incluido | Incluido |",
-        "| Home leave | Incluido por seis meses | Excluido | Incluido |",
-        "| Vehículo | Incluido | Incluido | Incluido |",
-        "| Impuesto del país de trabajo | 0% en el presupuesto por instrucción gerencial | Lo asume el empleado; empresa 0% por defecto | La empresa cubre / neutraliza 100% del Tax & Social fuente |",
-        "| Costos únicos de transición | No incluidos | Entrada individual en M7 | Entrada individual en M7 |",
-        "",
-        "## Costo mensual consolidado — nueve posiciones",
-        "",
-        "| Período / escenario | M1 | M2 | M3 | M4 | M5 | M6 | M7 | M8 | M9 | M10 | M11 | M12 |",
-        "|---|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|",
-        "| Consultor M1–M6 / Todos expatriados M7+ | " + " | ".join([money(consultant_monthly_total)] * 6 + [money(expat_monthly_total)] * 6) + " |",
-        "| Consultor M1–M6 / Todos repatriados con housing M7+ | " + " | ".join([money(consultant_monthly_total)] * 6 + [money(repat_housing_monthly_total)] * 6) + " |",
-        "| Consultor M1–M6 / Todos repatriados sin housing M7+ | " + " | ".join([money(consultant_monthly_total)] * 6 + [money(repat_no_housing_monthly_total)] * 6) + " |",
-        "",
-        "Los costos únicos individuales se añaden únicamente a **M7**. Por tanto, el importe real de M7 puede superar los valores recurrentes anteriores cuando se incorporen viajes, mudanza, permisos, asesoría o alojamiento temporal.",
-        "",
-        "## Comparación de escenarios para las nueve posiciones",
-        "",
-        "| Escenario | Etapa 1 M1–M6 | Costo Año 1 | Ahorro vs. fuente | Run-rate anual M13+ |",
-        "|---|---:|---:|---:|---:|",
-        f"| Paquete fuente original | N/A | {money(source_total)} | — | {money(source_total)} |",
-        f"| Todos expatriados; empresa cubre impuesto desde M7 | {money(stage1_total)} | {money(expat_year1)} | {money(expat_savings)} | {money(expat_run_rate)} |",
-        f"| Todos repatriados con housing; empleado paga impuesto | {money(stage1_total)} | {money(repat_housing_year1)} | {money(repat_housing_savings)} | {money(repat_housing_run_rate)} |",
-        f"| Todos repatriados sin housing; empleado paga impuesto | {money(stage1_total)} | {money(repat_no_housing_year1)} | {money(repat_no_housing_savings)} | {money(repat_no_housing_run_rate)} |",
-        "",
-        "La diferencia entre expatriado y repatriado con housing desde el mes 7 incluye dos componentes: el repatriado no recibe home leave y la empresa deja de soportar el Tax & Social personal. Eliminar housing para el repatriado reduce adicionalmente el costo empresarial.",
-        "",
-        "## Costo mensual por persona",
-        "",
-        "| Persona | Posición | Consultor M1–M6 / mes | Expat M7+ / mes | Repat + housing M7+ / mes | Repat sin housing M7+ / mes |",
-        "|---|---|---:|---:|---:|---:|",
+        "| Persona | Año 1 anterior | Año 1 seleccionado | Ahorro / (sobrecosto) | Explicación |",
+        "|---|---:|---:|---:|---|",
     ]
+    selected_by_name = {item["person"]: item for item in rows}
+    for name in ("Martin del Castillo", "Juan Conde", "Alexander Stulme", "Félix Valderrama", "Alan McKeon", "JJI", "Marcelo Dantas", "Jose Miguel", "TBD"):
+        selected = selected_by_name[name]["year1"]
+        difference = prior_year1[name] - selected
+        lines.append(f"| {name} | {money(prior_year1[name])} | {money(selected)} | {money(difference)} | {bridge_reasons[name]} |")
 
-    for person, position, consultant, expat, repat_housing, repat_no_housing, *_ in rows:
+    lines.extend([
+        "",
+        "## Asignaciones y beneficios confirmados",
+        "",
+        "| Persona | Condición M7+ | Ciudad | Housing | Mensual M1–M6 | Mensual M7+ | Año 1 | Bonus anual | Stock options | Vacaciones |",
+        "|---|---|---|---|---:|---:|---:|---:|---|---:|",
+    ])
+    for item in rows:
         lines.append(
-            f"| {person} | {position} | {money(consultant)} | {money(expat)} | {money(repat_housing)} | {money(repat_no_housing)} |"
+            f"| {item['person']} | {item['package']} | {item['city']} | {item['housing']} | "
+            f"{money(item['monthly_consultant'])} | {money(item['monthly_selected'])} | {money(item['year1'])} | "
+            f"{money(item['bonus'])} | {item['stock']} | {int(item['vacation'])} días |"
         )
 
     lines.extend(
         [
             "",
-            "## Costo de Año 1 por persona",
+            "## Tratamiento individual",
             "",
-            "Los importes incluyen seis meses como consultor y seis meses bajo el paquete indicado. Excluyen costos únicos de transición.",
+            "### Juan Conde",
             "",
-            "| Persona | Posición | Año 1: Expat | Año 1: Repat + housing | Año 1: Repat sin housing |",
-            "|---|---|---:|---:|---:|",
-        ]
-    )
-    for person, position, _, _, _, _, expat_year, repat_housing_year, repat_no_housing_year in rows:
-        lines.append(
-            f"| {person} | {position} | {money(expat_year)} | {money(repat_housing_year)} | {money(repat_no_housing_year)} |"
-        )
-
-    lines.extend(
-        [
+            "Juan queda como **repatriado en Maracaibo**. En Maracaibo se incluye el housing anual fuente como presupuesto para **allowance, staff house u hotel**; si la ciudad cambia a Caracas, su fórmula individual elimina housing. Juan asume su impuesto personal en Venezuela. Conserva seguro médico y transporte provisto por la compañía para ir al trabajo. Se incluye un bonus objetivo de **cuatro meses de salario**, equivalente a **$72.000 anuales**, 13 días de vacaciones pagadas y stock options con valor **TBD**.",
             "",
-            "## Decisiones necesarias por persona",
+            "### Alexander Stulme",
             "",
-            "| Decisión | Contenido requerido | Impacto en el modelo |",
-            "|---|---|---|",
-            "| Paquete desde el mes 7 | Repatriado o Expatriado | Determina housing, home leave y protección fiscal |",
-            "| Política fiscal | Gross-up / tax equalization del expatriado y responsabilidad del repatriado | Determina quién soporta el impuesto del país de trabajo |",
-            "| Ciudad | Caracas, Maracaibo u otra | Activa la política automática de housing para repatriados |",
-            "| Override de vivienda | Automático, Sí o No | Permite reconocer vivienda propia, residencia familiar u otra excepción |",
-            "| Costos de transición | Cotización individual | Se añaden a M7: viaje, mudanza, permisos, asesoría y alojamiento temporal |",
-            "| Validación jurídica y fiscal | Dictamen local escrito | Confirma autorización, nómina, base imponible, retenciones y cargas patronales |",
+            "Alexander queda como **repatriado en Maracaibo**, con el mismo esquema general de beneficios que Juan, pero vive en su propia casa y por tanto **no recibe housing**. Asume su impuesto personal, conserva seguro médico y transporte corporativo al trabajo, recibe un bonus objetivo de cuatro meses equivalente a **$60.000 anuales**, 13 días de vacaciones pagadas y stock options con valor TBD.",
+            "",
+            "### Félix Valderrama",
+            "",
+            "Félix queda con el mismo paquete de Juan: **repatriado en Maracaibo**, housing para allowance, staff house u hotel; impuesto personal a su cargo; seguro médico; transporte corporativo al trabajo; bonus objetivo de cuatro meses equivalente a **$72.000 anuales**; 13 días de vacaciones y stock options TBD.",
+            "",
+            "### Alan McKeon",
+            "",
+            "Alan permanece **expatriado** y su housing se ajusta a **$1.000 mensuales / $12.000 anuales**. Conserva seguro médico, home leave, vehículo y protección fiscal empresarial del paquete expatriado.",
+            "",
+            "### JJI",
+            "",
+            "JJI queda como **Remote** y recibe únicamente compensación base. El modelo elimina housing, seguro médico, home leave, vehículo/transporte y Tax & Social empresarial. Su costo es **$10.000 por mes**.",
+            "",
+            "### Jose Miguel",
+            "",
+            "Jose Miguel queda como **Local en Maracaibo**. Se mantiene provisionalmente el housing anual fuente de **$12.000 / $1.000 por mes**, conforme a la indicación de que ya existe un housing allowance. Debe confirmarse el importe y la política aplicable.",
+            "",
+            "## Supuestos pendientes",
+            "",
+            f"El bonus anual total divulgado es **{money(bonus_total)}**; durante M7–M12 se acumula la mitad de ese valor. Las stock options de Juan, Alexander y Félix están incluidas como beneficio, pero no tienen valoración aprobada y por ello se excluyen del costo. Se interpretó “13 de vacaciones” como **13 días de vacaciones pagadas** sin costo adicional separado del salario. Marcelo Dantas conserva provisionalmente la categoría **On rotation**, y Operations Support permanece como **TBD / Local**, preservando las ediciones manuales del usuario.",
             "",
             "## Advertencia de cumplimiento",
             "",
-            "> El tratamiento de los meses 1 a 6 como consultoría sin Tax & Social venezolano y la distribución del impuesto entre empresa y empleado son **supuestos presupuestarios instruidos por la gerencia**, no conclusiones legales o fiscales. El estatus de turista no debe asumirse como autorización para trabajar ni como exención tributaria. Antes de implementar pagos o movilizaciones, se requiere asesoría venezolana escrita en materia migratoria, laboral, de nómina, seguridad social e impuestos.",
+            "> La asignación de impuestos, clasificación laboral, base imponible de beneficios, tratamiento del bonus, vacaciones, stock options y cargas patronales requiere validación escrita de asesores venezolanos y de Recursos Humanos. Este archivo es una herramienta presupuestaria, no una opinión jurídica o fiscal.",
             "",
-            "## Base, supuestos y nivel de confianza",
+            "## Base y confianza",
             "",
-            f"**Base.** Los cálculos utilizan los nueve paquetes anuales suministrados, cuyo total verificado es {money(source_total)}. Los importes se prorratean linealmente por mes y no incluyen inflación, devaluación, dependientes ni contingencias no presentes en la fuente.",
+            f"**Base.** Se preservó la versión del Excel modificada por el usuario y se archivó una copia previa a esta actualización. El paquete fuente declarado continúa en {money(source_total)}.",
             "",
-            "**Tiempo.** El Año 1 contiene seis meses de consultoría y seis meses de repatriación o expatriación. Los costos únicos se cargan en M7.",
-            "",
-            "**Supuestos.** Tax & Social en consultoría es 0%; el expatriado recibe cobertura empresarial equivalente al 100% del Tax & Social fuente; el repatriado asume su impuesto personal y el factor empresarial comienza en 0%; Caracas tiene housing y Maracaibo no para repatriados; home leave se elimina al repatriar.",
-            "",
-            "**Fuentes y confianza.** La compensación proviene de la imagen suministrada y fue conciliada contra su total. La aritmética tiene confianza alta; la base imponible, las cargas patronales, los costos únicos y el tratamiento jurídico-fiscal requieren dictámenes y cotizaciones.",
-            "",
-            "**Cumplimiento.** Este documento es una herramienta de planeación presupuestaria y no sustituye asesoría legal, migratoria, laboral o tributaria.",
+            "**Confianza.** La aritmética y las fórmulas tienen confianza alta. Housing de Jose Miguel, formato de alojamiento de Juan/Félix, valoración de stock options, costos únicos y días de vacaciones requieren confirmación documental.",
             "",
         ]
     )

@@ -1,117 +1,79 @@
-# Recomendación de paquetes de personal en dos etapas
+# Paquetes individuales de personal — escenario seleccionado
 
 **Fecha de referencia:** 5 de septiembre de 2026  
-**Alcance:** nueve posiciones del equipo de PetroUrdaneta  
-**Moneda:** dólares estadounidenses (USD)
+**Moneda:** dólares estadounidenses (USD)  
+**Alcance:** nueve posiciones
 
-## Recomendación ejecutiva
+## Resumen ejecutivo
 
-Se recomienda estructurar el presupuesto individual en dos etapas. Durante los **meses 1 a 6**, cada persona se modela como consultor y recibe el equivalente mensual de compensación base, housing, seguro médico, home leave y vehículo. Conforme a la instrucción gerencial, el modelo asigna **0% de Tax & Social venezolano** en esta etapa. El costo agregado es **$174,200 por mes** y **$1,045,200 durante los seis meses**.
+El escenario seleccionado cuesta **$169,700 por mes durante M1–M6** y **$191,700 por mes recurrente desde M7**. La etapa 1 totaliza **$1,018,200**, la etapa 2 totaliza **$1,150,200** y el costo del Año 1 es **$2,168,400**, antes de valorar stock options y costos únicos de transición. Frente al paquete anual fuente de **$2,396,800**, el ahorro presupuestario de Año 1 es **$228,400**. El run-rate anual desde M13 es **$2,300,400**.
 
-Desde el **mes 7**, cada persona debe clasificarse como **repatriado** o **expatriado**. El **expatriado** conserva housing y home leave, y la empresa cubre o neutraliza el impuesto del país de trabajo mediante pago, gross-up o tax equalization. El **repatriado** pasa a condiciones locales: conserva salario base, seguro médico y vehículo; el housing depende de la ciudad; no recibe home leave; y **asume su impuesto personal**. La política inicial propone **Caracas con housing** y **Maracaibo sin housing**, con override individual.
+## Por qué el costo no bajó más
 
-El libro parte de un escenario conservador con las nueve personas como expatriadas y la ciudad **Por definir**. Los costos únicos de transición se cargan en el mes 7 y comienzan en **$0** hasta recibir cotizaciones.
+La comparación directa debe hacerse contra el escenario anterior de Año 1, que costaba **$2.243.600** con las nueve personas como expatriadas desde M7. El escenario individual actualizado cuesta **$2,168,400**, por lo que la reducción neta es **$75.200**. El ahorro es menor de lo esperado porque los bonus anuales de Juan, Alexander y Félix suman **$204.000**; durante M7–M12 se reconoce un costo de **$102.000**, que compensa gran parte del ahorro por impuestos, home leave y housing.
 
-## Beneficios: repatriado versus expatriado
+| Persona | Año 1 anterior | Año 1 seleccionado | Ahorro / (sobrecosto) | Explicación |
+|---|---:|---:|---:|---|
+| Martin del Castillo | $488,000 | $488,000 | $0 | Sin cambio. |
+| Juan Conde | $303,600 | $312,000 | ($8,400) | El bonus de 4 meses supera el ahorro fiscal y de home leave. |
+| Alexander Stulme | $264,000 | $258,000 | $6,000 | Sin housing, impuesto ni home leave; el bonus absorbe parte del ahorro. |
+| Félix Valderrama | $303,600 | $312,000 | ($8,400) | El bonus de 4 meses supera el ahorro fiscal y de home leave. |
+| Alan McKeon | $264,000 | $258,000 | $6,000 | Housing M7+ baja de $2.000 a $1.000 por mes. |
+| JJI | $184,000 | $120,000 | $64,000 | Remote con salario base solamente. |
+| Marcelo Dantas | $264,000 | $264,000 | $0 | Sin cambio provisional. |
+| Jose Miguel | $81,200 | $75,200 | $6,000 | Local con housing; impuesto personal a su cargo. |
+| TBD | $91,200 | $81,200 | $10,000 | Local provisional sin impuesto empresarial ni home leave. |
 
-| Elemento | Repatriado | Expatriado | Diferencia práctica |
-|---|---|---|---|
-| Impuesto del país de trabajo | Lo asume el empleado | La empresa lo cubre o neutraliza | La protección fiscal es el beneficio económico principal del expatriado |
-| Housing | Condicional según ciudad o situación individual | Incluido | El expatriado mantiene protección de vivienda |
-| Home leave | No incluido | Incluido | El expatriado conserva viajes periódicos al país de origen |
-| Seguro médico | Incluido | Incluido | Sin diferencia en el modelo base |
-| Vehículo | Incluido | Incluido | Sin diferencia en el modelo base |
-| Condición contractual | Local / repatriada | Asignación internacional | Cambian nómina, política de movilidad y responsabilidades fiscales |
-| Costos de transición | Repatriación, mudanza y settling-in según cotización | Regularización, asesoría fiscal y movilidad según cotización | Se registran individualmente en M7 |
+## Asignaciones y beneficios confirmados
 
-> **Interpretación:** decir que el expatriado “no paga impuesto” significa, para este presupuesto, que la empresa protege su ingreso neto frente al impuesto del país de trabajo. No significa que legalmente no exista impuesto ni que no haya obligaciones en el país de origen.
+| Persona | Condición M7+ | Ciudad | Housing | Mensual M1–M6 | Mensual M7+ | Año 1 | Bonus anual | Stock options | Vacaciones |
+|---|---|---|---|---:|---:|---:|---:|---|---:|
+| Martin del Castillo | Expatriado | Por definir | Por definir | $37,667 | $43,667 | $488,000 | $0 | $0 | 0 días |
+| Juan Conde | Repatriado | Maracaibo | Sí | $23,500 | $28,500 | $312,000 | $72,000 | TBD | 13 días |
+| Alexander Stulme | Repatriado | Maracaibo | No | $20,500 | $22,500 | $258,000 | $60,000 | TBD | 13 días |
+| Félix Valderrama | Repatriado | Maracaibo | Sí | $23,500 | $28,500 | $312,000 | $72,000 | TBD | 13 días |
+| Alan McKeon | Expatriado | Maracaibo | Sí | $20,500 | $22,500 | $258,000 | $0 | $0 | 0 días |
+| JJI | Remote | Remoto | No | $10,000 | $10,000 | $120,000 | $0 | $0 | 0 días |
+| Marcelo Dantas | On rotation | Por definir | Por definir | $20,500 | $23,500 | $264,000 | $0 | $0 | 0 días |
+| Jose Miguel | Local | Maracaibo | Sí | $6,267 | $6,267 | $75,200 | $0 | $0 | 0 días |
+| TBD | Local | Por definir | Por definir | $7,267 | $6,267 | $81,200 | $0 | $0 | 0 días |
 
-## Paquetes propuestos
+## Tratamiento individual
 
-| Componente | Consultor — M1 a M6 | Repatriado — M7+ | Expatriado — M7+ |
-|---|---|---|---|
-| Compensación base | Honorario mensual equivalente | Salario local | Salario base de asignación |
-| Housing | Incluido por seis meses | Condicional: Caracas Sí / Maracaibo No, editable | Incluido |
-| Seguro médico | Incluido | Incluido | Incluido |
-| Home leave | Incluido por seis meses | Excluido | Incluido |
-| Vehículo | Incluido | Incluido | Incluido |
-| Impuesto del país de trabajo | 0% en el presupuesto por instrucción gerencial | Lo asume el empleado; empresa 0% por defecto | La empresa cubre / neutraliza 100% del Tax & Social fuente |
-| Costos únicos de transición | No incluidos | Entrada individual en M7 | Entrada individual en M7 |
+### Juan Conde
 
-## Costo mensual consolidado — nueve posiciones
+Juan queda como **repatriado en Maracaibo**. En Maracaibo se incluye el housing anual fuente como presupuesto para **allowance, staff house u hotel**; si la ciudad cambia a Caracas, su fórmula individual elimina housing. Juan asume su impuesto personal en Venezuela. Conserva seguro médico y transporte provisto por la compañía para ir al trabajo. Se incluye un bonus objetivo de **cuatro meses de salario**, equivalente a **$72.000 anuales**, 13 días de vacaciones pagadas y stock options con valor **TBD**.
 
-| Período / escenario | M1 | M2 | M3 | M4 | M5 | M6 | M7 | M8 | M9 | M10 | M11 | M12 |
-|---|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|
-| Consultor M1–M6 / Todos expatriados M7+ | $174,200 | $174,200 | $174,200 | $174,200 | $174,200 | $174,200 | $199,733 | $199,733 | $199,733 | $199,733 | $199,733 | $199,733 |
-| Consultor M1–M6 / Todos repatriados con housing M7+ | $174,200 | $174,200 | $174,200 | $174,200 | $174,200 | $174,200 | $165,533 | $165,533 | $165,533 | $165,533 | $165,533 | $165,533 |
-| Consultor M1–M6 / Todos repatriados sin housing M7+ | $174,200 | $174,200 | $174,200 | $174,200 | $174,200 | $174,200 | $149,033 | $149,033 | $149,033 | $149,033 | $149,033 | $149,033 |
+### Alexander Stulme
 
-Los costos únicos individuales se añaden únicamente a **M7**. Por tanto, el importe real de M7 puede superar los valores recurrentes anteriores cuando se incorporen viajes, mudanza, permisos, asesoría o alojamiento temporal.
+Alexander queda como **repatriado en Maracaibo**, con el mismo esquema general de beneficios que Juan, pero vive en su propia casa y por tanto **no recibe housing**. Asume su impuesto personal, conserva seguro médico y transporte corporativo al trabajo, recibe un bonus objetivo de cuatro meses equivalente a **$60.000 anuales**, 13 días de vacaciones pagadas y stock options con valor TBD.
 
-## Comparación de escenarios para las nueve posiciones
+### Félix Valderrama
 
-| Escenario | Etapa 1 M1–M6 | Costo Año 1 | Ahorro vs. fuente | Run-rate anual M13+ |
-|---|---:|---:|---:|---:|
-| Paquete fuente original | N/A | $2,396,800 | — | $2,396,800 |
-| Todos expatriados; empresa cubre impuesto desde M7 | $1,045,200 | $2,243,600 | $153,200 | $2,396,800 |
-| Todos repatriados con housing; empleado paga impuesto | $1,045,200 | $2,038,400 | $358,400 | $1,986,400 |
-| Todos repatriados sin housing; empleado paga impuesto | $1,045,200 | $1,939,400 | $457,400 | $1,788,400 |
+Félix queda con el mismo paquete de Juan: **repatriado en Maracaibo**, housing para allowance, staff house u hotel; impuesto personal a su cargo; seguro médico; transporte corporativo al trabajo; bonus objetivo de cuatro meses equivalente a **$72.000 anuales**; 13 días de vacaciones y stock options TBD.
 
-La diferencia entre expatriado y repatriado con housing desde el mes 7 incluye dos componentes: el repatriado no recibe home leave y la empresa deja de soportar el Tax & Social personal. Eliminar housing para el repatriado reduce adicionalmente el costo empresarial.
+### Alan McKeon
 
-## Costo mensual por persona
+Alan permanece **expatriado** y su housing se ajusta a **$1.000 mensuales / $12.000 anuales**. Conserva seguro médico, home leave, vehículo y protección fiscal empresarial del paquete expatriado.
 
-| Persona | Posición | Consultor M1–M6 / mes | Expat M7+ / mes | Repat + housing M7+ / mes | Repat sin housing M7+ / mes |
-|---|---|---:|---:|---:|---:|
-| Martin del Castillo | COO / PU General Manager | $37,667 | $43,667 | $36,000 | $33,000 |
-| Juan Conde | EPCM & Engineering Manager | $23,500 | $27,100 | $22,500 | $20,500 |
-| Alexander Stulme | Drilling & Well Services Manager | $20,500 | $23,500 | $19,500 | $17,500 |
-| Félix Valderrama | Operations & Maintenance Manager | $23,500 | $27,100 | $22,500 | $20,500 |
-| Alan McKeon | Technical Manager (Geosciences) | $20,500 | $23,500 | $19,500 | $17,500 |
-| JJI | Reservoir Engineer | $14,500 | $16,167 | $13,500 | $12,000 |
-| Marcelo Dantas | Rig Company Man | $20,500 | $23,500 | $19,500 | $17,500 |
-| Jose Miguel | Planning & PMO | $6,267 | $7,267 | $6,267 | $5,267 |
-| Leticia Almeida | Operations Support | $7,267 | $7,933 | $6,267 | $5,267 |
+### JJI
 
-## Costo de Año 1 por persona
+JJI queda como **Remote** y recibe únicamente compensación base. El modelo elimina housing, seguro médico, home leave, vehículo/transporte y Tax & Social empresarial. Su costo es **$10.000 por mes**.
 
-Los importes incluyen seis meses como consultor y seis meses bajo el paquete indicado. Excluyen costos únicos de transición.
+### Jose Miguel
 
-| Persona | Posición | Año 1: Expat | Año 1: Repat + housing | Año 1: Repat sin housing |
-|---|---|---:|---:|---:|
-| Martin del Castillo | COO / PU General Manager | $488,000 | $442,000 | $424,000 |
-| Juan Conde | EPCM & Engineering Manager | $303,600 | $276,000 | $264,000 |
-| Alexander Stulme | Drilling & Well Services Manager | $264,000 | $240,000 | $228,000 |
-| Félix Valderrama | Operations & Maintenance Manager | $303,600 | $276,000 | $264,000 |
-| Alan McKeon | Technical Manager (Geosciences) | $264,000 | $240,000 | $228,000 |
-| JJI | Reservoir Engineer | $184,000 | $168,000 | $159,000 |
-| Marcelo Dantas | Rig Company Man | $264,000 | $240,000 | $228,000 |
-| Jose Miguel | Planning & PMO | $81,200 | $75,200 | $69,200 |
-| Leticia Almeida | Operations Support | $91,200 | $81,200 | $75,200 |
+Jose Miguel queda como **Local en Maracaibo**. Se mantiene provisionalmente el housing anual fuente de **$12.000 / $1.000 por mes**, conforme a la indicación de que ya existe un housing allowance. Debe confirmarse el importe y la política aplicable.
 
-## Decisiones necesarias por persona
+## Supuestos pendientes
 
-| Decisión | Contenido requerido | Impacto en el modelo |
-|---|---|---|
-| Paquete desde el mes 7 | Repatriado o Expatriado | Determina housing, home leave y protección fiscal |
-| Política fiscal | Gross-up / tax equalization del expatriado y responsabilidad del repatriado | Determina quién soporta el impuesto del país de trabajo |
-| Ciudad | Caracas, Maracaibo u otra | Activa la política automática de housing para repatriados |
-| Override de vivienda | Automático, Sí o No | Permite reconocer vivienda propia, residencia familiar u otra excepción |
-| Costos de transición | Cotización individual | Se añaden a M7: viaje, mudanza, permisos, asesoría y alojamiento temporal |
-| Validación jurídica y fiscal | Dictamen local escrito | Confirma autorización, nómina, base imponible, retenciones y cargas patronales |
+El bonus anual total divulgado es **$204,000**; durante M7–M12 se acumula la mitad de ese valor. Las stock options de Juan, Alexander y Félix están incluidas como beneficio, pero no tienen valoración aprobada y por ello se excluyen del costo. Se interpretó “13 de vacaciones” como **13 días de vacaciones pagadas** sin costo adicional separado del salario. Marcelo Dantas conserva provisionalmente la categoría **On rotation**, y Operations Support permanece como **TBD / Local**, preservando las ediciones manuales del usuario.
 
 ## Advertencia de cumplimiento
 
-> El tratamiento de los meses 1 a 6 como consultoría sin Tax & Social venezolano y la distribución del impuesto entre empresa y empleado son **supuestos presupuestarios instruidos por la gerencia**, no conclusiones legales o fiscales. El estatus de turista no debe asumirse como autorización para trabajar ni como exención tributaria. Antes de implementar pagos o movilizaciones, se requiere asesoría venezolana escrita en materia migratoria, laboral, de nómina, seguridad social e impuestos.
+> La asignación de impuestos, clasificación laboral, base imponible de beneficios, tratamiento del bonus, vacaciones, stock options y cargas patronales requiere validación escrita de asesores venezolanos y de Recursos Humanos. Este archivo es una herramienta presupuestaria, no una opinión jurídica o fiscal.
 
-## Base, supuestos y nivel de confianza
+## Base y confianza
 
-**Base.** Los cálculos utilizan los nueve paquetes anuales suministrados, cuyo total verificado es $2,396,800. Los importes se prorratean linealmente por mes y no incluyen inflación, devaluación, dependientes ni contingencias no presentes en la fuente.
+**Base.** Se preservó la versión del Excel modificada por el usuario y se archivó una copia previa a esta actualización. El paquete fuente declarado continúa en $2,396,800.
 
-**Tiempo.** El Año 1 contiene seis meses de consultoría y seis meses de repatriación o expatriación. Los costos únicos se cargan en M7.
-
-**Supuestos.** Tax & Social en consultoría es 0%; el expatriado recibe cobertura empresarial equivalente al 100% del Tax & Social fuente; el repatriado asume su impuesto personal y el factor empresarial comienza en 0%; Caracas tiene housing y Maracaibo no para repatriados; home leave se elimina al repatriar.
-
-**Fuentes y confianza.** La compensación proviene de la imagen suministrada y fue conciliada contra su total. La aritmética tiene confianza alta; la base imponible, las cargas patronales, los costos únicos y el tratamiento jurídico-fiscal requieren dictámenes y cotizaciones.
-
-**Cumplimiento.** Este documento es una herramienta de planeación presupuestaria y no sustituye asesoría legal, migratoria, laboral o tributaria.
+**Confianza.** La aritmética y las fórmulas tienen confianza alta. Housing de Jose Miguel, formato de alojamiento de Juan/Félix, valoración de stock options, costos únicos y días de vacaciones requieren confirmación documental.
