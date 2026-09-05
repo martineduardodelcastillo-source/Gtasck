@@ -22,3 +22,7 @@ Después de compactar los espacios de la hoja Definiciones, el libro volvió a v
 ## Actualización mensual y fiscal — 5 de septiembre de 2026
 
 Se añadió la hoja **Mensual**, que presenta M1–M12 por persona, un total consolidado y tres escenarios comparables desde M7. La exportación final ahora contiene **cinco páginas tamaño carta horizontal**. La nueva página mensual mantiene encabezados, valores, tratamiento fiscal y totales sin superposición ni recortes; su densidad es adecuada para una hoja analítica. La hoja Definiciones incluye expresamente que el expatriado recibe protección fiscal empresarial y que el repatriado asume su impuesto personal. La extracción de texto de la página final confirmó que la nota de cumplimiento se conserva completa.
+
+## Divulgación mensual en Personal — 5 de septiembre de 2026
+
+La pestaña **Personal** ahora incluye, en cada fila, `Monthly Cost M1–M6`, `Selected Monthly M7+` y `M7 incl. Transition`. La columna de M7+ toma automáticamente el costo recurrente correspondiente a la selección individual **Repatriado / Expatriado**, y la columna M7 suma el costo único de transición. La exportación visual confirmó que las tres columnas aparecen completas, alineadas con cada persona y conciliadas con los totales anuales.

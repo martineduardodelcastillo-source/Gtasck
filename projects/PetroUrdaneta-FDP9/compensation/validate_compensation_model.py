@@ -28,6 +28,12 @@ def main():
     resumen = value_wb["Resumen"]
     mensual = value_wb["Mensual"]
     supuestos = value_wb["Supuestos"]
+    personal_formulas = formula_wb["Personal"]
+
+    assert 'V11="Expatriado"' in personal_formulas["AA11"].value
+    assert 'V11="Repatriado"' in personal_formulas["AA11"].value
+    assert personal_formulas["AH11"].value.replace("'", "") == "=AA11/Supuestos!$D$10"
+    assert personal_formulas["AI11"].value == "=AH11+Z11"
 
     close(supuestos["D12"].value, 0, "Factor empresa — repatriado")
     close(supuestos["D13"].value, 1, "Factor empresa — expatriado")
@@ -39,6 +45,12 @@ def main():
     close(personal["AC21"].value, 2_243_600, "Año 1 seleccionado")
     close(personal["AD21"].value, 153_200, "Ahorro Año 1 seleccionado")
     close(personal["AE21"].value, 2_396_800, "Run-rate seleccionado")
+    close(personal["AG21"].value, 174_200, "Personal — mensual consultor consolidado")
+    close(personal["AH21"].value, 199_733.333333, "Personal — mensual M7+ seleccionado")
+    close(personal["AI21"].value, 199_733.333333, "Personal — M7 con transición")
+    close(personal["AG11"].value, 37_666.666667, "Martin — mensual consultor")
+    close(personal["AH11"].value, 43_666.666667, "Martin — mensual M7+ expatriado")
+    close(personal["AI11"].value, 43_666.666667, "Martin — M7 con transición")
 
     close(resumen["F22"].value, 2_243_600, "Todos expatriados — Año 1")
     close(resumen["F23"].value, 2_038_400, "Todos repatriados con housing — Año 1")
@@ -83,7 +95,7 @@ def main():
                     if cell.comment is None:
                         blue_without_comment.append(f"{sheet_name}!{cell.coordinate}")
 
-    assert formula_count >= 450, f"Número inesperado de fórmulas: {formula_count}"
+    assert formula_count >= 500, f"Número inesperado de fórmulas: {formula_count}"
     assert not error_cells, f"Errores de fórmula: {error_cells}"
     assert not uncached_formula_cells, f"Fórmulas sin valor calculado: {uncached_formula_cells[:20]}"
     assert not blue_without_comment, f"Entradas azules sin comentario: {blue_without_comment[:20]}"

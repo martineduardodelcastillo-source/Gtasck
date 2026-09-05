@@ -245,14 +245,15 @@ def build_personal(wb):
         "Modelo de paquetes por persona",
         "Etapa 1: seis meses como consultor | Etapa 2: repatriado o expatriado desde el mes 7",
         "USD | Celdas azules = datos fuente o decisiones editables; fórmulas verdes = vínculos a Supuestos",
-        32,
+        35,
     )
 
-    section_bar(ws, 8, "BASE DE COMPENSACIÓN Y CÁLCULO POR PERSONA", 3, 32)
+    section_bar(ws, 8, "BASE DE COMPENSACIÓN Y CÁLCULO POR PERSONA", 3, 35)
     headers = [
         "#", "Position", "Person", "Base Salary\nAnnual", "Housing\nAnnual", "Medical\nAnnual", "Home Leave\nAnnual", "Vehicle\nAnnual", "Tax & Social\nAnnual", "Calculated\nAnnual", "Stated\nAnnual", "Variance",
         "Consulting Fee\nM1–M6", "Housing\nM1–M6", "Medical\nM1–M6", "Home Leave\nM1–M6", "Vehicle\nM1–M6", "Tax & Social\nM1–M6", "Stage 1\nTotal",
         "Package\nM7+", "City\nM7+", "Housing\nOverride", "Housing\nFinal", "One-time\nTransition", "Stage 2 Recurring\nM7–M12", "Stage 2\nTotal", "Year 1\nTotal", "Savings vs.\nSource", "Annual Run-rate\nM13+", "Decision\nStatus",
+        "Monthly Cost\nM1–M6", "Selected Monthly\nM7+", "M7 incl.\nTransition",
     ]
     table_header(ws, 10, 3, headers)
 
@@ -332,6 +333,12 @@ def build_personal(wb):
         ))
         format_formula(ws.cell(excel_row, 32))
         ws.cell(excel_row, 32).alignment = Alignment(horizontal="center", vertical="center", wrap_text=True)
+        ws.cell(excel_row, 33, f"=U{excel_row}/'Supuestos'!$D$9")
+        format_formula(ws.cell(excel_row, 33), CURRENCY_FIRST, cross_sheet=True)
+        ws.cell(excel_row, 34, f"=AA{excel_row}/'Supuestos'!$D$10")
+        format_formula(ws.cell(excel_row, 34), CURRENCY, cross_sheet=True)
+        ws.cell(excel_row, 35, f"=AH{excel_row}+Z{excel_row}")
+        format_formula(ws.cell(excel_row, 35), CURRENCY)
 
         package_validation.add(ws.cell(excel_row, 22))
         city_validation.add(ws.cell(excel_row, 23))
@@ -342,12 +349,12 @@ def build_personal(wb):
     ws.cell(total_row, 4, "TOTAL — 9 POSICIONES")
     ws.cell(total_row, 4).font = Font(name="Arial", size=10, bold=True, color=BLACK)
     ws.merge_cells(start_row=total_row, start_column=4, end_row=total_row, end_column=5)
-    for col in list(range(6, 22)) + list(range(26, 32)):
+    for col in list(range(6, 22)) + list(range(26, 32)) + list(range(33, 36)):
         letter = ws.cell(1, col).column_letter
         ws.cell(total_row, col, f"=SUM({letter}11:{letter}19)")
         cross = False
         format_formula(ws.cell(total_row, col), CURRENCY_FIRST if col in (6, 15, 26) else CURRENCY, cross_sheet=cross, bold=True)
-    for col in range(3, 33):
+    for col in range(3, 36):
         cell = ws.cell(total_row, col)
         cell.border = Border(top=MEDIUM_GREEN, bottom=DOUBLE_BLACK)
     ws.row_dimensions[total_row].height = 24
@@ -356,15 +363,18 @@ def build_personal(wb):
         "AF11:AF19",
         FormulaRule(formula=['AF11<>"Completo"'], font=Font(color=RED, bold=True)),
     )
-    ws.auto_filter.ref = "C10:AF19"
+    ws.auto_filter.ref = "C10:AI19"
     ws.freeze_panes = "F11"
     ws.print_title_rows = "10:10"
-    ws.print_area = "B2:AF21"
+    ws.print_area = "B2:AI21"
 
-    auto_fit(ws, 3, 32, [(10, 21)], min_width=11, max_width=28)
+    auto_fit(ws, 3, 35, [(10, 21)], min_width=11, max_width=28)
     ws.column_dimensions["D"].width = 33
     ws.column_dimensions["E"].width = 23
     ws.column_dimensions["AF"].width = 18
+    ws.column_dimensions["AG"].width = 15
+    ws.column_dimensions["AH"].width = 17
+    ws.column_dimensions["AI"].width = 15
     return ws
 
 
