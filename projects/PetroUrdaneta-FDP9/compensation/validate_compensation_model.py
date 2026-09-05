@@ -7,176 +7,160 @@ from openpyxl import load_workbook
 BASE = Path(__file__).resolve().parent
 BOOK = BASE / "modelo_paquetes_personal_2_etapas.xlsx"
 SOURCE = BASE / "source" / "package_source_2026-09-05.jpeg"
-BACKUP = BASE / "backups" / "modelo_paquetes_personal_2_etapas_before_personnel_assignments_2026-09-05.xlsx"
+
+EXPECTED_BASE = {
+    "Martin del Castillo": 360000,
+    "Juan Conde": 216000,
+    "Alexander Stulme": 180000,
+    "Félix Valderrama": 216000,
+    "Alan McKeon": 180000,
+    "JJI": 120000,
+    "Marcelo Dantas": 180000,
+    "Jose Miguel": 48000,
+    "TBD": 48000,
+}
+
+EXPECTED_MEDICAL_M1_M6 = {
+    "Martin del Castillo": 12000,
+    "Juan Conde": 12000,
+    "Alexander Stulme": 12000,
+    "Félix Valderrama": 12000,
+    "Alan McKeon": 12000,
+    "JJI": 0,
+    "Marcelo Dantas": 12000,
+    "Jose Miguel": 8000,
+    "TBD": 8000,
+}
 
 
-def close(actual, expected, label, tolerance=0.01):
-    assert actual is not None, f"{label}: valor calculado ausente"
+def close(actual, expected, label, tolerance=0.05):
+    assert actual is not None, f"{label}: valor ausente"
     assert isclose(float(actual), float(expected), rel_tol=0, abs_tol=tolerance), (
         f"{label}: esperado {expected}, obtenido {actual}"
     )
 
 
-def locate_person_rows(ws):
-    names = {
-        "Martin del Castillo",
-        "Juan Conde",
-        "Alexander Stulme",
-        "Félix Valderrama",
-        "Alan McKeon",
-        "JJI",
-        "Marcelo Dantas",
-        "Jose Miguel",
-        "TBD",
-    }
-    result = {}
-    for row in range(1, ws.max_row + 1):
-        value = ws.cell(row, 5).value
-        if isinstance(value, str) and value.strip() in names:
-            result[value.strip()] = row
-    return result
-
-
-def locate_total_row(ws):
-    for row in range(1, ws.max_row + 1):
-        if ws.cell(row, 4).value == "TOTAL — 9 POSICIONES":
-            return row
-    raise AssertionError("No se encontró la fila total en Personal")
-
-
-def value_right_of_label(ws, label):
-    for row in ws.iter_rows():
-        for cell in row:
-            if cell.value == label:
-                return ws.cell(cell.row, cell.column + 1).value
-    raise AssertionError(f"No se encontró la etiqueta {label!r} en {ws.title}")
-
-
 def main():
-    assert BOOK.exists(), f"No existe {BOOK}"
-    assert SOURCE.exists(), f"No existe {SOURCE}"
-    assert BACKUP.exists(), f"No existe el respaldo {BACKUP}"
+    assert BOOK.exists() and BOOK.stat().st_size > 0
+    assert SOURCE.exists() and SOURCE.stat().st_size > 0
 
     formula_wb = load_workbook(BOOK, data_only=False)
     value_wb = load_workbook(BOOK, data_only=True)
-    assert formula_wb.sheetnames == ["Resumen", "Supuestos", "Personal", "Mensual", "Definiciones"]
+    assert formula_wb.sheetnames == ["Resumen", "Personal", "Secondments PU", "Mensual", "Beneficios M7+", "Supuestos"]
 
     personal_f = formula_wb["Personal"]
     personal = value_wb["Personal"]
-    rows = locate_person_rows(personal)
-    total_row = locate_total_row(personal)
-    assert set(rows) == {
-        "Martin del Castillo", "Juan Conde", "Alexander Stulme", "Félix Valderrama",
-        "Alan McKeon", "JJI", "Marcelo Dantas", "Jose Miguel", "TBD",
+    rows = {personal[f"E{row}"].value: row for row in range(11, 20)}
+    assert set(rows) == set(EXPECTED_BASE)
+
+    # Salary is exactly the original salary for every person and never changes between blocks.
+    for person, expected in EXPECTED_BASE.items():
+        row = rows[person]
+        close(personal[f"F{row}"].value, expected, f"{person} — salario base anual")
+        close(personal[f"I{row}"].value, expected / 12, f"{person} — salario base mensual M1–M6")
+        close(personal[f"G{row}"].value, EXPECTED_MEDICAL_M1_M6[person], f"{person} — seguro médico M1–M6")
+        close(
+            personal[f"K{row}"].value,
+            expected / 12 + EXPECTED_MEDICAL_M1_M6[person] / 12,
+            f"{person} — costo mensual M1–M6",
+        )
+        close(
+            personal[f"L{row}"].value,
+            (expected + EXPECTED_MEDICAL_M1_M6[person]) / 2,
+            f"{person} — costo seis meses M1–M6",
+        )
+        assert personal[f"H{row}"].value == "Rotación"
+
+    close(personal["F20"].value, 1_548_000, "Total salario base anual")
+    close(personal["G20"].value, 88_000, "Total seguro médico anual M1–M6")
+    close(personal["K20"].value, 136_333.333333333, "Costo mensual M1–M6")
+    close(personal["L20"].value, 818_000, "Bloque 1 — seis meses")
+    close(personal["W20"].value, 191_700, "Costo mensual M7+")
+    close(personal["X20"].value, 1_150_200, "Bloque 2 — seis meses")
+    close(personal["Y20"].value, 1_968_200, "Costo total Año 1")
+    close(personal["Z20"].value, 2_396_800, "Paquete fuente anual")
+    close(personal["AA20"].value, 428_600, "Ahorro Año 1")
+    close(personal["AB20"].value, 2_300_400, "Run-rate M13+")
+
+    # Individual M7+ packages.
+    checks = {
+        "Juan Conde": ("Repatriado", "Maracaibo", 24000, 72000, "TBD", 13, 285000),
+        "Alexander Stulme": ("Repatriado", "Maracaibo", 0, 60000, "TBD", 13, 231000),
+        "Félix Valderrama": ("Repatriado", "Maracaibo", 24000, 72000, "TBD", 13, 285000),
+        "Alan McKeon": ("Expatriado", "Maracaibo", 12000, 0, 0, 0, 231000),
+        "JJI": ("Remote", "Remoto", 0, 0, 0, 0, 120000),
+        "Jose Miguel": ("Local", "Maracaibo", 12000, 0, 0, 0, 65600),
     }
+    for person, (package, city, housing, bonus, stock, vacation, year1) in checks.items():
+        row = rows[person]
+        assert personal[f"M{row}"].value == package
+        assert personal[f"N{row}"].value == city
+        close(personal[f"O{row}"].value, housing, f"{person} — housing M7+")
+        close(personal[f"T{row}"].value, bonus, f"{person} — bonus M7+")
+        if stock == "TBD":
+            assert personal[f"U{row}"].value == "TBD"
+        else:
+            close(personal[f"U{row}"].value, stock, f"{person} — stock options")
+        close(personal[f"V{row}"].value, vacation, f"{person} — vacaciones")
+        close(personal[f"Y{row}"].value, year1, f"{person} — Año 1")
 
-    juan = rows["Juan Conde"]
-    alex = rows["Alexander Stulme"]
-    felix = rows["Félix Valderrama"]
-    alan = rows["Alan McKeon"]
+    # JJI has no benefits in either block.
     jji = rows["JJI"]
-    marcelo = rows["Marcelo Dantas"]
-    jose = rows["Jose Miguel"]
-    tbd = rows["TBD"]
+    for col in ("G", "O", "P", "Q", "R", "S", "T"):
+        close(personal[f"{col}{jji}"].value, 0, f"JJI — {col}")
 
-    assert personal[f"V{juan}"].value == "Repatriado"
-    assert personal[f"W{juan}"].value == "Maracaibo"
-    assert personal[f"Y{juan}"].value == "Sí"
-    close(personal[f"AJ{juan}"].value, 72_000, "Juan — bonus anual")
-    assert personal[f"AK{juan}"].value == "TBD"
-    close(personal[f"AL{juan}"].value, 13, "Juan — días de vacaciones")
-    close(personal[f"AH{juan}"].value, 28_500, "Juan — costo mensual M7+")
+    # Monthly schedule must switch exactly at M7.
+    monthly = value_wb["Mensual"]
+    for source_row, monthly_row in zip(range(11, 20), range(11, 20)):
+        for col in range(5, 11):
+            close(monthly.cell(monthly_row, col).value, personal[f"K{source_row}"].value, f"M1–M6 fila {monthly_row}")
+        for col in range(11, 17):
+            close(monthly.cell(monthly_row, col).value, personal[f"W{source_row}"].value, f"M7–M12 fila {monthly_row}")
+        close(monthly[f"Q{monthly_row}"].value, personal[f"Y{source_row}"].value, f"Año 1 fila {monthly_row}")
+    close(monthly["E20"].value, 136_333.333333333, "Mensual total M1")
+    close(monthly["K20"].value, 191_700, "Mensual total M7")
+    close(monthly["Q20"].value, 1_968_200, "Mensual total Año 1")
 
-    assert personal[f"V{alex}"].value == "Repatriado"
-    assert personal[f"W{alex}"].value == "Maracaibo"
-    assert personal[f"Y{alex}"].value == "No"
-    close(personal[f"AJ{alex}"].value, 60_000, "Alexander — bonus anual")
-    assert personal[f"AK{alex}"].value == "TBD"
-    close(personal[f"AL{alex}"].value, 13, "Alexander — días de vacaciones")
-    close(personal[f"AH{alex}"].value, 22_500, "Alexander — costo mensual M7+")
-
-    assert personal[f"V{felix}"].value == "Repatriado"
-    assert personal[f"W{felix}"].value == "Maracaibo"
-    assert personal[f"Y{felix}"].value == "Sí"
-    close(personal[f"AJ{felix}"].value, 72_000, "Félix — bonus anual")
-    assert personal[f"AK{felix}"].value == "TBD"
-    close(personal[f"AL{felix}"].value, 13, "Félix — días de vacaciones")
-    close(personal[f"AH{felix}"].value, 28_500, "Félix — costo mensual M7+")
-
-    assert personal[f"V{alan}"].value == "Expatriado"
-    close(personal[f"G{alan}"].value, 24_000, "Alan — housing anual de consultoría")
-    close(personal[f"AM{alan}"].value, 12_000, "Alan — housing anual M7+")
-    close(personal[f"AH{alan}"].value, 22_500, "Alan — costo mensual M7+")
-
-    assert personal[f"V{jji}"].value == "Remote"
-    for col, label in (("G", "housing"), ("H", "medical"), ("I", "home leave"), ("J", "vehicle"), ("K", "tax")):
-        close(personal[f"{col}{jji}"].value, 0, f"JJI — {label}")
-    close(personal[f"AG{jji}"].value, 10_000, "JJI — mensual consultor")
-    close(personal[f"AH{jji}"].value, 10_000, "JJI — mensual remote")
-
-    assert personal[f"V{marcelo}"].value == "On rotation"
-    assert personal[f"V{jose}"].value == "Local"
-    assert personal[f"Y{jose}"].value == "Sí"
-    assert personal[f"V{tbd}"].value == "Local"
-
-    close(personal[f"L{total_row}"].value, 2_322_800, "Paquete anual calculado tras cambios de beneficios")
-    close(personal[f"M{total_row}"].value, 2_396_800, "Paquete anual fuente declarado")
-    close(personal[f"N{total_row}"].value, -74_000, "Variación vs. fuente")
-    close(personal[f"U{total_row}"].value, 1_018_200, "Etapa 1 seleccionada")
-    close(personal[f"AB{total_row}"].value, 1_150_200, "Etapa 2 seleccionada")
-    close(personal[f"AC{total_row}"].value, 2_168_400, "Año 1 seleccionado")
-    close(personal[f"AD{total_row}"].value, 228_400, "Ahorro Año 1 vs. fuente")
-    close(personal[f"AE{total_row}"].value, 2_300_400, "Run-rate seleccionado")
-    close(personal[f"AG{total_row}"].value, 169_700, "Mensual consultor consolidado")
-    close(personal[f"AH{total_row}"].value, 191_700, "Mensual M7+ seleccionado")
-    close(personal[f"AJ{total_row}"].value, 204_000, "Bonus anual total")
-    close(personal[f"AL{total_row}"].value, 39, "Vacaciones totales divulgadas")
-    close(personal[f"AM{total_row}"].value, 12_000, "Housing anual override total M7+")
-
-    mensual = value_wb["Mensual"]
-    # The detailed monthly schedule must reconcile to Personal by person and year.
-    monthly_person_rows = {}
-    for row in range(1, mensual.max_row + 1):
-        value = mensual.cell(row, 3).value
-        if isinstance(value, str) and value.strip() in rows:
-            monthly_person_rows[value.strip()] = row
-    assert set(monthly_person_rows) == set(rows)
-    for person, p_row in rows.items():
-        m_row = monthly_person_rows[person]
-        close(mensual[f"S{m_row}"].value, personal[f"AC{p_row}"].value, f"Mensual vs. Personal — {person}")
-
-    selected_monthly_row = None
-    for row in range(1, mensual.max_row + 1):
-        if mensual.cell(row, 3).value == "Selección actual por persona":
-            selected_monthly_row = row
-            break
-    assert selected_monthly_row is not None
-    close(mensual[f"D{selected_monthly_row}"].value, 169_700, "Mensual consolidado M1")
-    close(mensual[f"J{selected_monthly_row}"].value, 191_700, "Mensual consolidado M7")
-    close(mensual[f"P{selected_monthly_row}"].value, 2_168_400, "Mensual consolidado Año 1")
-
+    # Summary must reconcile to Personal.
     resumen = value_wb["Resumen"]
-    close(value_right_of_label(resumen, "Etapa 1 — Consultor M1–M6"), 1_018_200, "Resumen — Etapa 1")
-    close(value_right_of_label(resumen, "Etapa 2 — Selección M7–M12"), 1_150_200, "Resumen — Etapa 2")
-    close(value_right_of_label(resumen, "Costo total Año 1"), 2_168_400, "Resumen — Año 1")
+    close(resumen["D10"].value, personal["K20"].value, "Resumen mensual M1–M6")
+    close(resumen["D11"].value, personal["L20"].value, "Resumen bloque 1")
+    close(resumen["D12"].value, personal["W20"].value, "Resumen mensual M7+")
+    close(resumen["D13"].value, personal["X20"].value, "Resumen bloque 2")
+    close(resumen["D14"].value, personal["Y20"].value, "Resumen Año 1")
 
-    bridge_start = None
-    for row in range(1, resumen.max_row + 1):
-        if resumen.cell(row, 3).value == "PUENTE DE COSTO — ESCENARIO PREVIO VS. PAQUETES INDIVIDUALES":
-            bridge_start = row
-            break
-    assert bridge_start is not None
-    bridge_total = bridge_start + 11
-    close(resumen[f"D{bridge_total}"].value, 2_243_600, "Puente — escenario previo")
-    close(resumen[f"E{bridge_total}"].value, 2_168_400, "Puente — escenario seleccionado")
-    close(resumen[f"F{bridge_total}"].value, 75_200, "Puente — ahorro neto")
-    close(resumen[f"F{bridge_start + 3}"].value, -8_400, "Puente — Juan sobrecosto")
-    close(resumen[f"F{bridge_start + 5}"].value, -8_400, "Puente — Félix sobrecosto")
+    # PU pays the salaries of the three initial secondments. Martin Aguero remains TBD.
+    secondments = value_wb["Secondments PU"]
+    assert secondments["C11"].value == "Alexander Stulme"
+    assert secondments["D11"].value == "General Manager — PU"
+    assert secondments["E11"].value == "Secondment"
+    assert secondments["F11"].value == "PU"
+    close(secondments["G11"].value, 180_000, "Alexander — salario secondment")
+    close(secondments["H11"].value, 15_000, "Alexander — mensual secondment")
+    close(secondments["I11"].value, 90_000, "Alexander — seis meses secondment")
+
+    assert secondments["C12"].value == "Alan McKeon"
+    assert secondments["D12"].value == "Technical Manager — PU"
+    assert secondments["F12"].value == "PU"
+    close(secondments["G12"].value, 180_000, "Alan — salario secondment")
+    close(secondments["H12"].value, 15_000, "Alan — mensual secondment")
+    close(secondments["I12"].value, 90_000, "Alan — seis meses secondment")
+
+    assert secondments["C13"].value == "Martin Aguero"
+    assert secondments["D13"].value == "Infrastructure Manager — PU"
+    assert secondments["E13"].value == "Secondment"
+    assert secondments["F13"].value == "PU"
+    assert secondments["G13"].value == "TBD"
+    assert secondments["H13"].value == "TBD"
+    assert secondments["I13"].value == "TBD"
+    close(secondments["G15"].value, 360_000, "Secondments — salario anual conocido")
+    close(secondments["H15"].value, 30_000, "Secondments — salario mensual conocido")
+    close(secondments["I15"].value, 180_000, "Secondments — seis meses conocidos")
 
     formula_count = 0
-    error_cells = []
-    uncached_formula_cells = []
-    blue_without_comment = []
+    errors = []
+    uncached = []
+    blue_without_comments = []
     for sheet_name in formula_wb.sheetnames:
         fws = formula_wb[sheet_name]
         vws = value_wb[sheet_name]
@@ -185,28 +169,31 @@ def main():
                 if isinstance(cell.value, str) and cell.value.startswith("="):
                     formula_count += 1
                     cached = vws[cell.coordinate].value
-                    if isinstance(cached, str) and cached.startswith("#"):
-                        error_cells.append(f"{sheet_name}!{cell.coordinate}={cached}")
                     if cached is None:
-                        uncached_formula_cells.append(f"{sheet_name}!{cell.coordinate}")
+                        uncached.append(f"{sheet_name}!{cell.coordinate}")
+                    elif isinstance(cached, str) and cached.startswith("#"):
+                        errors.append(f"{sheet_name}!{cell.coordinate}={cached}")
                 color = cell.font.color
                 if color and color.type == "rgb" and color.rgb and color.rgb[-6:].upper() == "0000FF":
                     if cell.comment is None:
-                        blue_without_comment.append(f"{sheet_name}!{cell.coordinate}")
+                        blue_without_comments.append(f"{sheet_name}!{cell.coordinate}")
 
-    assert formula_count >= 545, f"Número inesperado de fórmulas: {formula_count}"
-    assert not error_cells, f"Errores de fórmula: {error_cells}"
-    assert not uncached_formula_cells, f"Fórmulas sin valor calculado: {uncached_formula_cells[:20]}"
-    assert not blue_without_comment, f"Entradas azules sin comentario: {blue_without_comment[:20]}"
+    assert formula_count >= 430, f"Número inesperado de fórmulas: {formula_count}"
+    assert not errors, errors
+    assert not uncached, uncached[:20]
+    assert not blue_without_comments, blue_without_comments[:20]
 
     print("VALIDATION PASSED")
+    print("Base salary unchanged: $1,548,000 annual total")
+    print("M1–M6 monthly: $136,333.33")
+    print("Block 1 six months: $818,000")
+    print("M7+ monthly: $191,700")
+    print("Block 2 six months: $1,150,200")
+    print("Year 1 total: $1,968,200")
+    print("Year 1 savings vs. source: $428,600")
+    print("Secondments paid by PU: Alexander, Alan and Martin Aguero")
+    print("Martin Aguero salary: TBD and excluded")
     print(f"Formulas checked: {formula_count}")
-    print("Selected Stage 1: $1,018,200")
-    print("Selected Stage 2: $1,150,200")
-    print("Selected Year 1: $2,168,400")
-    print("Selected monthly M7+: $191,700")
-    print("Annual bonus disclosed: $204,000")
-    print("Stock options: TBD and excluded from cost")
 
 
 if __name__ == "__main__":

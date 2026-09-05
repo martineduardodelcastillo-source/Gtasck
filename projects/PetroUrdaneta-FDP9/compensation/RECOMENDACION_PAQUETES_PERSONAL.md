@@ -1,79 +1,78 @@
-# Paquetes individuales de personal — escenario seleccionado
+# Modelo de personal en dos bloques
 
-**Fecha de referencia:** 5 de septiembre de 2026  
+**Fecha:** 5 de septiembre de 2026  
 **Moneda:** dólares estadounidenses (USD)  
-**Alcance:** nueve posiciones
+**Principio central:** el salario base no cambia y es idéntico a la tabla fuente.
 
-## Resumen ejecutivo
+## Estructura correcta
 
-El escenario seleccionado cuesta **$169,700 por mes durante M1–M6** y **$191,700 por mes recurrente desde M7**. La etapa 1 totaliza **$1,018,200**, la etapa 2 totaliza **$1,150,200** y el costo del Año 1 es **$2,168,400**, antes de valorar stock options y costos únicos de transición. Frente al paquete anual fuente de **$2,396,800**, el ahorro presupuestario de Año 1 es **$228,400**. El run-rate anual desde M13 es **$2,300,400**.
+El modelo se divide en dos puntos de costo claramente separados. Durante **M1–M6**, las personas trabajan en rotación y reciben su salario base mensual sin cambios. El **único beneficio** en este período es el seguro médico. No se incluyen housing, home leave, transporte corporativo, impuestos pagados por la empresa, bonus, stock options ni vacaciones como costo adicional. JJI, por su condición Remote, no recibe seguro ni otros beneficios.
 
-## Por qué el costo no bajó más
+Desde **M7**, se mantiene el mismo salario base y se incorporan los beneficios individuales definidos para expatriados, repatriados, personal local, Remote y On rotation.
 
-La comparación directa debe hacerse contra el escenario anterior de Año 1, que costaba **$2.243.600** con las nueve personas como expatriadas desde M7. El escenario individual actualizado cuesta **$2,168,400**, por lo que la reducción neta es **$75.200**. El ahorro es menor de lo esperado porque los bonus anuales de Juan, Alexander y Félix suman **$204.000**; durante M7–M12 se reconoce un costo de **$102.000**, que compensa gran parte del ahorro por impuestos, home leave y housing.
+## Totales de los dos bloques
 
-| Persona | Año 1 anterior | Año 1 seleccionado | Ahorro / (sobrecosto) | Explicación |
-|---|---:|---:|---:|---|
-| Martin del Castillo | $488,000 | $488,000 | $0 | Sin cambio. |
-| Juan Conde | $303,600 | $312,000 | ($8,400) | El bonus de 4 meses supera el ahorro fiscal y de home leave. |
-| Alexander Stulme | $264,000 | $258,000 | $6,000 | Sin housing, impuesto ni home leave; el bonus absorbe parte del ahorro. |
-| Félix Valderrama | $303,600 | $312,000 | ($8,400) | El bonus de 4 meses supera el ahorro fiscal y de home leave. |
-| Alan McKeon | $264,000 | $258,000 | $6,000 | Housing M7+ baja de $2.000 a $1.000 por mes. |
-| JJI | $184,000 | $120,000 | $64,000 | Remote con salario base solamente. |
-| Marcelo Dantas | $264,000 | $264,000 | $0 | Sin cambio provisional. |
-| Jose Miguel | $81,200 | $75,200 | $6,000 | Local con housing; impuesto personal a su cargo. |
-| TBD | $91,200 | $81,200 | $10,000 | Local provisional sin impuesto empresarial ni home leave. |
+| Punto de costo | Costo mensual | Costo de seis meses |
+|---|---:|---:|
+| M1–M6: salario base + seguro médico únicamente | $136,333 | $818,000 |
+| M7–M12: salario base + beneficios individuales | $191,700 | $1,150,200 |
 
-## Asignaciones y beneficios confirmados
+El costo total del **Año 1 es $1,968,200**. Frente al paquete fuente anual de $2,396,800, el ahorro presupuestario es **$428,600**. El run-rate anual desde M13 es $2,300,400. Las stock options permanecen como TBD y no están incluidas en estos importes.
 
-| Persona | Condición M7+ | Ciudad | Housing | Mensual M1–M6 | Mensual M7+ | Año 1 | Bonus anual | Stock options | Vacaciones |
-|---|---|---|---|---:|---:|---:|---:|---|---:|
-| Martin del Castillo | Expatriado | Por definir | Por definir | $37,667 | $43,667 | $488,000 | $0 | $0 | 0 días |
-| Juan Conde | Repatriado | Maracaibo | Sí | $23,500 | $28,500 | $312,000 | $72,000 | TBD | 13 días |
-| Alexander Stulme | Repatriado | Maracaibo | No | $20,500 | $22,500 | $258,000 | $60,000 | TBD | 13 días |
-| Félix Valderrama | Repatriado | Maracaibo | Sí | $23,500 | $28,500 | $312,000 | $72,000 | TBD | 13 días |
-| Alan McKeon | Expatriado | Maracaibo | Sí | $20,500 | $22,500 | $258,000 | $0 | $0 | 0 días |
-| JJI | Remote | Remoto | No | $10,000 | $10,000 | $120,000 | $0 | $0 | 0 días |
-| Marcelo Dantas | On rotation | Por definir | Por definir | $20,500 | $23,500 | $264,000 | $0 | $0 | 0 días |
-| Jose Miguel | Local | Maracaibo | Sí | $6,267 | $6,267 | $75,200 | $0 | $0 | 0 días |
-| TBD | Local | Por definir | Por definir | $7,267 | $6,267 | $81,200 | $0 | $0 | 0 días |
+## Secondments iniciales pagados por PU
 
-## Tratamiento individual
+| Persona | Nombramiento inicial en PU | Modalidad | Pagador del salario | Salario base anual | Tratamiento en el total |
+|---|---|---|---|---:|---|
+| Alexander Stulme | General Manager — PU | Secondment | PU | $180,000 | Incluido en el modelo de 9 posiciones |
+| Alan McKeon | Technical Manager — PU | Secondment | PU | $180,000 | Incluido en el modelo de 9 posiciones |
+| Martin Aguero | Infrastructure Manager — PU | Secondment | PU | TBD | Salario pendiente; excluido de los totales |
 
-### Juan Conde
+**PU paga el salario de los tres secondments.** Alexander Stulme y Alan McKeon ya están incluidos en el modelo principal con su salario base original, por lo que no se suman nuevamente. Martin Aguero es una asignación adicional como Infrastructure Manager; su salario permanece **TBD y excluido del total** hasta recibir el importe.
 
-Juan queda como **repatriado en Maracaibo**. En Maracaibo se incluye el housing anual fuente como presupuesto para **allowance, staff house u hotel**; si la ciudad cambia a Caracas, su fórmula individual elimina housing. Juan asume su impuesto personal en Venezuela. Conserva seguro médico y transporte provisto por la compañía para ir al trabajo. Se incluye un bonus objetivo de **cuatro meses de salario**, equivalente a **$72.000 anuales**, 13 días de vacaciones pagadas y stock options con valor **TBD**.
+## Costo por persona
 
-### Alexander Stulme
+| Persona | Salario base anual — sin cambios | Mensual M1–M6 | 6 meses M1–M6 | Condición M7+ | Mensual M7+ | 6 meses M7–M12 | Año 1 | Ahorro vs. fuente |
+|---|---:|---:|---:|---|---:|---:|---:|---:|
+| Martin del Castillo | $360,000 | $31,000 | $186,000 | Expatriado | $43,667 | $262,000 | $448,000 | $76,000 |
+| Juan Conde | $216,000 | $19,000 | $114,000 | Repatriado | $28,500 | $171,000 | $285,000 | $40,200 |
+| Alexander Stulme | $180,000 | $16,000 | $96,000 | Repatriado | $22,500 | $135,000 | $231,000 | $51,000 |
+| Félix Valderrama | $216,000 | $19,000 | $114,000 | Repatriado | $28,500 | $171,000 | $285,000 | $40,200 |
+| Alan McKeon | $180,000 | $16,000 | $96,000 | Expatriado | $22,500 | $135,000 | $231,000 | $51,000 |
+| JJI | $120,000 | $10,000 | $60,000 | Remote | $10,000 | $60,000 | $120,000 | $74,000 |
+| Marcelo Dantas | $180,000 | $16,000 | $96,000 | On rotation | $23,500 | $141,000 | $237,000 | $45,000 |
+| Jose Miguel | $48,000 | $4,667 | $28,000 | Local | $6,267 | $37,600 | $65,600 | $21,600 |
+| TBD | $48,000 | $4,667 | $28,000 | Local | $6,267 | $37,600 | $65,600 | $29,600 |
 
-Alexander queda como **repatriado en Maracaibo**, con el mismo esquema general de beneficios que Juan, pero vive en su propia casa y por tanto **no recibe housing**. Asume su impuesto personal, conserva seguro médico y transporte corporativo al trabajo, recibe un bonus objetivo de cuatro meses equivalente a **$60.000 anuales**, 13 días de vacaciones pagadas y stock options con valor TBD.
+## Beneficios desde M7
 
-### Félix Valderrama
+| Persona | Housing | Seguro | Home leave | Transporte | Impuesto empresa | Bonus anual | Stock options | Vacaciones |
+|---|---:|---:|---:|---:|---:|---:|---|---:|
+| Martin del Castillo | $36,000 | $12,000 | $20,000 | $24,000 | $72,000 | $0 | $0 | 0 días |
+| Juan Conde | $24,000 | $12,000 | $0 | $18,000 | $0 | $72,000 | TBD | 13 días |
+| Alexander Stulme | $0 | $12,000 | $0 | $18,000 | $0 | $60,000 | TBD | 13 días |
+| Félix Valderrama | $24,000 | $12,000 | $0 | $18,000 | $0 | $72,000 | TBD | 13 días |
+| Alan McKeon | $12,000 | $12,000 | $12,000 | $18,000 | $36,000 | $0 | $0 | 0 días |
+| JJI | $0 | $0 | $0 | $0 | $0 | $0 | $0 | 0 días |
+| Marcelo Dantas | $24,000 | $12,000 | $12,000 | $18,000 | $36,000 | $0 | $0 | 0 días |
+| Jose Miguel | $12,000 | $8,000 | $0 | $7,200 | $0 | $0 | $0 | 0 días |
+| TBD | $12,000 | $8,000 | $0 | $7,200 | $0 | $0 | $0 | 0 días |
 
-Félix queda con el mismo paquete de Juan: **repatriado en Maracaibo**, housing para allowance, staff house u hotel; impuesto personal a su cargo; seguro médico; transporte corporativo al trabajo; bonus objetivo de cuatro meses equivalente a **$72.000 anuales**; 13 días de vacaciones y stock options TBD.
+## Confirmaciones individuales aplicadas
 
-### Alan McKeon
+**Juan Conde:** repatriado en Maracaibo; housing para allowance, staff house u hotel; seguro médico; transporte corporativo al trabajo; impuesto personal a su cargo; bonus de cuatro meses de salario; stock options TBD; 13 días de vacaciones.
 
-Alan permanece **expatriado** y su housing se ajusta a **$1.000 mensuales / $12.000 anuales**. Conserva seguro médico, home leave, vehículo y protección fiscal empresarial del paquete expatriado.
+**Alexander Stulme:** repatriado en Maracaibo y vive en su propia casa; sin housing; seguro médico; transporte corporativo; impuesto personal a su cargo; bonus de cuatro meses; stock options TBD; 13 días de vacaciones.
 
-### JJI
+**Félix Valderrama:** mismo paquete de Juan Conde.
 
-JJI queda como **Remote** y recibe únicamente compensación base. El modelo elimina housing, seguro médico, home leave, vehículo/transporte y Tax & Social empresarial. Su costo es **$10.000 por mes**.
+**Alan McKeon:** expatriado con housing de $1.000 por mes desde M7.
 
-### Jose Miguel
+**JJI:** Remote con salario base únicamente y sin beneficios.
 
-Jose Miguel queda como **Local en Maracaibo**. Se mantiene provisionalmente el housing anual fuente de **$12.000 / $1.000 por mes**, conforme a la indicación de que ya existe un housing allowance. Debe confirmarse el importe y la política aplicable.
+**Jose Miguel:** Local en Maracaibo; se mantiene provisionalmente housing de $1.000 por mes desde M7.
 
-## Supuestos pendientes
+## Base y advertencia
 
-El bonus anual total divulgado es **$204,000**; durante M7–M12 se acumula la mitad de ese valor. Las stock options de Juan, Alexander y Félix están incluidas como beneficio, pero no tienen valoración aprobada y por ello se excluyen del costo. Se interpretó “13 de vacaciones” como **13 días de vacaciones pagadas** sin costo adicional separado del salario. Marcelo Dantas conserva provisionalmente la categoría **On rotation**, y Operations Support permanece como **TBD / Local**, preservando las ediciones manuales del usuario.
+**Base.** Los salarios anuales utilizados son exactamente $360.000, $216.000, $180.000, $216.000, $180.000, $120.000, $180.000, $48.000 y $48.000, iguales a la tabla fuente.
 
-## Advertencia de cumplimiento
-
-> La asignación de impuestos, clasificación laboral, base imponible de beneficios, tratamiento del bonus, vacaciones, stock options y cargas patronales requiere validación escrita de asesores venezolanos y de Recursos Humanos. Este archivo es una herramienta presupuestaria, no una opinión jurídica o fiscal.
-
-## Base y confianza
-
-**Base.** Se preservó la versión del Excel modificada por el usuario y se archivó una copia previa a esta actualización. El paquete fuente declarado continúa en $2,396,800.
-
-**Confianza.** La aritmética y las fórmulas tienen confianza alta. Housing de Jose Miguel, formato de alojamiento de Juan/Félix, valoración de stock options, costos únicos y días de vacaciones requieren confirmación documental.
+> Este es un modelo presupuestario. La clasificación laboral, autorización de trabajo, impuestos, seguridad social, bonus, vacaciones y stock options requieren validación de asesores venezolanos y Recursos Humanos.
