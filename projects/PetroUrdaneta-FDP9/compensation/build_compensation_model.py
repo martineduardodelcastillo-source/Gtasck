@@ -31,15 +31,15 @@ INTEGER = '#,##0'
 PEOPLE = [
     # no, position, person, base, medical_b1, package_m7, city, housing, medical_m7,
     # home_leave, transport, employer_tax, bonus, stock, vacation, source_annual, notes
-    (1, "COO / PU General Manager", "Martin del Castillo", 360000, 12000, "Expatriado", "Por definir", 36000, 12000, 20000, 24000, 72000, 0, 0, 0, 524000, "Expatriado; paquete internacional desde M7."),
-    (2, "EPCM & Engineering Manager", "Juan Conde", 216000, 12000, "Repatriado", "Maracaibo", 24000, 12000, 0, 18000, 0, 72000, "TBD", 13, 325200, "Maracaibo: housing puede ser allowance, staff house u hotel. Impuesto personal a cargo del empleado."),
-    (3, "Drilling & Well Services Manager", "Alexander Stulme", 180000, 12000, "Repatriado", "Maracaibo", 0, 12000, 0, 18000, 0, 60000, "TBD", 13, 282000, "Vive en su propia casa en Maracaibo; no recibe housing. Impuesto personal a su cargo."),
-    (4, "Operations & Maintenance Manager", "Félix Valderrama", 216000, 12000, "Repatriado", "Maracaibo", 24000, 12000, 0, 18000, 0, 72000, "TBD", 13, 325200, "Mismo paquete de Juan Conde. Impuesto personal a cargo del empleado."),
-    (5, "Technical Manager (Geosciences)", "Alan McKeon", 180000, 12000, "Expatriado", "Maracaibo", 12000, 12000, 12000, 18000, 36000, 0, 0, 0, 282000, "Housing expatriado de $1.000 por mes desde M7."),
-    (6, "Reservoir Engineer", "JJI", 120000, 0, "Remote", "Remoto", 0, 0, 0, 0, 0, 0, 0, 0, 194000, "Remote: salario base únicamente; sin beneficios."),
-    (7, "Rig Company Man", "Marcelo Dantas", 180000, 12000, "On rotation", "Por definir", 24000, 12000, 12000, 18000, 36000, 0, 0, 0, 282000, "On rotation: paquete provisional desde M7."),
-    (8, "Planning & PMO", "Jose Miguel", 48000, 8000, "Local", "Maracaibo", 12000, 8000, 0, 7200, 0, 0, 0, 0, 87200, "Local: se mantiene provisionalmente housing de $1.000 por mes."),
-    (9, "Operations Support", "TBD", 48000, 8000, "Local", "Por definir", 12000, 8000, 0, 7200, 0, 0, 0, 0, 95200, "Local provisional; confirmar persona y ciudad."),
+    (1, "COO / PU General Manager", "Martin del Castillo", 360000, 12000, "Expatriado", "Por definir", 36000, 12000, 20000, 24000, 72000, 0, 0, 30, 524000, "Expatriado; paquete internacional desde M7."),
+    (2, "EPCM & Engineering Manager", "Juan Conde", 216000, 12000, "Repatriado", "Maracaibo", 24000, 12000, 0, 18000, 0, 72000, "TBD", 30, 325200, "Maracaibo: housing puede ser allowance, staff house u hotel. Impuesto personal a cargo del empleado."),
+    (3, "Drilling & Well Services Manager", "Alexander Stulme", 180000, 12000, "Repatriado", "Maracaibo", 0, 12000, 0, 18000, 0, 60000, "TBD", 30, 282000, "Vive en su propia casa en Maracaibo; no recibe housing. Impuesto personal a su cargo."),
+    (4, "Operations & Maintenance Manager", "Félix Valderrama", 216000, 12000, "Repatriado", "Maracaibo", 24000, 12000, 0, 18000, 0, 72000, "TBD", 30, 325200, "Mismo paquete de Juan Conde. Impuesto personal a cargo del empleado."),
+    (5, "Technical Manager (Geosciences)", "Alan McKeon", 180000, 12000, "Expatriado", "Maracaibo", 12000, 12000, 12000, 18000, 36000, 0, 0, 30, 282000, "Housing expatriado de $1.000 por mes desde M7."),
+    (6, "Reservoir Engineer", "JJI", 120000, 0, "Remote", "Remoto", 0, 0, 0, 0, 0, 0, 0, 30, 194000, "Remote: salario base únicamente; sin beneficios."),
+    (7, "Rig Company Man", "Marcelo Dantas", 180000, 12000, "On rotation", "Por definir", 24000, 12000, 12000, 18000, 36000, 0, 0, 30, 282000, "On rotation: paquete provisional desde M7."),
+    (8, "Planning & PMO", "Jose Miguel", 48000, 8000, "Local", "Maracaibo", 0, 8000, 0, 7200, 0, 0, 0, 30, 87200, "Local o staff house de PU; sin housing allowance en efectivo."),
+    (9, "Operations Support", "TBD", 48000, 8000, "Local", "Maracaibo", 0, 8000, 0, 7200, 0, 0, 0, 30, 95200, "Local o staff house de PU; sin housing allowance en efectivo."),
 ]
 
 
@@ -407,7 +407,7 @@ def build_beneficios(wb):
         "Company Transport: transporte provisto por la compañía para el trabajo; no implica vehículo personal garantizado.",
         "Bonus: cuatro meses de salario anual para Juan, Alexander y Félix; se prorratea mensualmente desde M7.",
         "Stock options: beneficio reconocido, pero sin valor hasta aprobación y valoración del plan.",
-        "Vacaciones: 13 días para Juan, Alexander y Félix; se consideran pagadas dentro del salario, sin costo incremental.",
+        "Vacaciones: 30 días, según la edición directa del usuario; se consideran pagadas dentro del salario, sin costo incremental.",
     ]
     for row, text in enumerate(definitions, start=23):
         ws.merge_cells(start_row=row, start_column=3, end_row=row, end_column=13)
@@ -428,7 +428,7 @@ def build_secondments(wb):
         ws,
         "Secondments iniciales de PU",
         "Nombramientos iniciales cuyo salario es pagado por PU",
-        "USD | Martin Aguero permanece TBD y está excluido de los totales conocidos",
+        "USD | Martin Aguero es un costo adicional separado del paquete de nueve posiciones",
         10,
     )
     section(ws, 8, "ASIGNACIONES INICIALES", 3, 10)
@@ -437,7 +437,7 @@ def build_secondments(wb):
     assignments = [
         ("Alexander Stulme", "General Manager — PU", "Secondment", "PU", "='Personal'!F13", "Incluido en el modelo de 9 posiciones"),
         ("Alan McKeon", "Technical Manager — PU", "Secondment", "PU", "='Personal'!F15", "Incluido en el modelo de 9 posiciones"),
-        ("Martin Aguero", "Infrastructure Manager — PU", "Secondment", "PU", "TBD", "Salario pendiente; excluido de los totales"),
+        ("Martin Aguero", "Infrastructure Manager — PU", "Secondment", "PU", 180000, "Costo adicional de PU; separado del paquete de 9 posiciones"),
     ]
     for row, (person, appointment, arrangement, payer, salary, treatment) in enumerate(assignments, start=11):
         input_cell(ws.cell(row, 3), person, instruction_note(f"{person} fue indicado como secondment inicial de PU."), align="left")
@@ -448,6 +448,10 @@ def build_secondments(wb):
             input_cell(ws.cell(row, 7), salary, instruction_note("El salario base de Martin Aguero no fue suministrado; se excluye de los totales hasta recibirlo."), align="center")
             formula_cell(ws.cell(row, 8), f'=IF(ISNUMBER(G{row}),G{row}/12,"TBD")')
             formula_cell(ws.cell(row, 9), f'=IF(ISNUMBER(H{row}),H{row}*6,"TBD")')
+        elif isinstance(salary, (int, float)):
+            input_cell(ws.cell(row, 7), salary, instruction_note("Salario anual preservado de la edición directa del usuario del 5 de septiembre de 2026."), CURR_FIRST)
+            formula_cell(ws.cell(row, 8), f"=G{row}/12", CURR)
+            formula_cell(ws.cell(row, 9), f"=H{row}*6", CURR)
         else:
             formula_cell(ws.cell(row, 7), salary, CURR_FIRST, cross=True)
             formula_cell(ws.cell(row, 8), f"=G{row}/12", CURR)
@@ -464,7 +468,7 @@ def build_secondments(wb):
     formula_cell(ws.cell(15, 7), "=SUM(G11:G13)", CURR_FIRST, bold=True)
     formula_cell(ws.cell(15, 8), "=SUM(H11:H13)", CURR, bold=True)
     formula_cell(ws.cell(15, 9), "=SUM(I11:I13)", CURR, bold=True)
-    ws.cell(15, 10, "+ Martin Aguero TBD")
+    ws.cell(15, 10, "Incluye Martin Aguero; no duplicar Alexander y Alan")
     ws.cell(15, 10).font = Font(name="Arial", size=10, bold=True, color=RED)
     for col in range(3, 11):
         ws.cell(15, col).border = Border(top=MEDIUM, bottom=DOUBLE)
@@ -472,7 +476,7 @@ def build_secondments(wb):
     section(ws, 18, "TRATAMIENTO EN EL MODELO", 3, 10)
     notes = [
         "Alexander Stulme y Alan McKeon ya están incluidos en el modelo principal con sus salarios base originales sin cambios.",
-        "Martin Aguero es una asignación adicional. Su salario no se incorpora al costo de nueve posiciones hasta recibir el importe.",
+        "Martin Aguero es una asignación adicional con salario anual de $180.000; se presenta separado del costo de nueve posiciones.",
         "PU se identifica como pagador del salario para los tres secondments.",
     ]
     for row, text in enumerate(notes, start=19):
@@ -499,7 +503,7 @@ def build_supuestos(wb):
         ("Beneficio permitido en Bloque 1", "Seguro médico únicamente", "JJI no recibe beneficios por ser Remote"),
         ("Salario base", "Sin cambios", "Misma base anual de la tabla fuente"),
         ("Stock options", "TBD", "Excluidas de costo"),
-        ("Vacaciones", "13 días", "Juan, Alexander y Félix; sin costo incremental"),
+        ("Vacaciones", "30 días", "Edición del usuario preservada; sin costo incremental"),
     ]
     header(ws, 10, 3, ["Supuesto", "Valor", "Aplicación"])
     for row, (label, value, application) in enumerate(rules, start=11):

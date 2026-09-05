@@ -11,3 +11,7 @@ La revisión visual confirmó que Resumen y Personal muestran los dos puntos de 
 La hoja `Secondments PU` quedó completa y legible: Alexander Stulme como General Manager, Alan McKeon como Technical Manager y Martin Aguero como Infrastructure Manager; los tres muestran PU como pagador. Alexander y Alan suman $360.000 anuales conocidos, mientras Martin Aguero permanece TBD y excluido. En el Resumen, la sección comenzó en una segunda página sin repetir título y encabezados; se añadirá un salto manual antes de la sección para mantenerla completa.
 
 La exportación final contiene siete páginas. La segunda página de Resumen comienza correctamente con `SECONDMENTS INICIALES — SALARIO PAGADO POR PU` y repite todos los encabezados; la hoja independiente de secondments conserva el mismo contenido y los totales conocidos.
+
+## Local o staff house — Jose Miguel y Operations Support
+
+Se preservaron las filas añadidas y las modificaciones manuales del usuario. Jose Miguel y Operations Support figuran como `Local`, ciudad Maracaibo, y housing anual M7+ igual a **$0**, representando residencia local o alojamiento en staff house sin allowance en efectivo. El costo mensual M7+ consolidado baja a **$189.700**, el Bloque 2 a **$1.138.200**, el Año 1 a **$1.956.200** y el ahorro frente a la fuente sube a **$440.600**. La revisión visual de Resumen y Personal no mostró errores ni recortes críticos; el PDF final contiene siete páginas.
