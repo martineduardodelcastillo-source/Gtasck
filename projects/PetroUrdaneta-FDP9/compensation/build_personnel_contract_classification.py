@@ -33,7 +33,7 @@ PEOPLE = [
     (5, "Reservoir Engineer", "JJI", 120000, "Local", "Fixed", "Assumption", "Remote role. Local / Fixed is an editable assumption pending confirmation."),
     (6, "Rig Company Man", "Marcelo Dantas", 180000, "Expat", "Rotation", "Assumption", "Rotation confirmed from prior instructions; Expat contract is an editable assumption."),
     (7, "Planning & PMO", "Jose Miguel", 48000, "Local", "Fixed", "Confirmed", "Local in Maracaibo or staff house; no cash housing allowance by default."),
-    (8, "Operations Support", "Leticia Almeida", 48000, "Local", "Fixed", "Confirmed", "Local in Maracaibo or staff house; no cash housing allowance by default."),
+    (8, "Operations Support", "TBD — Person to be defined", 48000, "TBD", "TBD", "Assumption", "Open position. Person, contract type, work arrangement and benefits are to be defined. Salary remains a budget placeholder from the source table."),
 ]
 
 DATA_START = 9
@@ -42,7 +42,7 @@ TOTAL_ROW = DATA_END + 1
 SUMMARY_SECTION_ROW = TOTAL_ROW + 3
 SUMMARY_HEADER_ROW = SUMMARY_SECTION_ROW + 1
 SUMMARY_FIRST_ROW = SUMMARY_HEADER_ROW + 1
-SUMMARY_LAST_ROW = SUMMARY_FIRST_ROW + 6
+SUMMARY_LAST_ROW = SUMMARY_FIRST_ROW + 8
 
 
 def source_comment(field, extra=""):
@@ -162,7 +162,12 @@ def build_personnel(wb):
         number, position, person, annual_salary, contract_type, arrangement, status, notes = record
         set_input(ws.cell(row, 3), number, source_comment("row number"))
         set_input(ws.cell(row, 4), position, source_comment("Position"))
-        set_input(ws.cell(row, 5), person, source_comment("Person"))
+        person_comment = (
+            instruction_comment("Leticia Almeida has been removed. Operations Support is an open position and the person is to be defined.")
+            if person.startswith("TBD")
+            else source_comment("Person")
+        )
+        set_input(ws.cell(row, 5), person, person_comment)
         set_input(
             ws.cell(row, 6), contract_type,
             instruction_comment("M1–M6 contract type must be Expat, Repatriate or Local. Edit if management confirms a different classification."),
@@ -220,8 +225,10 @@ def build_personnel(wb):
         ("Expat", f'=COUNTIF(F{DATA_START}:F{DATA_END},"Expat")', "M1–M6 contract type Expat"),
         ("Repatriate", f'=COUNTIF(F{DATA_START}:F{DATA_END},"Repatriate")', "Transition to Local — Venezuela from M7"),
         ("Local", f'=COUNTIF(F{DATA_START}:F{DATA_END},"Local")', "Local contract from M1 through M12"),
+        ("Contract type TBD", f'=COUNTIF(F{DATA_START}:F{DATA_END},"TBD")', "Open position; contract type is to be defined"),
         ("Fixed", f'=COUNTIF(H{DATA_START}:H{DATA_END},"Fixed")', "Fixed work arrangement"),
         ("Rotation", f'=COUNTIF(H{DATA_START}:H{DATA_END},"Rotation")', "Rotation work arrangement"),
+        ("Work arrangement TBD", f'=COUNTIF(H{DATA_START}:H{DATA_END},"TBD")', "Open position; work arrangement is to be defined"),
         ("One-time transition bonuses", f'=COUNTIF(J{DATA_START}:J{DATA_END},"Eligible*")', "M7 bonus only; amount is not yet set"),
         ("Assumptions to confirm", f'=COUNTIF(K{DATA_START}:K{DATA_END},"Assumption")', "Editable classifications requiring confirmation"),
     ]
@@ -229,10 +236,10 @@ def build_personnel(wb):
         ws.cell(row, 3, metric).font = Font(name="Arial", size=10, color=BLACK)
         set_formula(ws.cell(row, 4), formula, '#,##0')
         ws.cell(row, 5, meaning).font = Font(name="Arial", size=10, color=BLACK)
-    apply_borders(ws, SUMMARY_HEADER_ROW, SUMMARY_LAST_ROW, 3, 5)
+    apply_borders(ws, SUMMARY_HEADER_ROW, SUMMARY_FIRST_ROW + len(summary) - 1, 3, 5)
 
-    contract_validation = DataValidation(type="list", formula1='"Expat,Repatriate,Local"', allow_blank=False)
-    arrangement_validation = DataValidation(type="list", formula1='"Fixed,Rotation"', allow_blank=False)
+    contract_validation = DataValidation(type="list", formula1='"Expat,Repatriate,Local,TBD"', allow_blank=False)
+    arrangement_validation = DataValidation(type="list", formula1='"Fixed,Rotation,TBD"', allow_blank=False)
     status_validation = DataValidation(type="list", formula1='"Confirmed,Assumption"', allow_blank=False)
     ws.add_data_validation(contract_validation)
     ws.add_data_validation(arrangement_validation)
@@ -243,6 +250,14 @@ def build_personnel(wb):
     ws.conditional_formatting.add(
         f"K{DATA_START}:K{DATA_END}",
         FormulaRule(formula=[f'K{DATA_START}="Assumption"'], fill=PatternFill("solid", fgColor=WARNING)),
+    )
+    ws.conditional_formatting.add(
+        f"F{DATA_START}:F{DATA_END}",
+        FormulaRule(formula=[f'F{DATA_START}="TBD"'], fill=PatternFill("solid", fgColor=WARNING)),
+    )
+    ws.conditional_formatting.add(
+        f"H{DATA_START}:H{DATA_END}",
+        FormulaRule(formula=[f'H{DATA_START}="TBD"'], fill=PatternFill("solid", fgColor=WARNING)),
     )
 
     apply_borders(ws, 8, DATA_END, 3, 25)
@@ -269,7 +284,7 @@ def build_rules(wb):
     title_block(
         ws,
         "Contract and Benefit Rules by Stage",
-        "Default policy view — individual packages may override these rules",
+        "Default policy view — individual packages may override these rules | One Operations Support position remains open (TBD)",
         "M1–M6 is initial stage | From M7 Repatriates operate as Local — Venezuela | Policy is subject to legal and HR validation",
         13,
     )
@@ -325,6 +340,18 @@ def build_rules(wb):
             "Provisional",
             "No international home leave or expat allowance by default.",
         ),
+        (
+            "TBD",
+            "Not defined until person and contract are approved",
+            "Not defined",
+            "Not defined",
+            "Not defined",
+            "Not defined",
+            "Not defined",
+            "Not applicable",
+            "Open position",
+            "Operations Support headcount is budgeted, but the person, contract type and benefits remain to be defined.",
+        ),
     ]
     for row, record in enumerate(rules, start=9):
         for col, value in enumerate(record, start=3):
@@ -336,7 +363,7 @@ def build_rules(wb):
         set_formula(ws.cell(row, 13), f'=COUNTIF(Personnel!F{DATA_START}:F{DATA_END},C{row})', '#,##0', cross_sheet=True)
         ws.cell(row, 13).alignment = Alignment(horizontal="right", vertical="center")
         ws.row_dimensions[row].height = 75
-    apply_borders(ws, 8, 11, 3, 13)
+    apply_borders(ws, 8, 12, 3, 13)
 
     ws.merge_cells("C14:M14")
     ws["C14"] = "WORK ARRANGEMENT RULES"
@@ -350,6 +377,9 @@ def build_rules(wb):
         (
             "Rotation", "Roster-based presence in Venezuela", "Medical insurance only", "Hotel, staff house or rotational lodging; avoid duplicate permanent housing", "Rotation roster travel replaces or supplements home leave only if approved", "Marcelo Dantas is currently shown as Rotation.", f'=COUNTIF(Personnel!H{DATA_START}:H{DATA_END},C17)'
         ),
+        (
+            "TBD", "To be determined with the selected Operations Support employee", "Not defined", "Not defined", "Not defined", "Operations Support is an open position.", f'=COUNTIF(Personnel!H{DATA_START}:H{DATA_END},C18)'
+        ),
     ]
     for row, record in enumerate(arrangements, start=16):
         for col, value in enumerate(record[:6], start=3):
@@ -358,7 +388,7 @@ def build_rules(wb):
         set_formula(ws.cell(row, 9), record[6], '#,##0', cross_sheet=True)
         ws.cell(row, 9).alignment = Alignment(horizontal="right", vertical="center")
         ws.row_dimensions[row].height = 58
-    apply_borders(ws, 15, 17, 3, 9)
+    apply_borders(ws, 15, 18, 3, 9)
 
     ws.merge_cells("C20:M23")
     ws["C20"] = (
@@ -413,15 +443,20 @@ def validate():
     assert ws["I9"].value == '=IF(F9="Repatriate","Local — Venezuela",F9)'
     assert ws["J9"].value == "Eligible — one-time; amount TBD"
     assert ws["J12"].value == "Not applicable"
+    assert ws[f"E{DATA_END}"].value == "TBD — Person to be defined"
+    assert ws[f"F{DATA_END}"].value == "TBD"
+    assert ws[f"H{DATA_END}"].value == "TBD"
     assert [ws[f"F{row}"].value for row in range(DATA_START, DATA_END + 1)].count("Expat") == 2
     assert [ws[f"F{row}"].value for row in range(DATA_START, DATA_END + 1)].count("Repatriate") == 3
-    assert [ws[f"F{row}"].value for row in range(DATA_START, DATA_END + 1)].count("Local") == 3
+    assert [ws[f"F{row}"].value for row in range(DATA_START, DATA_END + 1)].count("Local") == 2
+    assert [ws[f"F{row}"].value for row in range(DATA_START, DATA_END + 1)].count("TBD") == 1
     assert [ws[f"H{row}"].value for row in range(DATA_START, DATA_END + 1)].count("Rotation") == 1
-    assert [ws[f"H{row}"].value for row in range(DATA_START, DATA_END + 1)].count("Fixed") == 7
+    assert [ws[f"H{row}"].value for row in range(DATA_START, DATA_END + 1)].count("Fixed") == 6
+    assert [ws[f"H{row}"].value for row in range(DATA_START, DATA_END + 1)].count("TBD") == 1
     rules = wb["Contract Rules"]
-    assert [rules[f"C{row}"].value for row in range(9, 12)] == ["Expat", "Repatriate", "Local"]
+    assert [rules[f"C{row}"].value for row in range(9, 13)] == ["Expat", "Repatriate", "Local", "TBD"]
     assert rules["J10"].value.startswith("Eligible once at M7")
-    print("VALIDATED: 8 people (COO excluded) | $1,188,000 annual base salary | M1-M12 | Repatriates localize from M7 with one-time bonus TBD")
+    print("VALIDATED: 8 positions (COO excluded; Operations Support person TBD) | $1,188,000 annual base salary | M1-M12 | Repatriates localize from M7 with one-time bonus TBD")
 
 
 if __name__ == "__main__":
