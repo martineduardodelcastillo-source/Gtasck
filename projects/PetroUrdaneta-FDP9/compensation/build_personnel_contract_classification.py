@@ -47,6 +47,19 @@ REPATRIATION_COMPONENTS = [
 ]
 CORE_TRANSITION_MULTIPLIER = sum(component[1] for component in REPATRIATION_COMPONENTS)
 
+# Annual medical insurance budget from the source compensation table.
+# Operations Support retains the source budget only as a placeholder until the person is selected.
+MEDICAL_INSURANCE_ANNUAL = {
+    "Juan Conde": 12000,
+    "Alexander Stulme": 12000,
+    "Félix Valderrama": 12000,
+    "Alan McKeon": 12000,
+    "JJI": 12000,
+    "Marcelo Dantas": 12000,
+    "Jose Miguel": 8000,
+    "TBD — Person to be defined": 8000,
+}
+
 DATA_START = 9
 DATA_END = DATA_START + len(PEOPLE) - 1
 TOTAL_ROW = DATA_END + 1
@@ -308,7 +321,7 @@ def build_rules(wb):
         "M7+ Medical",
         "M7+ Housing",
         "M7+ Tax Treatment",
-        "M7+ Other Benefits",
+        "M7+ Costed Benefits",
         "One-Time Transition Bonus (M7)",
         "Default Status",
         "Policy Notes",
@@ -320,10 +333,10 @@ def build_rules(wb):
             "Expat",
             "Medical insurance only",
             "Continues as Expat assignment",
-            "Company-provided medical insurance",
-            "Housing / allowance only under an approved individual package",
-            "Company tax support / equalisation only where contractually approved",
-            "Home leave and company transport only under approved package",
+            "Health care costed monthly",
+            "Not costed in Monthly Costs; separate approval required",
+            "Not costed in Monthly Costs; separate review required",
+            "Salary + health care only in Monthly Costs; all other benefits require separate approval",
             "Not applicable",
             "Provisional",
             "No universal oil-and-gas benefit grid; package must reflect role, location and contract.",
@@ -332,10 +345,10 @@ def build_rules(wb):
             "Repatriate",
             "Medical insurance only",
             "Local — Venezuela from M7; document local payroll / employment basis",
-            "Medical insurance according to approved local package",
-            "City-based: local residence, staff house, hotel or allowance only if approved",
-            "Employee assumes Venezuelan personal tax; apply local payroll and statutory treatment",
-            "Company transport to work; local statutory benefits; any additional benefit requires individual approval",
+            "Health care costed monthly",
+            "Not costed in Monthly Costs; separate approval required",
+            "Not costed in Monthly Costs; apply local payroll and statutory review",
+            "Salary + health care only in Monthly Costs; statutory and other benefits are outside this cost model",
             f"Eligible once at M7; core package = {CORE_TRANSITION_MULTIPLIER:.2f}x monthly salary; not recurring; see Repatriation Package",
             "Confirmed policy direction",
             "One-time package covers moving, settling-in, temporary lodging, transport and onboarding support—not an annual incentive. Legal review determines salary and tax treatment.",
@@ -344,10 +357,10 @@ def build_rules(wb):
             "Local",
             "Medical insurance only",
             "Local — Venezuela",
-            "Medical insurance according to approved local package",
-            "Local residence or staff house; no cash housing allowance by default",
-            "Employee assumes Venezuelan personal tax; apply local payroll and statutory treatment",
-            "Company transport according to role; local statutory benefits",
+            "Health care costed monthly",
+            "Not costed in Monthly Costs; separate approval required",
+            "Not costed in Monthly Costs; apply local payroll and statutory review",
+            "Salary + health care only in Monthly Costs; statutory and other benefits are outside this cost model",
             "Not applicable",
             "Provisional",
             "No international home leave or expat allowance by default.",
@@ -548,11 +561,129 @@ def build_repatriation_package(wb):
     ws.oddFooter.center.size = 8
 
 
+def build_monthly_costs(wb):
+    ws = wb.create_sheet("Monthly Costs", 1)
+    title_block(
+        ws,
+        "Monthly Personnel Cost — Salary, Health Care and M7 Transition Package",
+        "M1–M6 and M8–M12 = Salary + Health Care | M7 = One-Time Package + Salary + Health Care | COO excluded",
+        "USD | Health care is based on the source annual insurance budget | No housing, tax, transport or other benefits are costed in this view",
+        24,
+    )
+
+    headers = [
+        "Person", "Position", "M1–M6 Contract", "M7+ Employment Basis", "Salary / Month", "Health Care / Year", "Health Care / Month",
+        "M1\nSalary + Health", "M2\nSalary + Health", "M3\nSalary + Health", "M4\nSalary + Health", "M5\nSalary + Health", "M6\nSalary + Health",
+        "M7\nOne-Time Package", "M7\nSalary + Health", "M7\nTotal Cost",
+        "M8\nSalary + Health", "M9\nSalary + Health", "M10\nSalary + Health", "M11\nSalary + Health", "M12\nSalary + Health", "Year 1\nTotal Cost",
+    ]
+    header_row(ws, 8, 3, headers)
+    for col in range(16, 19):
+        ws.cell(8, col).fill = PatternFill("solid", fgColor=WARNING)
+
+    for row, record in enumerate(PEOPLE, start=DATA_START):
+        _, position, person, _, _, _, _, _ = record
+        set_input(ws.cell(row, 3), person, instruction_comment("Linked by name to the Personnel classification; this cost view excludes the COO."))
+        set_input(ws.cell(row, 4), position, source_comment("Position"))
+        set_formula(ws.cell(row, 5), f"=VLOOKUP(C{row},Personnel!$E${DATA_START}:$I${DATA_END},2,FALSE)", cross_sheet=True)
+        set_formula(ws.cell(row, 6), f"=VLOOKUP(C{row},Personnel!$E${DATA_START}:$I${DATA_END},5,FALSE)", cross_sheet=True)
+        set_formula(ws.cell(row, 7), f"=VLOOKUP(C{row},Personnel!$E${DATA_START}:$Y${DATA_END},21,FALSE)/12", CURRENCY_FIRST if row == DATA_START else CURRENCY, cross_sheet=True)
+        set_input(
+            ws.cell(row, 8), MEDICAL_INSURANCE_ANNUAL[person],
+            source_comment("Medical Insurance (Annual)", "Operations Support amount is retained only as a budget placeholder until the person is selected."),
+        )
+        ws.cell(row, 8).number_format = CURRENCY
+        set_formula(ws.cell(row, 9), f"=H{row}/12", CURRENCY)
+        for col in range(10, 16):
+            set_formula(ws.cell(row, col), f"=$G{row}+$I{row}", CURRENCY_FIRST if row == DATA_START and col == 10 else CURRENCY)
+        set_formula(ws.cell(row, 16), f'=IF($E{row}="Repatriate",$G{row}*\'Repatriation Package\'!$D$15,0)', CURRENCY_FIRST if row == DATA_START else CURRENCY, cross_sheet=True)
+        set_formula(ws.cell(row, 17), f"=$G{row}+$I{row}", CURRENCY_FIRST if row == DATA_START else CURRENCY)
+        set_formula(ws.cell(row, 18), f"=P{row}+Q{row}", CURRENCY_FIRST if row == DATA_START else CURRENCY)
+        for col in range(19, 24):
+            set_formula(ws.cell(row, col), f"=$G{row}+$I{row}", CURRENCY_FIRST if row == DATA_START and col == 19 else CURRENCY)
+        set_formula(ws.cell(row, 24), f"=SUM(J{row}:O{row})+R{row}+SUM(S{row}:W{row})", CURRENCY_FIRST if row == DATA_START else CURRENCY)
+        for col in range(3, 25):
+            ws.cell(row, col).alignment = Alignment(
+                horizontal="right" if col >= 7 else "left",
+                vertical="center",
+                wrap_text=col in (3, 4, 5, 6),
+            )
+        for col in range(16, 19):
+            ws.cell(row, col).fill = PatternFill("solid", fgColor="FFF2CC")
+        ws.row_dimensions[row].height = 32
+
+    ws.merge_cells(start_row=TOTAL_ROW, start_column=3, end_row=TOTAL_ROW, end_column=6)
+    ws.cell(TOTAL_ROW, 3, "TOTAL — 8 POSITIONS (COO EXCLUDED)")
+    ws.cell(TOTAL_ROW, 3).font = Font(name="Arial", size=10, bold=True, color=BLACK)
+    for col in range(7, 25):
+        letter = get_column_letter(col)
+        set_formula(ws.cell(TOTAL_ROW, col), f"=SUM({letter}{DATA_START}:{letter}{DATA_END})", CURRENCY_FIRST if col == 7 else CURRENCY)
+        ws.cell(TOTAL_ROW, col).alignment = Alignment(horizontal="right", vertical="center")
+    for col in range(3, 25):
+        ws.cell(TOTAL_ROW, col).border = Border(top=Side(style="medium", color=BLACK), bottom=Side(style="double", color=BLACK))
+        if col in range(16, 19):
+            ws.cell(TOTAL_ROW, col).fill = PatternFill("solid", fgColor="FFF2CC")
+
+    summary_title_row = TOTAL_ROW + 3
+    ws.merge_cells(start_row=summary_title_row, start_column=3, end_row=summary_title_row, end_column=8)
+    ws.cell(summary_title_row, 3, "COST SUMMARY")
+    ws.cell(summary_title_row, 3).fill = PatternFill("solid", fgColor=LIGHT_GREEN)
+    ws.cell(summary_title_row, 3).font = Font(name="Arial", size=10, bold=True, color=BLACK)
+    header_row(ws, summary_title_row + 1, 3, ["Metric", "Amount", "Formula / Meaning"])
+    summary = [
+        ("Monthly salary", f"=G{TOTAL_ROW}", "Recurring base salary cost"),
+        ("Monthly health care", f"=I{TOTAL_ROW}", "Recurring medical insurance cost"),
+        ("Recurring monthly cost", f"=J{TOTAL_ROW}", "Salary + health care, applicable in M1–M6 and M8–M12"),
+        ("M7 one-time package", f"=P{TOTAL_ROW}", "Repatriation / localisation package for the three repatriates"),
+        ("M7 salary + health care", f"=Q{TOTAL_ROW}", "Recurring salary + health care cost in M7"),
+        ("M7 total cost", f"=R{TOTAL_ROW}", "One-time package + salary + health care"),
+        ("Year 1 salary + health care", f"=SUM(J{TOTAL_ROW}:O{TOTAL_ROW})+Q{TOTAL_ROW}+SUM(S{TOTAL_ROW}:W{TOTAL_ROW})", "Recurring cost only"),
+        ("Year 1 one-time package", f"=P{TOTAL_ROW}", "M7 transition package only"),
+        ("Year 1 total personnel cost", f"=X{TOTAL_ROW}", "Recurring salary + health care plus the one-time M7 package"),
+    ]
+    for row, (metric, formula, meaning) in enumerate(summary, start=summary_title_row + 2):
+        ws.cell(row, 3, metric).font = Font(name="Arial", size=10, color=BLACK)
+        set_formula(ws.cell(row, 4), formula, CURRENCY_FIRST if row == summary_title_row + 2 else CURRENCY)
+        ws.cell(row, 5, meaning).font = Font(name="Arial", size=10, color=BLACK)
+        ws.cell(row, 5).alignment = Alignment(horizontal="left", vertical="center", wrap_text=True)
+    apply_borders(ws, summary_title_row + 1, summary_title_row + 1 + len(summary), 3, 5)
+
+    ws.merge_cells(start_row=summary_title_row, start_column=10, end_row=summary_title_row + 3, end_column=24)
+    ws.cell(summary_title_row, 10, (
+        "Cost basis: from M7 onward, the model costs only Salary + Health Care on a recurring basis. "
+        "M7 separately adds the one-time Repatriation / Localisation Transition Package for eligible Repatriates. "
+        "Housing, staff house, hotel, transportation, tax/social charges, statutory benefits, home leave and other benefits are excluded from this Monthly Costs view and require separate approval if applicable."
+    ))
+    ws.cell(summary_title_row, 10).font = Font(name="Arial", size=10, bold=True, color="C00000")
+    ws.cell(summary_title_row, 10).alignment = Alignment(horizontal="left", vertical="top", wrap_text=True)
+    ws.cell(summary_title_row, 10).comment = compliance_comment("This cost view is a management planning model and is not a payroll or statutory-benefit determination.")
+
+    apply_borders(ws, 8, DATA_END, 3, 24)
+    ws.freeze_panes = "J9"
+    autofit(ws, 3, 24, 8, summary_title_row + 1 + len(summary))
+    ws.column_dimensions["C"].width = 25
+    ws.column_dimensions["D"].width = 34
+    ws.column_dimensions["E"].width = 17
+    ws.column_dimensions["F"].width = 22
+    for col in range(7, 25):
+        ws.column_dimensions[get_column_letter(col)].width = 15
+    ws.column_dimensions["X"].width = 17
+    ws.print_area = f"B2:X{summary_title_row + 1 + len(summary)}"
+    ws.page_setup.orientation = "landscape"
+    ws.page_setup.paperSize = ws.PAPERSIZE_LETTER
+    ws.page_setup.fitToWidth = 1
+    ws.page_setup.fitToHeight = 0
+    ws.sheet_properties.pageSetUpPr.fitToPage = True
+    ws.oddFooter.center.text = "Monthly Costs | Page &P of &N"
+    ws.oddFooter.center.size = 8
+
+
 def build():
     if not SOURCE_IMAGE.exists():
         raise FileNotFoundError(SOURCE_IMAGE)
     wb = Workbook()
     build_personnel(wb)
+    build_monthly_costs(wb)
     build_repatriation_package(wb)
     build_rules(wb)
     wb.calculation.fullCalcOnLoad = True
@@ -564,7 +695,7 @@ def build():
 
 def validate():
     wb = load_workbook(OUT, data_only=False)
-    assert wb.sheetnames == ["Personnel", "Repatriation Package", "Contract Rules"]
+    assert wb.sheetnames == ["Personnel", "Monthly Costs", "Repatriation Package", "Contract Rules"]
     ws = wb["Personnel"]
     expected_names = [record[2] for record in PEOPLE]
     expected_salaries = [record[3] for record in PEOPLE]
@@ -606,7 +737,17 @@ def validate():
     assert package[f"H{calc_start}"].value == f"=VLOOKUP(C{calc_start},Personnel!$E${DATA_START}:$I${DATA_END},5,FALSE)"
     assert len([record for record in PEOPLE if record[4] == "Repatriate"]) == 3
     assert CORE_TRANSITION_MULTIPLIER == 1.50
-    print("VALIDATED: 8 positions (COO excluded; Operations Support person TBD) | $1,188,000 annual base salary | M1-M12 | Repatriation package = 1.50x monthly base salary")
+    monthly = wb["Monthly Costs"]
+    assert monthly["H9"].value == 12000
+    assert monthly["I9"].value == "=H9/12"
+    assert monthly["J9"].value == "=$G9+$I9"
+    assert monthly["P9"].value == '=IF($E9="Repatriate",$G9*\'Repatriation Package\'!$D$15,0)'
+    assert monthly["Q9"].value == "=$G9+$I9"
+    assert monthly["R9"].value == "=P9+Q9"
+    assert monthly[f"P{TOTAL_ROW}"].value == f"=SUM(P{DATA_START}:P{DATA_END})"
+    assert monthly[f"X{TOTAL_ROW}"].value == f"=SUM(X{DATA_START}:X{DATA_END})"
+    assert sum(MEDICAL_INSURANCE_ANNUAL.values()) == 88_000
+    print("VALIDATED: 8 positions (COO excluded; Operations Support person TBD) | recurring cost = salary + health care | M7 includes one-time repatriation package")
 
 
 if __name__ == "__main__":
