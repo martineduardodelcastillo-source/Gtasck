@@ -29,7 +29,7 @@ PEOPLE = [
     (1, "EPCM & Engineering Manager", "Juan Conde", 216000, "Repatriate", "Fixed", "Confirmed", "Repatriate; transitions to Local — Venezuela from M7 after the one-time transition package."),
     (2, "Drilling & Well Services Manager", "Alexander Stulme", 180000, "Repatriate", "Fixed", "Confirmed", "Repatriate; initially appointed General Manager of PU on secondment; transitions to Local — Venezuela from M7 after the one-time transition package."),
     (3, "Operations & Maintenance Manager", "Félix Valderrama", 216000, "Repatriate", "Fixed", "Confirmed", "Repatriate; transitions to Local — Venezuela from M7 after the one-time transition package."),
-    (4, "Technical Manager (Geosciences)", "Alan McKeon", 180000, "Expat", "Fixed", "Confirmed", "Expat; initially appointed Technical Manager of PU on secondment."),
+    (4, "Technical Manager (Geosciences)", "Alan McKeon", 180000, "Expat", "Fixed", "Confirmed", "Expat; initially appointed Technical Manager of PU on secondment. From M7: $2,000/month housing allowance and two home leaves."),
     (5, "Reservoir Engineer", "JJI", 120000, "Local", "Fixed", "Assumption", "Remote role. Local / Fixed is an editable assumption pending confirmation."),
     (6, "Rig Company Man", "Marcelo Dantas", 180000, "Expat", "Rotation", "Assumption", "Rotation confirmed from prior instructions; Expat contract is an editable assumption."),
     (7, "Planning & PMO", "Jose Miguel", 48000, "Local", "Fixed", "Confirmed", "Local in Maracaibo or staff house; no cash housing allowance by default."),
@@ -46,6 +46,16 @@ REPATRIATION_COMPONENTS = [
     ("Documentation, payroll & tax onboarding", 0.10, "M7", "Direct payment / reimbursement", "Local documentation, payroll onboarding and transition tax consultation.", "Prefer direct payment or reimbursement against documentation."),
 ]
 CORE_TRANSITION_MULTIPLIER = sum(component[1] for component in REPATRIATION_COMPONENTS)
+
+# Alan McKeon's approved expatriate benefits from M7 onward.
+# Home leave timing is a planning schedule and remains editable in the Alan Expat Package tab.
+ALAN_HOUSING_ALLOWANCE_MONTHLY = 2_000
+ALAN_HOME_LEAVE_PER_TRIP = 6_000
+ALAN_HOME_LEAVE_TRIPS = 2
+ALAN_HOME_LEAVE_MONTHS = (9, 12)
+ALAN_EXPAT_SCHEDULE_START = 15
+MARTIN_AGUERO_ANNUAL_SALARY = 180_000
+MARTIN_AGUERO_MONTHLY_SALARY = MARTIN_AGUERO_ANNUAL_SALARY / 12
 
 # Annual medical insurance budget from the source compensation table.
 # Operations Support retains the source budget only as a placeholder until the person is selected.
@@ -334,9 +344,9 @@ def build_rules(wb):
             "Medical insurance only",
             "Continues as Expat assignment",
             "Health care costed monthly",
-            "Not costed in Monthly Costs; separate approval required",
-            "Not costed in Monthly Costs; separate review required",
-            "Salary + health care only in Monthly Costs; all other benefits require separate approval",
+            "Alan exception: $2,000/month from M7 for approved family relocation to Maracaibo; otherwise separate approval required",
+            "No expat tax support or gross-up is modeled unless separately approved",
+            "Salary + health care; Alan exception includes housing and two home leaves from M7",
             "Not applicable",
             "Provisional",
             "No universal oil-and-gas benefit grid; package must reflect role, location and contract.",
@@ -347,7 +357,7 @@ def build_rules(wb):
             "Local — Venezuela from M7; document local payroll / employment basis",
             "Health care costed monthly",
             "Not costed in Monthly Costs; separate approval required",
-            "Not costed in Monthly Costs; apply local payroll and statutory review",
+            "Employee assumed to pay individual income tax in country of origin; no company tax gross-up or double-taxation cost modeled",
             "Salary + health care only in Monthly Costs; statutory and other benefits are outside this cost model",
             f"Eligible once at M7; core package = {CORE_TRANSITION_MULTIPLIER:.2f}x monthly salary; not recurring; see Repatriation Package",
             "Confirmed policy direction",
@@ -359,7 +369,7 @@ def build_rules(wb):
             "Local — Venezuela",
             "Health care costed monthly",
             "Not costed in Monthly Costs; separate approval required",
-            "Not costed in Monthly Costs; apply local payroll and statutory review",
+            "Employee assumed to pay individual income tax in country of origin; no company tax gross-up or double-taxation cost modeled",
             "Salary + health care only in Monthly Costs; statutory and other benefits are outside this cost model",
             "Not applicable",
             "Provisional",
@@ -419,6 +429,7 @@ def build_rules(wb):
     ws["C20"] = (
         "Policy decision recorded: every Repatriate receives only a one-time M7 transition / repatriation package and thereafter is treated as Local — Venezuela. "
         f"The current core package is {CORE_TRANSITION_MULTIPLIER:.2f} months of monthly base salary and is itemised on the Repatriation Package tab. It is not a recurring bonus and is excluded from the monthly base salary. "
+        "For repatriates becoming local, the planning assumption is that individual income tax is due in the employee's country of origin; no company tax gross-up or double-taxation cost is modeled. "
         "The amount, whether it is salary for Venezuelan labor purposes, the payroll / tax / social-security treatment, "
         "immigration status, and local statutory benefits must be approved by Venezuelan legal, tax and HR advisers before implementation. Venezuelan rules apply to employment relationships performed in Venezuela, irrespective of nationality."
     )
@@ -561,21 +572,206 @@ def build_repatriation_package(wb):
     ws.oddFooter.center.size = 8
 
 
+def build_alan_expat_package(wb):
+    ws = wb.create_sheet("Alan Expat Package", 2)
+    title_block(
+        ws,
+        "Alan McKeon — Expatriate Package from M7",
+        "Family relocation to Maracaibo | Housing allowance and two home leaves are costed from M7 onward",
+        "USD | Inputs in blue are editable | Housing minimum for approved family relocation to Maracaibo = $2,000/month",
+        9,
+    )
+
+    header_row(ws, 8, 3, ["Benefit / Assumption", "Value", "Unit", "Timing", "Cost Treatment", "Approval / Notes"])
+    package_rows = [
+        ("Housing allowance", ALAN_HOUSING_ALLOWANCE_MONTHLY, "USD / month", "M7–M12", "Included in Monthly Costs", "Approved minimum for Alan's family relocation to Maracaibo."),
+        ("Home leave per trip", ALAN_HOME_LEAVE_PER_TRIP, "USD / trip", "M7+", "Included in Monthly Costs", "Two home leaves per year; timing is editable below."),
+        ("Home leaves per year", ALAN_HOME_LEAVE_TRIPS, "Trips", "M7+", "Included in Monthly Costs", "Use trip count to calculate annual cost."),
+        ("Home leave trip 1 month", ALAN_HOME_LEAVE_MONTHS[0], "Month", "M9", "Included in Monthly Costs", "Editable planning month; must be between M7 and M12."),
+        ("Home leave trip 2 month", ALAN_HOME_LEAVE_MONTHS[1], "Month", "M12", "Included in Monthly Costs", "Editable planning month; must be between M7 and M12."),
+        ("Family relocation city", "Maracaibo", "City", "M7+", "Housing allowance applies", "Housing minimum of $2,000/month applies to approved family relocation in Maracaibo."),
+    ]
+    for row, (benefit, value, unit, timing, treatment, note) in enumerate(package_rows, start=9):
+        set_input(ws.cell(row, 3), benefit, instruction_comment(f"Alan expatriate package input: {benefit}"))
+        set_input(ws.cell(row, 4), value, instruction_comment(note))
+        if isinstance(value, (int, float)) and row in (9, 10):
+            ws.cell(row, 4).number_format = CURRENCY
+        elif isinstance(value, (int, float)):
+            ws.cell(row, 4).number_format = '#,##0'
+        set_input(ws.cell(row, 5), unit, instruction_comment(unit))
+        set_input(ws.cell(row, 6), timing, instruction_comment(timing))
+        set_input(ws.cell(row, 7), treatment, instruction_comment(treatment))
+        set_input(ws.cell(row, 8), note, instruction_comment(note))
+        for col in range(3, 9):
+            ws.cell(row, col).alignment = Alignment(horizontal="right" if col == 4 and isinstance(value, (int, float)) else "left", vertical="center", wrap_text=True)
+        ws.row_dimensions[row].height = 34
+    apply_borders(ws, 8, 14, 3, 8)
+
+    ws.merge_cells("C17:I17")
+    ws["C17"] = "M7–M12 COST SUMMARY"
+    ws["C17"].fill = PatternFill("solid", fgColor=LIGHT_GREEN)
+    ws["C17"].font = Font(name="Arial", size=10, bold=True, color=BLACK)
+    header_row(ws, 18, 3, ["Metric", "Amount", "Calculation / Meaning"])
+    summary = [
+        ("Housing, M7–M12", "=D9*6", "Six months at the approved $2,000/month housing allowance."),
+        ("Home leave, M7–M12", "=D10*D11", "Two trips at the approved $6,000 per trip."),
+        ("Total Alan expat benefits", "=D19+D20", "Housing plus home leaves, excluding salary and health care."),
+    ]
+    for row, (metric, formula, meaning) in enumerate(summary, start=19):
+        ws.cell(row, 3, metric).font = Font(name="Arial", size=10, color=BLACK)
+        set_formula(ws.cell(row, 4), formula, CURRENCY_FIRST if row == 19 else CURRENCY)
+        ws.cell(row, 5, meaning).font = Font(name="Arial", size=10, color=BLACK)
+        ws.cell(row, 5).alignment = Alignment(horizontal="left", vertical="center", wrap_text=True)
+    apply_borders(ws, 18, 21, 3, 5)
+
+    ws.merge_cells("C24:I26")
+    ws["C24"] = (
+        "Policy note: for Alan McKeon's approved family relocation to Maracaibo, the model includes a minimum $2,000/month housing allowance from M7 and two $6,000 home leaves. "
+        "For any future approved family relocation to Maracaibo, apply at least the same $2,000/month housing allowance unless management approves a higher package. "
+        "Tax, social charges and any payroll treatment are not modeled here and require specialist review."
+    )
+    ws["C24"].font = Font(name="Arial", size=10, bold=True, color="C00000")
+    ws["C24"].alignment = Alignment(horizontal="left", vertical="top", wrap_text=True)
+    ws["C24"].comment = compliance_comment("Expatriate benefits must be implemented through the approved contract and payroll process.")
+
+    autofit(ws, 3, 9, 8, 26)
+    ws.column_dimensions["C"].width = 28
+    ws.column_dimensions["D"].width = 16
+    ws.column_dimensions["E"].width = 16
+    ws.column_dimensions["F"].width = 13
+    ws.column_dimensions["G"].width = 24
+    ws.column_dimensions["H"].width = 42
+    ws.print_area = "B2:I26"
+    ws.page_setup.orientation = "landscape"
+    ws.page_setup.paperSize = ws.PAPERSIZE_LETTER
+    ws.page_setup.fitToWidth = 1
+    ws.page_setup.fitToHeight = 0
+    ws.sheet_properties.pageSetUpPr.fitToPage = True
+    ws.oddFooter.center.text = "Alan Expat Package | Page &P of &N"
+    ws.oddFooter.center.size = 8
+
+
+def build_pu_secondments(wb):
+    ws = wb.create_sheet("PU Secondments", 4)
+    title_block(
+        ws,
+        "PU-Paid Secondments and Net Cost after Secondments",
+        "Alexander Stulme, Alan McKeon and Martin Aguero initially serve as Petrourdaneta secondees — PU pays their costs",
+        "USD | Gross cost less PU-paid secondments = net cost | Martin Aguero salary of $180,000/year is included; his benefits remain TBD",
+        19,
+    )
+
+    ws.merge_cells("C7:S9")
+    ws["C7"] = (
+        "BIG NOTE — Initial PU Secondments: Alexander Stulme (General Manager), Alan McKeon (Technical Manager) and Martin Aguero (Infra Manager) are secondees in Petrourdaneta. "
+        "PU pays their costs. This sheet deducts the known modeled costs for Alexander and Alan and deducts Martin Aguero's known $180,000 annual salary ($15,000/month) from the gross Monthly Costs to provide the net cost. Martin's medical, housing, home leave and other benefits remain TBD and are not deducted until entered. "
+        "For repatriates becoming local, individual income tax is assumed to be the employee's responsibility in the country of origin; no company tax gross-up or double-taxation cost is modeled. Expat tax support remains outside the model unless separately approved."
+    )
+    ws["C7"].font = Font(name="Arial", size=10, bold=True, color="C00000")
+    ws["C7"].alignment = Alignment(horizontal="left", vertical="top", wrap_text=True)
+    ws["C7"].comment = compliance_comment("Tax treatment, residence and payroll obligations require legal and tax review; this is a management planning assumption only.")
+
+    headers = ["Person", "Initial PU Role", "PU Cost Status", "M1", "M2", "M3", "M4", "M5", "M6", "M7", "M8", "M9", "M10", "M11", "M12", "Year 1 PU-Paid Cost"]
+    header_row(ws, 11, 3, headers)
+    secondments = [
+        ("Alexander Stulme", "General Manager", "Known — calculated from Monthly Costs"),
+        ("Alan McKeon", "Technical Manager", "Known — calculated from Monthly Costs, including expat benefits"),
+        ("Martin Aguero", "Infra Manager", "Salary known — $180,000/year; benefits TBD and excluded"),
+    ]
+    lookup_month_indexes = [8, 9, 10, 11, 12, 13, 16, 17, 18, 19, 20, 21]
+    for row, (person, role, status) in enumerate(secondments, start=12):
+        set_input(ws.cell(row, 3), person, instruction_comment("Initial PU secondment as confirmed by management."))
+        set_input(ws.cell(row, 4), role, instruction_comment("PU role as confirmed by management."))
+        set_input(ws.cell(row, 5), status, instruction_comment(status))
+        for month, (col, lookup_index) in enumerate(zip(range(6, 18), lookup_month_indexes), start=1):
+            if person == "Martin Aguero":
+                set_input(ws.cell(row, col), MARTIN_AGUERO_MONTHLY_SALARY, instruction_comment("Known PU-paid salary: $180,000/year or $15,000/month. Medical, housing, home leave and other benefits remain TBD and are excluded."))
+            else:
+                set_formula(ws.cell(row, col), f"=VLOOKUP($C{row},'Monthly Costs'!$C${DATA_START}:$X${DATA_END},{lookup_index},FALSE)", CURRENCY_FIRST if row == 12 and month == 1 else CURRENCY, cross_sheet=True)
+            ws.cell(row, col).number_format = CURRENCY
+        set_formula(ws.cell(row, 18), f"=SUM(F{row}:Q{row})", CURRENCY_FIRST if row == 12 else CURRENCY)
+        for col in range(3, 19):
+            ws.cell(row, col).alignment = Alignment(horizontal="right" if col >= 6 else "left", vertical="center", wrap_text=True)
+        ws.row_dimensions[row].height = 42
+
+    secondment_total_row = 15
+    ws.merge_cells(start_row=secondment_total_row, start_column=3, end_row=secondment_total_row, end_column=5)
+    ws.cell(secondment_total_row, 3, "TOTAL PU-PAID SECONDMENT COST")
+    ws.cell(secondment_total_row, 3).font = Font(name="Arial", size=10, bold=True, color=BLACK)
+    for col in range(6, 19):
+        letter = get_column_letter(col)
+        set_formula(ws.cell(secondment_total_row, col), f"=SUM({letter}12:{letter}14)", CURRENCY_FIRST if col == 6 else CURRENCY)
+        ws.cell(secondment_total_row, col).alignment = Alignment(horizontal="right", vertical="center")
+    for col in range(3, 19):
+        ws.cell(secondment_total_row, col).border = Border(top=Side(style="medium", color=BLACK), bottom=Side(style="double", color=BLACK))
+    apply_borders(ws, 11, secondment_total_row, 3, 18)
+
+    ws.merge_cells("C18:S18")
+    ws["C18"] = "GROSS TO NET MONTHLY AND ANNUAL COST — AFTER KNOWN PU-PAID SECONDMENTS"
+    ws["C18"].fill = PatternFill("solid", fgColor=LIGHT_GREEN)
+    ws["C18"].font = Font(name="Arial", size=10, bold=True, color=BLACK)
+    header_row(ws, 19, 3, ["Metric", "M1", "M2", "M3", "M4", "M5", "M6", "M7", "M8", "M9", "M10", "M11", "M12", "Year 1"])
+    monthly_cost_columns = list(range(10, 16)) + [18] + list(range(19, 24))
+    for row, metric in enumerate(["Gross Monthly Costs", "Less: PU-Paid Secondments", "Net Cost after Known PU Secondments"], start=20):
+        ws.cell(row, 3, metric).font = Font(name="Arial", size=10, bold=(row == 22), color=BLACK)
+        for offset, monthly_col in enumerate(monthly_cost_columns, start=4):
+            monthly_letter = get_column_letter(monthly_col)
+            secondment_letter = get_column_letter(5 + (offset - 3))
+            if row == 20:
+                formula = f"='Monthly Costs'!{monthly_letter}{TOTAL_ROW}"
+            elif row == 21:
+                formula = f"={secondment_letter}{secondment_total_row}"
+            else:
+                formula = f"={get_column_letter(offset)}20-{get_column_letter(offset)}21"
+            set_formula(ws.cell(row, offset), formula, CURRENCY_FIRST if row == 20 and offset == 4 else CURRENCY, cross_sheet=True)
+            ws.cell(row, offset).alignment = Alignment(horizontal="right", vertical="center")
+    set_formula(ws.cell(20, 16), f"='Monthly Costs'!X{TOTAL_ROW}", CURRENCY_FIRST, cross_sheet=True)
+    set_formula(ws.cell(21, 16), f"=R{secondment_total_row}", CURRENCY)
+    set_formula(ws.cell(22, 16), "=P20-P21", CURRENCY)
+    apply_borders(ws, 19, 22, 3, 16)
+    for col in range(3, 17):
+        ws.cell(22, col).border = Border(top=Side(style="medium", color=BLACK), bottom=Side(style="double", color=BLACK))
+
+    ws.merge_cells("C25:S27")
+    ws["C25"] = (
+        "Net cost is provisional. It deducts the known PU-paid modeled costs for Alexander Stulme and Alan McKeon, plus Martin Aguero's known $15,000/month salary. "
+        "Martin Aguero's health care, housing, home leave and any other approved benefits remain to be defined; once entered, they will reduce the net monthly and annual budget further."
+    )
+    ws["C25"].font = Font(name="Arial", size=10, bold=True, color="C00000")
+    ws["C25"].alignment = Alignment(horizontal="left", vertical="top", wrap_text=True)
+
+    autofit(ws, 3, 19, 11, 27)
+    ws.column_dimensions["C"].width = 24
+    ws.column_dimensions["D"].width = 24
+    ws.column_dimensions["E"].width = 38
+    for col in range(6, 19):
+        ws.column_dimensions[get_column_letter(col)].width = 14
+    ws.print_area = "B2:S27"
+    ws.page_setup.orientation = "landscape"
+    ws.page_setup.paperSize = ws.PAPERSIZE_LETTER
+    ws.page_setup.fitToWidth = 1
+    ws.page_setup.fitToHeight = 0
+    ws.sheet_properties.pageSetUpPr.fitToPage = True
+    ws.oddFooter.center.text = "PU Secondments | Page &P of &N"
+    ws.oddFooter.center.size = 8
+
+
 def build_monthly_costs(wb):
     ws = wb.create_sheet("Monthly Costs", 1)
     title_block(
         ws,
-        "Monthly Personnel Cost — Salary, Health Care and M7 Transition Package",
-        "M1–M6 and M8–M12 = Salary + Health Care | M7 = One-Time Package + Salary + Health Care | COO excluded",
-        "USD | Health care is based on the source annual insurance budget | No housing, tax, transport or other benefits are costed in this view",
-        24,
+        "Monthly Personnel Cost — Salary, Health Care, M7 Transition and Alan Expat Benefits",
+        "M1–M6 = Salary + Health Care | M7 includes Repatriation Package and Alan housing | M8–M12 include approved Alan expatriate benefits",
+        "USD | Housing is $2,000/month from M7 for Alan's family relocation to Maracaibo | Two $6,000 home leaves scheduled in M9 and M12",
+        27,
     )
 
     headers = [
         "Person", "Position", "M1–M6 Contract", "M7+ Employment Basis", "Salary / Month", "Health Care / Year", "Health Care / Month",
         "M1\nSalary + Health", "M2\nSalary + Health", "M3\nSalary + Health", "M4\nSalary + Health", "M5\nSalary + Health", "M6\nSalary + Health",
-        "M7\nOne-Time Package", "M7\nSalary + Health", "M7\nTotal Cost",
-        "M8\nSalary + Health", "M9\nSalary + Health", "M10\nSalary + Health", "M11\nSalary + Health", "M12\nSalary + Health", "Year 1\nTotal Cost",
+        "M7\nOne-Time Package", "M7\nRecurring Cost", "M7\nTotal Cost",
+        "M8\nTotal Cost", "M9\nTotal Cost", "M10\nTotal Cost", "M11\nTotal Cost", "M12\nTotal Cost", "Year 1\nTotal Cost",
+        "M7+ Housing\n/ Month", "Home Leave\n/ Trip", "Family Relocation\n/ City",
     ]
     header_row(ws, 8, 3, headers)
     for col in range(16, 19):
@@ -594,19 +790,23 @@ def build_monthly_costs(wb):
         )
         ws.cell(row, 8).number_format = CURRENCY
         set_formula(ws.cell(row, 9), f"=H{row}/12", CURRENCY)
+        set_formula(ws.cell(row, 25), f'=IF(C{row}="Alan McKeon",\'Alan Expat Package\'!$D$9,0)', CURRENCY, cross_sheet=True)
+        set_formula(ws.cell(row, 26), f'=IF(C{row}="Alan McKeon",\'Alan Expat Package\'!$D$10,0)', CURRENCY, cross_sheet=True)
+        set_formula(ws.cell(row, 27), f'=IF(C{row}="Alan McKeon",\'Alan Expat Package\'!$D$14,"Not applicable")', cross_sheet=True)
         for col in range(10, 16):
             set_formula(ws.cell(row, col), f"=$G{row}+$I{row}", CURRENCY_FIRST if row == DATA_START and col == 10 else CURRENCY)
         set_formula(ws.cell(row, 16), f'=IF($E{row}="Repatriate",$G{row}*\'Repatriation Package\'!$D$15,0)', CURRENCY_FIRST if row == DATA_START else CURRENCY, cross_sheet=True)
-        set_formula(ws.cell(row, 17), f"=$G{row}+$I{row}", CURRENCY_FIRST if row == DATA_START else CURRENCY)
+        set_formula(ws.cell(row, 17), f"=$G{row}+$I{row}+$Y{row}", CURRENCY_FIRST if row == DATA_START else CURRENCY)
         set_formula(ws.cell(row, 18), f"=P{row}+Q{row}", CURRENCY_FIRST if row == DATA_START else CURRENCY)
-        for col in range(19, 24):
-            set_formula(ws.cell(row, col), f"=$G{row}+$I{row}", CURRENCY_FIRST if row == DATA_START and col == 19 else CURRENCY)
+        for month, col in zip(range(8, 13), range(19, 24)):
+            home_leave = f"+IF({month}='Alan Expat Package'!$D$12,$Z{row},0)+IF({month}='Alan Expat Package'!$D$13,$Z{row},0)"
+            set_formula(ws.cell(row, col), f"=$G{row}+$I{row}+$Y{row}{home_leave}", CURRENCY_FIRST if row == DATA_START and col == 19 else CURRENCY, cross_sheet=True)
         set_formula(ws.cell(row, 24), f"=SUM(J{row}:O{row})+R{row}+SUM(S{row}:W{row})", CURRENCY_FIRST if row == DATA_START else CURRENCY)
-        for col in range(3, 25):
+        for col in range(3, 28):
             ws.cell(row, col).alignment = Alignment(
-                horizontal="right" if col >= 7 else "left",
+                horizontal="right" if col in range(7, 27) else "left",
                 vertical="center",
-                wrap_text=col in (3, 4, 5, 6),
+                wrap_text=col in (3, 4, 5, 6, 27),
             )
         for col in range(16, 19):
             ws.cell(row, col).fill = PatternFill("solid", fgColor="FFF2CC")
@@ -615,11 +815,14 @@ def build_monthly_costs(wb):
     ws.merge_cells(start_row=TOTAL_ROW, start_column=3, end_row=TOTAL_ROW, end_column=6)
     ws.cell(TOTAL_ROW, 3, "TOTAL — 8 POSITIONS (COO EXCLUDED)")
     ws.cell(TOTAL_ROW, 3).font = Font(name="Arial", size=10, bold=True, color=BLACK)
-    for col in range(7, 25):
+    for col in range(7, 27):
         letter = get_column_letter(col)
         set_formula(ws.cell(TOTAL_ROW, col), f"=SUM({letter}{DATA_START}:{letter}{DATA_END})", CURRENCY_FIRST if col == 7 else CURRENCY)
         ws.cell(TOTAL_ROW, col).alignment = Alignment(horizontal="right", vertical="center")
-    for col in range(3, 25):
+    ws.cell(TOTAL_ROW, 27, "Alan family relocation to Maracaibo")
+    ws.cell(TOTAL_ROW, 27).font = Font(name="Arial", size=10, bold=True, color=BLACK)
+    ws.cell(TOTAL_ROW, 27).alignment = Alignment(horizontal="left", vertical="center", wrap_text=True)
+    for col in range(3, 28):
         ws.cell(TOTAL_ROW, col).border = Border(top=Side(style="medium", color=BLACK), bottom=Side(style="double", color=BLACK))
         if col in range(16, 19):
             ws.cell(TOTAL_ROW, col).fill = PatternFill("solid", fgColor="FFF2CC")
@@ -633,13 +836,15 @@ def build_monthly_costs(wb):
     summary = [
         ("Monthly salary", f"=G{TOTAL_ROW}", "Recurring base salary cost"),
         ("Monthly health care", f"=I{TOTAL_ROW}", "Recurring medical insurance cost"),
-        ("Recurring monthly cost", f"=J{TOTAL_ROW}", "Salary + health care, applicable in M1–M6 and M8–M12"),
+        ("M1–M6 recurring monthly cost", f"=J{TOTAL_ROW}", "Salary + health care before M7"),
         ("M7 one-time package", f"=P{TOTAL_ROW}", "Repatriation / localisation package for the three repatriates"),
-        ("M7 salary + health care", f"=Q{TOTAL_ROW}", "Recurring salary + health care cost in M7"),
-        ("M7 total cost", f"=R{TOTAL_ROW}", "One-time package + salary + health care"),
-        ("Year 1 salary + health care", f"=SUM(J{TOTAL_ROW}:O{TOTAL_ROW})+Q{TOTAL_ROW}+SUM(S{TOTAL_ROW}:W{TOTAL_ROW})", "Recurring cost only"),
+        ("Alan M7+ housing allowance", f"=Y{TOTAL_ROW}", "Six months at $2,000/month for family relocation to Maracaibo"),
+        ("Alan home leave cost", f"=Z{TOTAL_ROW}*{ALAN_HOME_LEAVE_TRIPS}", "Two trips at $6,000 each, scheduled in M9 and M12"),
+        ("M7 recurring cost", f"=Q{TOTAL_ROW}", "Salary + health care plus Alan's approved housing allowance"),
+        ("M7 total cost", f"=R{TOTAL_ROW}", "One-time package + recurring M7 cost"),
+        ("Year 1 recurring cost", f"=SUM(J{TOTAL_ROW}:O{TOTAL_ROW})+Q{TOTAL_ROW}+SUM(S{TOTAL_ROW}:W{TOTAL_ROW})", "Salary + health care, Alan housing from M7 and two home leaves"),
         ("Year 1 one-time package", f"=P{TOTAL_ROW}", "M7 transition package only"),
-        ("Year 1 total personnel cost", f"=X{TOTAL_ROW}", "Recurring salary + health care plus the one-time M7 package"),
+        ("Year 1 total personnel cost", f"=X{TOTAL_ROW}", "All modeled salary, health care, Alan expat benefits and the one-time M7 package"),
     ]
     for row, (metric, formula, meaning) in enumerate(summary, start=summary_title_row + 2):
         ws.cell(row, 3, metric).font = Font(name="Arial", size=10, color=BLACK)
@@ -648,27 +853,30 @@ def build_monthly_costs(wb):
         ws.cell(row, 5).alignment = Alignment(horizontal="left", vertical="center", wrap_text=True)
     apply_borders(ws, summary_title_row + 1, summary_title_row + 1 + len(summary), 3, 5)
 
-    ws.merge_cells(start_row=summary_title_row, start_column=10, end_row=summary_title_row + 3, end_column=24)
+    ws.merge_cells(start_row=summary_title_row, start_column=10, end_row=summary_title_row + 4, end_column=27)
     ws.cell(summary_title_row, 10, (
-        "Cost basis: from M7 onward, the model costs only Salary + Health Care on a recurring basis. "
-        "M7 separately adds the one-time Repatriation / Localisation Transition Package for eligible Repatriates. "
-        "Housing, staff house, hotel, transportation, tax/social charges, statutory benefits, home leave and other benefits are excluded from this Monthly Costs view and require separate approval if applicable."
+        "Cost basis: from M7 onward, the recurring model is Salary + Health Care for all personnel, plus Alan McKeon's approved $2,000/month housing allowance for family relocation to Maracaibo. "
+        "Alan also receives two $6,000 home leaves, planned in M9 and M12. M7 separately adds the one-time Repatriation / Localisation Transition Package for eligible Repatriates. "
+        "Housing for any future family relocation to Maracaibo should be modeled at a minimum of $2,000/month after management approval. Tax, social charges, statutory benefits, transport, hotel/staff house and any other benefits remain outside this Monthly Costs view unless separately approved."
     ))
     ws.cell(summary_title_row, 10).font = Font(name="Arial", size=10, bold=True, color="C00000")
     ws.cell(summary_title_row, 10).alignment = Alignment(horizontal="left", vertical="top", wrap_text=True)
     ws.cell(summary_title_row, 10).comment = compliance_comment("This cost view is a management planning model and is not a payroll or statutory-benefit determination.")
 
-    apply_borders(ws, 8, DATA_END, 3, 24)
+    apply_borders(ws, 8, DATA_END, 3, 27)
     ws.freeze_panes = "J9"
-    autofit(ws, 3, 24, 8, summary_title_row + 1 + len(summary))
+    autofit(ws, 3, 27, 8, summary_title_row + 1 + len(summary))
     ws.column_dimensions["C"].width = 25
     ws.column_dimensions["D"].width = 34
     ws.column_dimensions["E"].width = 17
     ws.column_dimensions["F"].width = 22
-    for col in range(7, 25):
+    for col in range(7, 27):
         ws.column_dimensions[get_column_letter(col)].width = 15
     ws.column_dimensions["X"].width = 17
-    ws.print_area = f"B2:X{summary_title_row + 1 + len(summary)}"
+    ws.column_dimensions["Y"].width = 16
+    ws.column_dimensions["Z"].width = 16
+    ws.column_dimensions["AA"].width = 28
+    ws.print_area = f"B2:AA{summary_title_row + 1 + len(summary)}"
     ws.page_setup.orientation = "landscape"
     ws.page_setup.paperSize = ws.PAPERSIZE_LETTER
     ws.page_setup.fitToWidth = 1
@@ -684,7 +892,9 @@ def build():
     wb = Workbook()
     build_personnel(wb)
     build_monthly_costs(wb)
+    build_alan_expat_package(wb)
     build_repatriation_package(wb)
+    build_pu_secondments(wb)
     build_rules(wb)
     wb.calculation.fullCalcOnLoad = True
     wb.calculation.forceFullCalc = True
@@ -695,7 +905,7 @@ def build():
 
 def validate():
     wb = load_workbook(OUT, data_only=False)
-    assert wb.sheetnames == ["Personnel", "Monthly Costs", "Repatriation Package", "Contract Rules"]
+    assert wb.sheetnames == ["Personnel", "Monthly Costs", "Alan Expat Package", "Repatriation Package", "PU Secondments", "Contract Rules"]
     ws = wb["Personnel"]
     expected_names = [record[2] for record in PEOPLE]
     expected_salaries = [record[3] for record in PEOPLE]
@@ -742,12 +952,27 @@ def validate():
     assert monthly["I9"].value == "=H9/12"
     assert monthly["J9"].value == "=$G9+$I9"
     assert monthly["P9"].value == '=IF($E9="Repatriate",$G9*\'Repatriation Package\'!$D$15,0)'
-    assert monthly["Q9"].value == "=$G9+$I9"
+    assert monthly["Q9"].value == "=$G9+$I9+$Y9"
     assert monthly["R9"].value == "=P9+Q9"
     assert monthly[f"P{TOTAL_ROW}"].value == f"=SUM(P{DATA_START}:P{DATA_END})"
     assert monthly[f"X{TOTAL_ROW}"].value == f"=SUM(X{DATA_START}:X{DATA_END})"
+    assert monthly["Y12"].value == "=IF(C12=\"Alan McKeon\",'Alan Expat Package'!$D$9,0)"
+    assert monthly["Z12"].value == "=IF(C12=\"Alan McKeon\",'Alan Expat Package'!$D$10,0)"
+    assert monthly["AA12"].value == "=IF(C12=\"Alan McKeon\",'Alan Expat Package'!$D$14,\"Not applicable\")"
     assert sum(MEDICAL_INSURANCE_ANNUAL.values()) == 88_000
-    print("VALIDATED: 8 positions (COO excluded; Operations Support person TBD) | recurring cost = salary + health care | M7 includes one-time repatriation package")
+    alan_package = wb["Alan Expat Package"]
+    assert alan_package["D9"].value == ALAN_HOUSING_ALLOWANCE_MONTHLY
+    assert alan_package["D10"].value == ALAN_HOME_LEAVE_PER_TRIP
+    assert alan_package["D11"].value == ALAN_HOME_LEAVE_TRIPS
+    assert alan_package["D12"].value == ALAN_HOME_LEAVE_MONTHS[0]
+    assert alan_package["D13"].value == ALAN_HOME_LEAVE_MONTHS[1]
+    assert alan_package["D14"].value == "Maracaibo"
+    secondments = wb["PU Secondments"]
+    assert [secondments[f"C{row}"].value for row in range(12, 15)] == ["Alexander Stulme", "Alan McKeon", "Martin Aguero"]
+    assert secondments["F14"].value == MARTIN_AGUERO_MONTHLY_SALARY
+    assert secondments["D22"].value == "=D20-D21"
+    assert secondments["P22"].value == "=P20-P21"
+    print("VALIDATED: 8 positions (COO excluded; Operations Support person TBD) | Alan housing and home leaves included | known PU-paid secondments deducted from net cost")
 
 
 if __name__ == "__main__":
