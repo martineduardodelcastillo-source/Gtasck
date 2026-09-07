@@ -30,7 +30,7 @@ PEOPLE = [
     ("EPCM & Engineering Manager", "Juan Conde", "Repatriate", "Local — Venezuela", "Fixed", "GREEN — Confirmed", 216000, 12000, "No", "—", "One-time M7 transition package. Origin-country employee tax assumption; no company gross-up modeled."),
     ("Drilling & Well Services Manager", "Alexander Stulme", "Repatriate", "Local — Venezuela", "Fixed", "GREEN — Confirmed", 180000, 12000, "Yes", "PU General Manager", "Initial PU secondee. PU pays modeled cost; one-time M7 transition package applies."),
     ("Operations & Maintenance Manager", "Félix Valderrama", "Repatriate", "Local — Venezuela", "Fixed", "GREEN — Confirmed", 216000, 12000, "No", "—", "One-time M7 transition package. Origin-country employee tax assumption; no company gross-up modeled."),
-    ("Technical Manager (Geosciences)", "Alan McKeon", "Expat", "Expat", "Fixed", "GREEN — Confirmed", 180000, 12000, "Yes", "PU Technical Manager", "Initial PU secondee. Approved family relocation to Maracaibo; housing and home leave from M7."),
+    ("Technical Manager (Geosciences)", "Alan McKeon", "Expat", "Expat", "Fixed", "GREEN — Confirmed", 180000, 12000, "Yes", "PU Technical Manager", "Initial PU secondee. Approved family relocation to Maracaibo; housing from M7 and home leave stated as a non-costed benefit."),
     ("Reservoir Engineer", "JJI", "Local", "Local", "Fixed / Remote", "AMBER — Assumption", 120000, 12000, "No", "—", "Remote designation and local benefit treatment remain subject to confirmation."),
     ("Rig Company Man", "Marcelo Dantas", "Expat", "Expat", "Rotation", "AMBER — Assumption", 180000, 12000, "No", "—", "Rotation is confirmed; expatriate contract treatment remains subject to confirmation."),
     ("Planning & PMO", "Jose Miguel", "Local", "Local", "Fixed", "GREEN — Confirmed", 48000, 8000, "No", "—", "Local / staff-house approach; no cash housing allowance modeled."),
@@ -131,20 +131,20 @@ def build():
     ws.column_dimensions["B"].width = 20
 
     # Header
-    ws.merge_cells("C3:Q3")
+    ws.merge_cells("C3:R3")
     ws["C3"] = "Petrourdaneta — Manpower Cost Summary, PU Allocation and Contract Packages"
     ws["C3"].fill = PatternFill("solid", fgColor=DARK_GREEN)
     ws["C3"].font = Font(name="Arial", size=16, bold=True, color=WHITE)
     ws["C3"].alignment = Alignment(horizontal="left", vertical="center")
     ws.row_dimensions[3].height = 25
-    ws.merge_cells("C5:Q5")
+    ws.merge_cells("C5:R5")
     ws["C5"] = "Single-sheet executive model | Monthly and annual manpower cost | COO excluded and treated separately | USD"
     ws["C5"].font = Font(name="Arial", size=11, bold=True, color=BLACK)
-    ws.merge_cells("C6:Q6")
+    ws.merge_cells("C6:R6")
     ws["C6"] = "Blue = hardcoded input | Black = formula | Traffic-light status distinguishes confirmed, assumption and TBD records"
     ws["C6"].font = Font(name="Arial", size=9, italic=True, color="666666")
 
-    ws.merge_cells("C8:Q9")
+    ws.merge_cells("C8:R9")
     ws["C8"] = (
         "BIG NOTE — Alexander Stulme (PU General Manager), Alan McKeon (PU Technical Manager) and Martin Aguero (PU Infra Manager) are initially seconded to Petrourdaneta. "
         "PU pays their costs. The model includes all manpower in gross cost and then deducts PU-paid secondees to calculate net manpower cost. Martin Aguero's $180,000 annual salary is included; his benefits remain TBD. "
@@ -161,16 +161,15 @@ def build():
     assumptions = [
         ("Repatriation package multiple", 1.50, "x monthly salary", "M7 — Juan, Alexander and Félix", "One-time moving, settling-in, temporary lodging, transport and onboarding package."),
         ("Alan housing allowance", 2000, "USD / month", "M7–M12 — family relocation to Maracaibo", "Minimum $2,000/month for future approved family relocation to Maracaibo unless management approves more."),
-        ("Alan home leave / trip", 6000, "USD / trip", "M7+ — two trips", "Two home leaves are scheduled in M9 and M12."),
-        ("Alan home leave trip 1 month", 9, "Month", "M9", "Editable planning month; must be M7–M12."),
-        ("Alan home leave trip 2 month", 12, "Month", "M12", "Editable planning month; must be M7–M12."),
+        ("Alan home leave", "Home leave", "Benefit", "M7+", "Stated benefit only; no home leave cost is included in this model."),
+        ("Local paid vacation", 30, "Days", "All local roles; M7+ for repatriates", "30 paid vacation days. Salary is assumed to cover this entitlement; no incremental cost is modeled."),
         ("Martin Aguero annual salary", 180000, "USD / year", "PU-paid secondment M1–M12", "Known annual salary from prior secondments model; Martin benefits are not included."),
     ]
     for row, (label, value, unit, application, explanation) in enumerate(assumptions, start=13):
         set_input(ws.cell(row, 3), label, management_note(explanation))
         cell_note = prior_model_note(explanation) if label.startswith("Martin") else management_note(explanation)
         set_input(ws.cell(row, 4), value, cell_note)
-        ws.cell(row, 4).number_format = MULTIPLE if row == 13 else (CURRENCY if row in (14, 15, 18) else '#,##0')
+        ws.cell(row, 4).number_format = MULTIPLE if row == 13 else (CURRENCY if row in (14, 17) else '#,##0')
         set_input(ws.cell(row, 5), unit, management_note(unit))
         set_input(ws.cell(row, 6), application, management_note(application))
         set_input(ws.cell(row, 7), explanation, management_note(explanation))
@@ -221,7 +220,7 @@ def build():
     kpis = [
         ("M1–M6 net monthly manpower cost", "=D25", "Cost after PU-paid secondments."),
         ("M7 net manpower cost", "=J25", "Includes repatriation package and Alan's M7 housing."),
-        ("M9 / M12 net manpower cost", "=L25", "Alan home leave is fully paid by PU, so the net cost remains steady."),
+        ("M8–M12 net monthly manpower cost", "=K25", "Salary, health care and Alan's housing; home leave is stated but not costed."),
         ("Gross Year 1 manpower cost", "=P23", "Includes all modeled manpower, including Martin's known salary."),
         ("PU-paid secondments", "=-P24", "Alexander and Alan's modeled cost plus Martin's salary."),
         ("Net Year 1 manpower cost", "=P25", "Overall Year 1 manpower cost after the PU allocation."),
@@ -235,10 +234,10 @@ def build():
     outline(ws, 29, 35, 3, 5)
 
     # Profile and benefit table
-    section(ws, 36, "PERSONNEL, CONTRACTS AND BENEFITS", 3, 17)
+    section(ws, 36, "PERSONNEL, CONTRACTS AND BENEFITS", 3, 18)
     profile_headers = [
         "#", "Position", "Person", "M1–M6 Contract", "M7+ Basis", "Work Arrangement", "Traffic-Light Status",
-        "Annual Base Salary", "Monthly Salary", "Health Care / Year", "M7 One-Time Package", "Housing / Month", "Home Leave / Trip", "PU-Paid?", "PU Appointment / Scope",
+        "Annual Base Salary", "Monthly Salary", "Health Care / Year", "M7 One-Time Package", "Housing / Month", "Home Leave", "Local Paid Vacation / Days", "PU-Paid?", "PU Appointment / Scope",
     ]
     table_header(ws, 37, profile_headers, 3)
     for row, record in enumerate(PEOPLE, start=PROFILE_START):
@@ -253,7 +252,7 @@ def build():
         set_input(ws.cell(row, 9), status, management_note(f"Status: {status}. {explanation}"))
         ws.cell(row, 9).fill = PatternFill("solid", fgColor=status_fill(status))
         if person == "Martin Aguero":
-            set_formula(ws.cell(row, 10), "=$D$18", CURRENCY)
+            set_formula(ws.cell(row, 10), "=$D$17", CURRENCY)
         else:
             set_input(ws.cell(row, 10), annual_salary, source_note("Base Salary (Annual)", explanation))
             ws.cell(row, 10).number_format = currency_formula_format(row == PROFILE_START)
@@ -262,28 +261,31 @@ def build():
         ws.cell(row, 12).number_format = CURRENCY
         set_formula(ws.cell(row, 13), f'=IF(F{row}="Repatriate",$D$13*K{row},0)', CURRENCY)
         set_formula(ws.cell(row, 14), f'=IF(E{row}="Alan McKeon",$D$14,0)', CURRENCY)
-        set_formula(ws.cell(row, 15), f'=IF(E{row}="Alan McKeon",$D$15,0)', CURRENCY)
-        set_input(ws.cell(row, 16), pu_paid, management_note("PU pays cost for the initial secondees: Alexander, Alan and Martin."))
-        set_input(ws.cell(row, 17), pu_scope, management_note(explanation))
-        for col in range(3, 18):
+        set_formula(ws.cell(row, 15), f'=IF(E{row}="Alan McKeon",$D$15,"—")')
+        set_formula(ws.cell(row, 16), f'=IF(OR(G{row}="Local — Venezuela",G{row}="Local"),$D$16,0)', '#,##0')
+        set_input(ws.cell(row, 17), pu_paid, management_note("PU pays cost for the initial secondees: Alexander, Alan and Martin."))
+        set_input(ws.cell(row, 18), pu_scope, management_note(explanation))
+        for col in range(3, 19):
             ws.cell(row, col).alignment = Alignment(
-                horizontal="right" if col in (10, 11, 12, 13, 14, 15) else "left",
+                horizontal="right" if col in (10, 11, 12, 13, 14, 16) else "left",
                 vertical="center",
-                wrap_text=col in (4, 5, 6, 7, 8, 9, 17),
+                wrap_text=col in (4, 5, 6, 7, 8, 9, 15, 18),
             )
         ws.row_dimensions[row].height = 34
     ws.merge_cells(start_row=PROFILE_TOTAL, start_column=3, end_row=PROFILE_TOTAL, end_column=9)
     ws.cell(PROFILE_TOTAL, 3, "TOTAL GROSS BASE, HEALTH AND M7 BENEFIT INPUTS")
     ws.cell(PROFILE_TOTAL, 3).font = Font(name="Arial", size=10, bold=True, color=BLACK)
-    for col in range(10, 16):
+    for col in range(10, 15):
         letter = get_column_letter(col)
         set_formula(ws.cell(PROFILE_TOTAL, col), f"=SUM({letter}{PROFILE_START}:{letter}{PROFILE_END})", currency_formula_format(col == 10))
         ws.cell(PROFILE_TOTAL, col).alignment = Alignment(horizontal="right", vertical="center")
-    ws.cell(PROFILE_TOTAL, 16, "PU allocation shown above")
-    ws.cell(PROFILE_TOTAL, 17, "Use monthly table below for total gross and net manpower costs")
-    for col in range(3, 18):
+    ws.cell(PROFILE_TOTAL, 15, "Home leave stated; no cost")
+    set_formula(ws.cell(PROFILE_TOTAL, 16), f"=SUM(P{PROFILE_START}:P{PROFILE_END})", '#,##0')
+    ws.cell(PROFILE_TOTAL, 17, "PU allocation shown above")
+    ws.cell(PROFILE_TOTAL, 18, "Use monthly table below for total gross and net manpower costs")
+    for col in range(3, 19):
         ws.cell(PROFILE_TOTAL, col).border = Border(top=Side(style="medium", color=BLACK), bottom=Side(style="double", color=BLACK))
-    outline(ws, 37, PROFILE_TOTAL, 3, 17)
+    outline(ws, 37, PROFILE_TOTAL, 3, 18)
 
     # Monthly costs by person
     section(ws, 50, "MONTHLY MANPOWER COST BY PERSON — COSTS INCLUDE SALARY, HEALTH AND APPROVED BENEFITS", 3, 17)
@@ -291,17 +293,14 @@ def build():
     table_header(ws, 51, monthly_headers, 3, warning_cols=(11,))
     for row, profile_row in enumerate(range(PROFILE_START, PROFILE_END + 1), start=MONTHLY_START):
         set_formula(ws.cell(row, 3), f"=E{profile_row}")
-        set_formula(ws.cell(row, 4), f"=P{profile_row}")
+        set_formula(ws.cell(row, 4), f"=Q{profile_row}")
         for month, col in enumerate(range(5, 17), start=1):
             if month <= 6:
                 formula = f"=$K${profile_row}+$L${profile_row}/12"
             elif month == 7:
                 formula = f"=$K${profile_row}+$L${profile_row}/12+$M${profile_row}+$N${profile_row}"
             else:
-                formula = (
-                    f"=$K${profile_row}+$L${profile_row}/12+$N${profile_row}"
-                    f"+IF({month}=$D$16,$O${profile_row},0)+IF({month}=$D$17,$O${profile_row},0)"
-                )
+                formula = f"=$K${profile_row}+$L${profile_row}/12+$N${profile_row}"
             set_formula(ws.cell(row, col), formula, currency_formula_format(row == MONTHLY_START and month == 1))
             ws.cell(row, col).alignment = Alignment(horizontal="right", vertical="center")
         set_formula(ws.cell(row, 17), f"=SUM(E{row}:P{row})", currency_formula_format(row == MONTHLY_START))
@@ -322,10 +321,10 @@ def build():
     ws.conditional_formatting.add(f"Q{MONTHLY_START}:Q{MONTHLY_END}", DataBarRule(start_type="min", end_type="max", color=DARK_GREEN))
 
     # Closing policy note
-    ws.merge_cells("C64:Q66")
+    ws.merge_cells("C64:R66")
     ws["C64"] = (
-        "Cost scope and policy: M1–M6 includes salary plus health care. Repatriates receive the one-time M7 transition package. From M7, Alan's approved family relocation package includes $2,000/month housing in Maracaibo and two $6,000 home leaves planned in M9 and M12. "
-        "For any future approved family relocation to Maracaibo, model at least $2,000/month housing. Housing, social charges, statutory benefits, transport and tax costs outside the stated assumptions require separate approval and specialist review."
+        "Cost scope and policy: health care applies to everyone. M1–M6 includes salary plus health care. Repatriates receive the one-time M7 transition package and are then local. "
+        "Alan remains an expat and receives $2,000/month housing in Maracaibo from M7. Home leave is stated as a benefit but no cost is included. All local employees, including repatriates after M7, receive 30 paid vacation days; salary is assumed to cover this entitlement. Housing, social charges, statutory benefits, transport and tax costs outside the stated assumptions require separate approval and specialist review."
     )
     ws["C64"].font = Font(name="Arial", size=10, bold=True, color="C00000")
     ws["C64"].alignment = Alignment(horizontal="left", vertical="top", wrap_text=True)
@@ -335,14 +334,14 @@ def build():
     # Layout and print configuration
     widths = {
         "C": 8, "D": 32, "E": 26, "F": 17, "G": 18, "H": 18, "I": 20,
-        "J": 16, "K": 15, "L": 16, "M": 18, "N": 16, "O": 16, "P": 14, "Q": 28,
+        "J": 16, "K": 15, "L": 16, "M": 18, "N": 16, "O": 16, "P": 18, "Q": 14, "R": 28,
     }
     for col, width in widths.items():
         ws.column_dimensions[col].width = width
     ws.freeze_panes = "E52"
     ws.auto_filter.ref = f"C51:Q{MONTHLY_END}"
     ws.row_breaks.append(Break(id=49))
-    ws.print_area = "B2:Q66"
+    ws.print_area = "B2:R66"
     ws.page_setup.orientation = "landscape"
     ws.page_setup.paperSize = ws.PAPERSIZE_LETTER
     ws.page_setup.fitToWidth = 1
@@ -365,20 +364,22 @@ def validate():
     assert ws["C3"].value.startswith("Petrourdaneta")
     assert ws["D13"].value == 1.50
     assert ws["D14"].value == 2000
-    assert ws["D15"].value == 6000
-    assert ws["D18"].value == 180000
+    assert ws["D15"].value == "Home leave"
+    assert ws["D16"].value == 30
+    assert ws["D17"].value == 180000
     assert ws["E39"].value == "Alexander Stulme"
     assert ws["E41"].value == "Alan McKeon"
     assert ws["E46"].value == "Martin Aguero"
-    assert ws["P39"].value == "Yes"
-    assert ws["P41"].value == "Yes"
-    assert ws["P46"].value == "Yes"
+    assert ws["Q39"].value == "Yes"
+    assert ws["Q41"].value == "Yes"
+    assert ws["Q46"].value == "Yes"
     assert ws["M38"].value == '=IF(F38="Repatriate",$D$13*K38,0)'
     assert ws["N41"].value == '=IF(E41="Alan McKeon",$D$14,0)'
-    assert ws["O41"].value == '=IF(E41="Alan McKeon",$D$15,0)'
+    assert ws["O41"].value == '=IF(E41="Alan McKeon",$D$15,"—")'
+    assert ws["P38"].value == '=IF(OR(G38="Local — Venezuela",G38="Local"),$D$16,0)'
     assert ws["E52"].value == "=$K$38+$L$38/12"
     assert ws["K52"].value == "=$K$38+$L$38/12+$M$38+$N$38"
-    assert ws["M55"].value == "=$K$41+$L$41/12+$N$41+IF(9=$D$16,$O$41,0)+IF(9=$D$17,$O$41,0)"
+    assert ws["M55"].value == "=$K$41+$L$41/12+$N$41"
     assert ws["D23"].value == "=SUM(E52:E60)"
     assert ws["D24"].value == '=-SUMIF($D$52:$D$60,"Yes",E$52:E$60)'
     assert ws["D25"].value == "=D23+D24"
