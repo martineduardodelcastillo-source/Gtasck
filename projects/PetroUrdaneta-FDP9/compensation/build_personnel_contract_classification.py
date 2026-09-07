@@ -26,16 +26,23 @@ CURRENCY = '#,##0.0;[Red](#,##0.0);-'
 
 # number, position, person, annual base salary, M1-M6 contract, work arrangement, status, notes
 PEOPLE = [
-    (1, "COO / PU General Manager", "Martin del Castillo", 360000, "Expat", "Fixed", "Confirmed", "Expat classification carried forward from prior instructions."),
-    (2, "EPCM & Engineering Manager", "Juan Conde", 216000, "Repatriate", "Fixed", "Confirmed", "Repatriate; transitions to Local — Venezuela from M7 after the one-time transition bonus."),
-    (3, "Drilling & Well Services Manager", "Alexander Stulme", 180000, "Repatriate", "Fixed", "Confirmed", "Repatriate; initially appointed General Manager of PU on secondment; transitions to Local — Venezuela from M7."),
-    (4, "Operations & Maintenance Manager", "Félix Valderrama", 216000, "Repatriate", "Fixed", "Confirmed", "Repatriate; transitions to Local — Venezuela from M7 after the one-time transition bonus."),
-    (5, "Technical Manager (Geosciences)", "Alan McKeon", 180000, "Expat", "Fixed", "Confirmed", "Expat; initially appointed Technical Manager of PU on secondment."),
-    (6, "Reservoir Engineer", "JJI", 120000, "Local", "Fixed", "Assumption", "Remote role. Local / Fixed is an editable assumption pending confirmation."),
-    (7, "Rig Company Man", "Marcelo Dantas", 180000, "Expat", "Rotation", "Assumption", "Rotation confirmed from prior instructions; Expat contract is an editable assumption."),
-    (8, "Planning & PMO", "Jose Miguel", 48000, "Local", "Fixed", "Confirmed", "Local in Maracaibo or staff house; no cash housing allowance by default."),
-    (9, "Operations Support", "Leticia Almeida", 48000, "Local", "Fixed", "Confirmed", "Local in Maracaibo or staff house; no cash housing allowance by default."),
+    (1, "EPCM & Engineering Manager", "Juan Conde", 216000, "Repatriate", "Fixed", "Confirmed", "Repatriate; transitions to Local — Venezuela from M7 after the one-time transition bonus."),
+    (2, "Drilling & Well Services Manager", "Alexander Stulme", 180000, "Repatriate", "Fixed", "Confirmed", "Repatriate; initially appointed General Manager of PU on secondment; transitions to Local — Venezuela from M7."),
+    (3, "Operations & Maintenance Manager", "Félix Valderrama", 216000, "Repatriate", "Fixed", "Confirmed", "Repatriate; transitions to Local — Venezuela from M7 after the one-time transition bonus."),
+    (4, "Technical Manager (Geosciences)", "Alan McKeon", 180000, "Expat", "Fixed", "Confirmed", "Expat; initially appointed Technical Manager of PU on secondment."),
+    (5, "Reservoir Engineer", "JJI", 120000, "Local", "Fixed", "Assumption", "Remote role. Local / Fixed is an editable assumption pending confirmation."),
+    (6, "Rig Company Man", "Marcelo Dantas", 180000, "Expat", "Rotation", "Assumption", "Rotation confirmed from prior instructions; Expat contract is an editable assumption."),
+    (7, "Planning & PMO", "Jose Miguel", 48000, "Local", "Fixed", "Confirmed", "Local in Maracaibo or staff house; no cash housing allowance by default."),
+    (8, "Operations Support", "Leticia Almeida", 48000, "Local", "Fixed", "Confirmed", "Local in Maracaibo or staff house; no cash housing allowance by default."),
 ]
+
+DATA_START = 9
+DATA_END = DATA_START + len(PEOPLE) - 1
+TOTAL_ROW = DATA_END + 1
+SUMMARY_SECTION_ROW = TOTAL_ROW + 3
+SUMMARY_HEADER_ROW = SUMMARY_SECTION_ROW + 1
+SUMMARY_FIRST_ROW = SUMMARY_HEADER_ROW + 1
+SUMMARY_LAST_ROW = SUMMARY_FIRST_ROW + 6
 
 
 def source_comment(field, extra=""):
@@ -130,8 +137,8 @@ def build_personnel(wb):
     title_block(
         ws,
         "Personnel — Monthly Base Salary and Contract Classification",
-        "Repatriates transition to Local — Venezuela from M7 after a one-time transition bonus | Fixed and Rotation shown separately",
-        "USD | M1–M12 = annual base salary / 12 | One-time transition bonus is not included in monthly base salary",
+        "COO / PU General Manager excluded and treated separately | Repatriates transition to Local — Venezuela from M7 after a one-time transition bonus",
+        "USD | M1–M12 = annual base salary / 12 | One-time transition bonus is not included in monthly base salary | 8 people only",
         25,
     )
 
@@ -151,7 +158,7 @@ def build_personnel(wb):
     ]
     header_row(ws, 8, 3, headers)
 
-    for row, record in enumerate(PEOPLE, start=9):
+    for row, record in enumerate(PEOPLE, start=DATA_START):
         number, position, person, annual_salary, contract_type, arrangement, status, notes = record
         set_input(ws.cell(row, 3), number, source_comment("row number"))
         set_input(ws.cell(row, 4), position, source_comment("Position"))
@@ -180,10 +187,10 @@ def build_personnel(wb):
         )
         set_input(ws.cell(row, 12), notes, instruction_comment(notes))
         set_input(ws.cell(row, 25), annual_salary, source_comment("Base Salary (Annual)"))
-        ws.cell(row, 25).number_format = CURRENCY_FIRST if row == 9 else CURRENCY
+        ws.cell(row, 25).number_format = CURRENCY_FIRST if row == DATA_START else CURRENCY
 
         for col in range(13, 25):
-            set_formula(ws.cell(row, col), f"=$Y{row}/12", CURRENCY_FIRST if row == 9 and col == 13 else CURRENCY)
+            set_formula(ws.cell(row, col), f"=$Y{row}/12", CURRENCY_FIRST if row == DATA_START and col == 13 else CURRENCY)
         for col in range(3, 26):
             ws.cell(row, col).alignment = Alignment(
                 horizontal="right" if col == 3 or col >= 13 else "center" if col in (6, 7, 8, 9, 10, 11) else "left",
@@ -192,38 +199,37 @@ def build_personnel(wb):
             )
         ws.row_dimensions[row].height = 32
 
-    total_row = 18
-    ws.merge_cells(start_row=total_row, start_column=3, end_row=total_row, end_column=12)
-    ws.cell(total_row, 3, "TOTAL — 9 PEOPLE")
-    ws.cell(total_row, 3).font = Font(name="Arial", size=10, bold=True, color=BLACK)
+    ws.merge_cells(start_row=TOTAL_ROW, start_column=3, end_row=TOTAL_ROW, end_column=12)
+    ws.cell(TOTAL_ROW, 3, f"TOTAL — {len(PEOPLE)} PEOPLE (COO EXCLUDED)")
+    ws.cell(TOTAL_ROW, 3).font = Font(name="Arial", size=10, bold=True, color=BLACK)
     for col in range(13, 25):
         letter = get_column_letter(col)
-        set_formula(ws.cell(total_row, col), f"=SUM({letter}9:{letter}17)", CURRENCY_FIRST if col == 13 else CURRENCY)
-    set_formula(ws.cell(total_row, 25), "=SUM(Y9:Y17)", CURRENCY_FIRST)
+        set_formula(ws.cell(TOTAL_ROW, col), f"=SUM({letter}{DATA_START}:{letter}{DATA_END})", CURRENCY_FIRST if col == 13 else CURRENCY)
+    set_formula(ws.cell(TOTAL_ROW, 25), f"=SUM(Y{DATA_START}:Y{DATA_END})", CURRENCY_FIRST)
     for col in range(3, 26):
-        ws.cell(total_row, col).border = Border(top=Side(style="medium", color=BLACK), bottom=Side(style="double", color=BLACK))
+        ws.cell(TOTAL_ROW, col).border = Border(top=Side(style="medium", color=BLACK), bottom=Side(style="double", color=BLACK))
         if col >= 13:
-            ws.cell(total_row, col).alignment = Alignment(horizontal="right", vertical="center")
+            ws.cell(TOTAL_ROW, col).alignment = Alignment(horizontal="right", vertical="center")
 
-    ws.merge_cells("C21:Y21")
-    ws["C21"] = "CLASSIFICATION SUMMARY"
-    ws["C21"].fill = PatternFill("solid", fgColor=LIGHT_GREEN)
-    ws["C21"].font = Font(name="Arial", size=10, bold=True, color=BLACK)
-    header_row(ws, 22, 3, ["Metric", "Count", "Meaning"])
+    ws.merge_cells(start_row=SUMMARY_SECTION_ROW, start_column=3, end_row=SUMMARY_SECTION_ROW, end_column=25)
+    ws.cell(SUMMARY_SECTION_ROW, 3, "CLASSIFICATION SUMMARY")
+    ws.cell(SUMMARY_SECTION_ROW, 3).fill = PatternFill("solid", fgColor=LIGHT_GREEN)
+    ws.cell(SUMMARY_SECTION_ROW, 3).font = Font(name="Arial", size=10, bold=True, color=BLACK)
+    header_row(ws, SUMMARY_HEADER_ROW, 3, ["Metric", "Count", "Meaning"])
     summary = [
-        ("Expat", '=COUNTIF(F9:F17,"Expat")', "M1–M6 contract type Expat"),
-        ("Repatriate", '=COUNTIF(F9:F17,"Repatriate")', "Transition to Local — Venezuela from M7"),
-        ("Local", '=COUNTIF(F9:F17,"Local")', "Local contract from M1 through M12"),
-        ("Fixed", '=COUNTIF(H9:H17,"Fixed")', "Fixed work arrangement"),
-        ("Rotation", '=COUNTIF(H9:H17,"Rotation")', "Rotation work arrangement"),
-        ("One-time transition bonuses", '=COUNTIF(J9:J17,"Eligible*")', "M7 bonus only; amount is not yet set"),
-        ("Assumptions to confirm", '=COUNTIF(K9:K17,"Assumption")', "Editable classifications requiring confirmation"),
+        ("Expat", f'=COUNTIF(F{DATA_START}:F{DATA_END},"Expat")', "M1–M6 contract type Expat"),
+        ("Repatriate", f'=COUNTIF(F{DATA_START}:F{DATA_END},"Repatriate")', "Transition to Local — Venezuela from M7"),
+        ("Local", f'=COUNTIF(F{DATA_START}:F{DATA_END},"Local")', "Local contract from M1 through M12"),
+        ("Fixed", f'=COUNTIF(H{DATA_START}:H{DATA_END},"Fixed")', "Fixed work arrangement"),
+        ("Rotation", f'=COUNTIF(H{DATA_START}:H{DATA_END},"Rotation")', "Rotation work arrangement"),
+        ("One-time transition bonuses", f'=COUNTIF(J{DATA_START}:J{DATA_END},"Eligible*")', "M7 bonus only; amount is not yet set"),
+        ("Assumptions to confirm", f'=COUNTIF(K{DATA_START}:K{DATA_END},"Assumption")', "Editable classifications requiring confirmation"),
     ]
-    for row, (metric, formula, meaning) in enumerate(summary, start=23):
+    for row, (metric, formula, meaning) in enumerate(summary, start=SUMMARY_FIRST_ROW):
         ws.cell(row, 3, metric).font = Font(name="Arial", size=10, color=BLACK)
         set_formula(ws.cell(row, 4), formula, '#,##0')
         ws.cell(row, 5, meaning).font = Font(name="Arial", size=10, color=BLACK)
-    apply_borders(ws, 22, 29, 3, 5)
+    apply_borders(ws, SUMMARY_HEADER_ROW, SUMMARY_LAST_ROW, 3, 5)
 
     contract_validation = DataValidation(type="list", formula1='"Expat,Repatriate,Local"', allow_blank=False)
     arrangement_validation = DataValidation(type="list", formula1='"Fixed,Rotation"', allow_blank=False)
@@ -231,24 +237,24 @@ def build_personnel(wb):
     ws.add_data_validation(contract_validation)
     ws.add_data_validation(arrangement_validation)
     ws.add_data_validation(status_validation)
-    contract_validation.add("F9:F17")
-    arrangement_validation.add("H9:H17")
-    status_validation.add("K9:K17")
+    contract_validation.add(f"F{DATA_START}:F{DATA_END}")
+    arrangement_validation.add(f"H{DATA_START}:H{DATA_END}")
+    status_validation.add(f"K{DATA_START}:K{DATA_END}")
     ws.conditional_formatting.add(
-        "K9:K17",
-        FormulaRule(formula=['K9="Assumption"'], fill=PatternFill("solid", fgColor=WARNING)),
+        f"K{DATA_START}:K{DATA_END}",
+        FormulaRule(formula=[f'K{DATA_START}="Assumption"'], fill=PatternFill("solid", fgColor=WARNING)),
     )
 
-    apply_borders(ws, 8, 17, 3, 25)
+    apply_borders(ws, 8, DATA_END, 3, 25)
     ws.freeze_panes = "M9"
-    autofit(ws, 3, 25, 8, 29)
+    autofit(ws, 3, 25, 8, SUMMARY_LAST_ROW)
     ws.column_dimensions["D"].width = max(ws.column_dimensions["D"].width, 38)
     ws.column_dimensions["E"].width = max(ws.column_dimensions["E"].width, 24)
     ws.column_dimensions["J"].width = 29
     ws.column_dimensions["L"].width = 38
     for col in range(13, 26):
         ws.column_dimensions[get_column_letter(col)].width = 14
-    ws.print_area = "B2:Y29"
+    ws.print_area = f"B2:Y{SUMMARY_LAST_ROW}"
     ws.page_setup.orientation = "landscape"
     ws.page_setup.paperSize = ws.PAPERSIZE_LETTER
     ws.page_setup.fitToWidth = 1
@@ -327,7 +333,7 @@ def build_rules(wb):
             ) if col in (5, 8, 9, 10) else instruction_comment(f"Default contract rule: {value}")
             set_input(ws.cell(row, col), value, comment)
             ws.cell(row, col).alignment = Alignment(horizontal="left", vertical="center", wrap_text=True)
-        set_formula(ws.cell(row, 13), f'=COUNTIF(Personnel!F9:F17,C{row})', '#,##0', cross_sheet=True)
+        set_formula(ws.cell(row, 13), f'=COUNTIF(Personnel!F{DATA_START}:F{DATA_END},C{row})', '#,##0', cross_sheet=True)
         ws.cell(row, 13).alignment = Alignment(horizontal="right", vertical="center")
         ws.row_dimensions[row].height = 75
     apply_borders(ws, 8, 11, 3, 13)
@@ -339,10 +345,10 @@ def build_rules(wb):
     header_row(ws, 15, 3, ["Work Arrangement", "Application", "M1–M6", "M7+ Housing / Lodging", "M7+ Travel / Leave", "Notes", "People Count"])
     arrangements = [
         (
-            "Fixed", "Continuous assignment to the role", "Medical insurance only", "Based on contract type, city and approved package", "According to contract type / local policy", "JJI is Fixed but Remote; Remote is noted separately.", '=COUNTIF(Personnel!H9:H17,C16)'
+            "Fixed", "Continuous assignment to the role", "Medical insurance only", "Based on contract type, city and approved package", "According to contract type / local policy", "JJI is Fixed but Remote; Remote is noted separately.", f'=COUNTIF(Personnel!H{DATA_START}:H{DATA_END},C16)'
         ),
         (
-            "Rotation", "Roster-based presence in Venezuela", "Medical insurance only", "Hotel, staff house or rotational lodging; avoid duplicate permanent housing", "Rotation roster travel replaces or supplements home leave only if approved", "Marcelo Dantas is currently shown as Rotation.", '=COUNTIF(Personnel!H9:H17,C17)'
+            "Rotation", "Roster-based presence in Venezuela", "Medical insurance only", "Hotel, staff house or rotational lodging; avoid duplicate permanent housing", "Rotation roster travel replaces or supplements home leave only if approved", "Marcelo Dantas is currently shown as Rotation.", f'=COUNTIF(Personnel!H{DATA_START}:H{DATA_END},C17)'
         ),
     ]
     for row, record in enumerate(arrangements, start=16):
@@ -398,24 +404,24 @@ def validate():
     ws = wb["Personnel"]
     expected_names = [record[2] for record in PEOPLE]
     expected_salaries = [record[3] for record in PEOPLE]
-    assert [ws[f"E{row}"].value for row in range(9, 18)] == expected_names
-    assert [ws[f"Y{row}"].value for row in range(9, 18)] == expected_salaries
-    assert sum(expected_salaries) == 1_548_000
+    assert [ws[f"E{row}"].value for row in range(DATA_START, DATA_END + 1)] == expected_names
+    assert [ws[f"Y{row}"].value for row in range(DATA_START, DATA_END + 1)] == expected_salaries
+    assert sum(expected_salaries) == 1_188_000
     for col in range(13, 25):
         assert ws.cell(9, col).value == "=$Y9/12"
     assert ws["G9"].value == '=IF(F9="Expat","Yes","No")'
-    assert ws["I10"].value == '=IF(F10="Repatriate","Local — Venezuela",F10)'
-    assert ws["J10"].value == "Eligible — one-time; amount TBD"
-    assert ws["J9"].value == "Not applicable"
-    assert [ws[f"F{row}"].value for row in range(9, 18)].count("Expat") == 3
-    assert [ws[f"F{row}"].value for row in range(9, 18)].count("Repatriate") == 3
-    assert [ws[f"F{row}"].value for row in range(9, 18)].count("Local") == 3
-    assert [ws[f"H{row}"].value for row in range(9, 18)].count("Rotation") == 1
-    assert [ws[f"H{row}"].value for row in range(9, 18)].count("Fixed") == 8
+    assert ws["I9"].value == '=IF(F9="Repatriate","Local — Venezuela",F9)'
+    assert ws["J9"].value == "Eligible — one-time; amount TBD"
+    assert ws["J12"].value == "Not applicable"
+    assert [ws[f"F{row}"].value for row in range(DATA_START, DATA_END + 1)].count("Expat") == 2
+    assert [ws[f"F{row}"].value for row in range(DATA_START, DATA_END + 1)].count("Repatriate") == 3
+    assert [ws[f"F{row}"].value for row in range(DATA_START, DATA_END + 1)].count("Local") == 3
+    assert [ws[f"H{row}"].value for row in range(DATA_START, DATA_END + 1)].count("Rotation") == 1
+    assert [ws[f"H{row}"].value for row in range(DATA_START, DATA_END + 1)].count("Fixed") == 7
     rules = wb["Contract Rules"]
     assert [rules[f"C{row}"].value for row in range(9, 12)] == ["Expat", "Repatriate", "Local"]
     assert rules["J10"].value.startswith("Eligible once at M7")
-    print("VALIDATED: 9 people | $1,548,000 annual base salary | M1-M12 | Repatriates localize from M7 with one-time bonus TBD")
+    print("VALIDATED: 8 people (COO excluded) | $1,188,000 annual base salary | M1-M12 | Repatriates localize from M7 with one-time bonus TBD")
 
 
 if __name__ == "__main__":
