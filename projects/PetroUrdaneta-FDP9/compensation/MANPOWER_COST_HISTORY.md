@@ -4,6 +4,10 @@
 **Workbook:** `manpower_cost_summary_single_sheet.xlsx`  
 **Scope:** COO excluded and treated separately. All values are in USD.
 
+## Presentation format
+
+The final workbook contains **one compact worksheet** designed to fit on a single Tabloid landscape page. It combines the overall cost by stage, the governing cost policy and one person-by-person table. Repeated monthly columns were condensed into **M1–M6 monthly cost**, **M7 cost**, **M8–M12 monthly cost** and **Year 1 cost** so that all decision-useful information is visible together.
+
 ## Confirmed employment treatment
 
 The workbook has **no editable assumptions section**. The policy and benefits below are the approved planning treatment built directly into the model.
