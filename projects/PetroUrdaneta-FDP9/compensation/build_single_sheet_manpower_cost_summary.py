@@ -16,24 +16,20 @@ WHITE = "FFFFFF"
 BLACK = "000000"
 BLUE = "0000FF"
 GRID = "B7B7B7"
-STATUS_GREEN = "E8F5E9"
-STATUS_AMBER = "FFF3E0"
-STATUS_RED = "FFCCBC"
 CURRENCY_FIRST = '$#,##0.0;[Red]($#,##0.0);-'
 CURRENCY = '#,##0.0;[Red]($#,##0.0);-'
 
-# Position, person, M1-M6 contract, M7+ basis, arrangement, status,
-# annual salary, annual health care, PU-paid, PU appointment / scope, note
+# Position, person, M1-M6 contract, M7+ basis, annual salary, PU-paid, scope, note
 PEOPLE = [
-    ("EPCM & Engineering Manager", "Juan Conde", "Repatriate", "Local — Venezuela", "Fixed", "GREEN — Confirmed", 216000, 12000, "No", "—", "One-time M7 transition package. Origin-country employee tax assumption; no company gross-up modeled."),
-    ("Drilling & Well Services Manager", "Alexander Stulme", "Repatriate", "Local — Venezuela", "Fixed", "GREEN — Confirmed", 180000, 12000, "Yes", "PU General Manager", "Initial PU secondee. PU pays modeled cost; one-time M7 transition package applies."),
-    ("Operations & Maintenance Manager", "Félix Valderrama", "Repatriate", "Local — Venezuela", "Fixed", "GREEN — Confirmed", 216000, 12000, "No", "—", "One-time M7 transition package. Origin-country employee tax assumption; no company gross-up modeled."),
-    ("Technical Manager (Geosciences)", "Alan McKeon", "Expat", "Expat", "Fixed", "GREEN — Confirmed", 180000, 12000, "Yes", "PU Technical Manager", "Initial PU secondee. Approved family relocation to Maracaibo; $2,000/month housing from M7 and home leave stated as a non-costed benefit."),
-    ("Reservoir Engineer", "JJI", "Local", "Local", "Fixed / Remote", "AMBER — Assumption", 120000, 12000, "No", "—", "Remote designation and local benefit treatment remain subject to confirmation."),
-    ("Rig Company Man", "Marcelo Dantas", "Expat", "Expat", "Rotation", "AMBER — Assumption", 180000, 12000, "No", "—", "Rotation is confirmed; expatriate contract treatment remains subject to confirmation."),
-    ("Planning & PMO", "Jose Miguel", "Local", "Local", "Fixed", "GREEN — Confirmed", 48000, 8000, "No", "—", "Local / staff-house approach; no cash housing allowance modeled."),
-    ("Operations Support", "TBD — Person to be defined", "TBD", "TBD", "TBD", "RED — TBD", 48000, 8000, "No", "—", "Open role; salary and health-care values are budget placeholders. Contract and benefits remain TBD."),
-    ("Infrastructure Manager", "Martin Aguero", "Local Secondee", "Local", "Fixed", "GREEN — Confirmed", 180000, 12000, "Yes", "PU Infra Manager", "Already assigned to the project as a local secondee. PU pays salary and health care; 30 paid vacation days apply."),
+    ("EPCM & Engineering Manager", "Juan Conde", "Repatriate", "Local — Venezuela", 216000, "No", "—", "One-time M7 transition package. Origin-country employee tax assumption; no company gross-up modeled."),
+    ("Drilling & Well Services Manager", "Alexander Stulme", "Repatriate", "Local — Venezuela", 180000, "Yes", "PU General Manager", "Initial PU secondee. PU pays modeled cost; one-time M7 transition package applies."),
+    ("Operations & Maintenance Manager", "Félix Valderrama", "Repatriate", "Local — Venezuela", 216000, "No", "—", "One-time M7 transition package. Origin-country employee tax assumption; no company gross-up modeled."),
+    ("Technical Manager (Geosciences)", "Alan McKeon", "Expat", "Expat", 180000, "Yes", "PU Technical Manager", "Initial PU secondee. Approved family relocation to Maracaibo; $2,000/month housing from M7 and home leave stated as a non-costed benefit."),
+    ("Reservoir Engineer", "JJI", "Local", "Local", 120000, "No", "—", "Remote designation and local benefit treatment remain subject to confirmation."),
+    ("Rig Company Man", "Marcelo Dantas", "Expat", "Expat", 180000, "No", "—", "Rotation is confirmed; expatriate contract treatment remains subject to confirmation."),
+    ("Planning & PMO", "Jose Miguel", "Local", "Local", 48000, "No", "—", "Local / staff-house approach; no cash housing allowance modeled."),
+    ("Operations Support", "TBD — Person to be defined", "TBD", "TBD", 48000, "No", "—", "Open role; salary is a budget placeholder. Contract and benefits remain TBD."),
+    ("Infrastructure Manager", "Martin Aguero", "Local Secondee", "Local", 180000, "Yes", "PU Infra Manager", "Already assigned to the project as a local secondee. PU pays salary; 30 paid vacation days apply."),
 ]
 
 TABLE_HEADER_ROW = 20
@@ -107,12 +103,12 @@ def build():
     ws = wb.active
     ws.title = "Manpower Cost Summary"
     ws.sheet_view.showGridLines = False
-    ws.sheet_view.zoomScale = 95
+    ws.sheet_view.zoomScale = 100
     ws.column_dimensions["A"].width = 3
     ws.column_dimensions["B"].width = 3
     widths = {
         "C": 24, "D": 30, "E": 15, "F": 16, "G": 12, "H": 15,
-        "I": 14, "J": 14, "K": 14, "L": 14, "M": 15, "N": 15, "O": 16,
+        "I": 15, "J": 14, "K": 14, "L": 14, "M": 15, "N": 15, "O": 16,
     }
     for column, width in widths.items():
         ws.column_dimensions[column].width = width
@@ -128,7 +124,7 @@ def build():
     ws["C5"] = "Single-sheet executive model | Overall monthly and annual manpower cost | COO excluded | USD"
     ws["C5"].font = Font(name="Arial", size=11, bold=True, color=BLACK)
     ws.merge_cells("C6:O6")
-    ws["C6"] = "Blue = source input | Black = formula | Values shown are management-planning costs"
+    ws["C6"] = "Blue = source input | Black = formula | Health-care cost excluded pending Airswift confirmation"
     ws["C6"].font = Font(name="Arial", size=9, italic=True, color="666666")
 
     ws.merge_cells("C8:O9")
@@ -162,52 +158,49 @@ def build():
             set_formula(ws.cell(row, col), formula, CURRENCY_FIRST if row == 13 and col == 4 else CURRENCY)
             ws.cell(row, col).alignment = Alignment(horizontal="right", vertical="center")
         ws.row_dimensions[row].height = 22
-    # Correct Year 1 to cost in O after personnel table (gross and PU formulas refer to O values).
-    ws["G13"] = f"=SUM(O{TABLE_START}:O{TABLE_END})"
-    ws["G14"] = f'=-SUMIF($G${TABLE_START}:$G${TABLE_END},"Yes",$O${TABLE_START}:$O${TABLE_END})'
-    ws["G15"] = "=G13+G14"
-    for cell in (ws["G13"], ws["G14"], ws["G15"]):
-        cell.number_format = CURRENCY
-        cell.font = Font(name="Arial", size=10, color=BLACK)
     outline(ws, 12, 15, 3, 7)
     for col in range(3, 8):
         ws.cell(15, col).border = Border(top=Side(style="medium", color=BLACK), bottom=Side(style="double", color=BLACK))
 
-    # Compact cost policy
-    section(ws, 11, "COST POLICY", 9, 15)
+    # Compact cost policy / Airswift action
+    section(ws, 11, "AIRSWHIFT ACTION — HEALTH CARE AND ROTATION", 9, 15)
     ws.merge_cells("I12:O15")
     ws["I12"] = (
-        "M1–M6: salary + health care for everyone. M7: repatriates receive a one-time package equal to 1.5x monthly salary. "
-        "M7+: Alan has $2,000/month housing. Home leave is stated but not costed. Local employees, including repatriates after M7 and Martin, have 30 paid vacation days included within salary."
+        "Health care is excluded from all costs in this model. Airswift should confirm the applicable medical coverage, eligibility, insurer and price before a separate health-care cost is approved and added. "
+        "For M1–M6, the eight transition roles are assumed to work 21 days on / 14 days off: 1.71 tickets per person per month, or 13.71 tickets per month in total. Ticket costs are excluded pending Airswift confirmation."
     )
-    ws["I12"].font = Font(name="Arial", size=10, color=BLACK)
+    ws["I12"].font = Font(name="Arial", size=10, bold=True, color="C00000")
     ws["I12"].alignment = Alignment(horizontal="left", vertical="top", wrap_text=True)
-    ws["I12"].comment = management_note("All benefits and cost treatments shown here reflect management instructions in this task.")
+    ws["I12"].comment = management_note("Health-care scope and pricing are pending confirmation from Airswift and are not included in the model.")
     ws.row_dimensions[12].height = 66
 
     # Compact personnel and cost table
-    section(ws, 18, "PERSONNEL COST, CONTRACT AND BENEFIT SUMMARY", 3, 15)
+    section(ws, 18, "PERSONNEL COST, CONTRACT, ROTATION AND BENEFIT SUMMARY", 3, 15)
     headers = [
-        "Person", "Position", "M1–M6 Contract", "M7+ Basis", "PU-Paid?", "Annual Salary", "Health / Year",
+        "Person", "Position", "M1–M6 Contract", "M7+ Basis", "PU-Paid?", "Tickets / Mo M1–M6", "Annual Salary",
         "M7 Package", "Housing / Month", "M1–M6 / Mo", "M7 Cost", "M8–M12 / Mo", "Year 1 Cost",
     ]
-    table_header(ws, TABLE_HEADER_ROW, headers, 3, warning_cols=(13,))
+    table_header(ws, TABLE_HEADER_ROW, headers, 3, warning_cols=(12,))
 
     for idx, record in enumerate(PEOPLE):
-        position, person, contract, basis, arrangement, status, annual_salary, annual_health, pu_paid, pu_scope, explanation = record
+        position, person, contract, basis, annual_salary, pu_paid, pu_scope, explanation = record
         row = TABLE_START + idx
         set_input(ws.cell(row, 3), person, source_note("Person", explanation))
         set_input(ws.cell(row, 4), position, source_note("Position", explanation))
         set_input(ws.cell(row, 5), contract, management_note(f"M1–M6 contract: {contract}. {explanation}"))
         set_input(ws.cell(row, 6), basis, management_note(f"M7+ basis: {basis}. {explanation}"))
         set_input(ws.cell(row, 7), pu_paid, management_note("PU pays the costs of Alexander Stulme, Alan McKeon and Martin Aguero as secondees."))
-        set_input(ws.cell(row, 8), annual_salary, source_note("Base Salary (Annual)", explanation))
-        ws.cell(row, 8).number_format = CURRENCY_FIRST if idx == 0 else CURRENCY
-        set_input(ws.cell(row, 9), annual_health, source_note("Medical Insurance (Annual)", explanation))
-        ws.cell(row, 9).number_format = CURRENCY
+        set_formula(
+            ws.cell(row, 8),
+            f'=IF(C{row}="Martin Aguero",0,2*30/35)',
+            '#,##0.00',
+            management_note("M1–M6 rotation assumption: 21 days on / 14 days off. Two ticket legs per 35-day cycle, or 1.71 tickets per month. Martin Aguero is local and has no rotation ticket allowance."),
+        )
+        set_input(ws.cell(row, 9), annual_salary, source_note("Base Salary (Annual)", explanation))
+        ws.cell(row, 9).number_format = CURRENCY_FIRST if idx == 0 else CURRENCY
         set_formula(
             ws.cell(row, 10),
-            f'=IF(E{row}="Repatriate",1.5*H{row}/12,0)',
+            f'=IF(E{row}="Repatriate",1.5*I{row}/12,0)',
             CURRENCY,
             management_note("One-time M7 repatriation / localization package equals 1.5 times monthly salary for repatriates."),
         )
@@ -215,9 +208,9 @@ def build():
             ws.cell(row, 11),
             f'=IF(C{row}="Alan McKeon",2000,0)',
             CURRENCY,
-            management_note("Alan McKeon receives $2,000/month housing from M7 due to family relocation to Maracaibo."),
+            management_note("Alan McKeon receives $2,000 per month housing from M7 due to family relocation to Maracaibo."),
         )
-        set_formula(ws.cell(row, 12), f"=H{row}/12+I{row}/12", CURRENCY_FIRST if idx == 0 else CURRENCY)
+        set_formula(ws.cell(row, 12), f"=I{row}/12", CURRENCY_FIRST if idx == 0 else CURRENCY)
         set_formula(ws.cell(row, 13), f"=L{row}+J{row}+K{row}", CURRENCY)
         set_formula(ws.cell(row, 14), f"=L{row}+K{row}", CURRENCY)
         set_formula(ws.cell(row, 15), f"=6*L{row}+M{row}+5*N{row}", CURRENCY_FIRST if idx == 0 else CURRENCY)
@@ -232,9 +225,10 @@ def build():
     ws.merge_cells(start_row=TOTAL_ROW, start_column=3, end_row=TOTAL_ROW, end_column=7)
     ws.cell(TOTAL_ROW, 3, "TOTAL GROSS MANPOWER COST")
     ws.cell(TOTAL_ROW, 3).font = Font(name="Arial", size=10, bold=True, color=BLACK)
-    for col in range(8, 16):
+    set_formula(ws.cell(TOTAL_ROW, 8), f"=SUM(H{TABLE_START}:H{TABLE_END})", '#,##0.00')
+    for col in range(9, 16):
         letter = get_column_letter(col)
-        set_formula(ws.cell(TOTAL_ROW, col), f"=SUM({letter}{TABLE_START}:{letter}{TABLE_END})", CURRENCY_FIRST if col == 8 else CURRENCY)
+        set_formula(ws.cell(TOTAL_ROW, col), f"=SUM({letter}{TABLE_START}:{letter}{TABLE_END})", CURRENCY_FIRST if col == 9 else CURRENCY)
     for col in range(3, 16):
         ws.cell(TOTAL_ROW, col).border = Border(top=Side(style="medium", color=BLACK), bottom=Side(style="double", color=BLACK))
     ws.row_dimensions[TOTAL_ROW].height = 25
@@ -246,7 +240,7 @@ def build():
     ws.merge_cells("C34:O36")
     ws["C34"] = (
         "References: user-provided annual compensation table reviewed 7–8 September 2026, and management instructions in this task on contract type, benefits, PU secondments and cost responsibility. "
-        "This is a management-planning cost model. No company tax gross-up or double-taxation cost is modeled for repatriates after localization. Expat tax support, statutory contributions, transport, stock options and future bonus plans require separate approval and specialist review."
+        "Health care and ticket costs are excluded pending Airswift confirmation of coverage, price and booking scope. The M1–M6 ticket plan assumes 21 days on / 14 days off and 1.71 tickets per transition role per month. This is a management-planning cost model; tax gross-up, statutory contributions, stock options and future bonus plans require separate approval and specialist review."
     )
     ws["C34"].font = Font(name="Arial", size=9, italic=True, color="666666")
     ws["C34"].alignment = Alignment(horizontal="left", vertical="top", wrap_text=True)
@@ -278,13 +272,15 @@ def validate():
     assert wb.sheetnames == ["Manpower Cost Summary"]
     ws = wb.active
     assert ws["C3"].value.startswith("Petrourdaneta")
+    assert "Health care is excluded" in ws["I12"].value
     assert ws["C29"].value == "Martin Aguero"
     assert ws["E29"].value == "Local Secondee"
     assert ws["F29"].value == "Local"
     assert ws["G29"].value == "Yes"
-    assert ws["J29"].value == '=IF(E29="Repatriate",1.5*H29/12,0)'
+    assert ws["H21"].value == '=IF(C21="Martin Aguero",0,2*30/35)'
+    assert ws["J29"].value == '=IF(E29="Repatriate",1.5*I29/12,0)'
     assert ws["K24"].value == '=IF(C24="Alan McKeon",2000,0)'
-    assert ws["L21"].value == "=H21/12+I21/12"
+    assert ws["L21"].value == "=I21/12"
     assert ws["M21"].value == "=L21+J21+K21"
     assert ws["N21"].value == "=L21+K21"
     assert ws["O21"].value == "=6*L21+M21+5*N21"
@@ -294,7 +290,7 @@ def validate():
     assert ws["G13"].value == "=SUM(O21:O29)"
     assert ws["G14"].value == '=-SUMIF($G$21:$G$29,"Yes",$O$21:$O$29)'
     assert ws["G15"].value == "=G13+G14"
-    print("VALIDATED: compact one-sheet workbook | smaller cell count | stage and annual manpower costs calculated")
+    print("VALIDATED: one-sheet workbook | health-care excluded pending Airswift confirmation | costs recalculated")
 
 
 if __name__ == "__main__":
