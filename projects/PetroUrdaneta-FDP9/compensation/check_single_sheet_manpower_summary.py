@@ -19,13 +19,14 @@ checks = {
     "gross_year1": ws["G13"].value,
     "pu_salary_share_year1": ws["G14"].value,
     "net_year1": ws["G15"].value,
-    "alan_housing": ws["K24"].value,
+    "alan_housing": ws["F40"].value,
     "pu_share_alexander": ws["G22"].value,
     "pu_share_martin": ws["G29"].value,
     "tickets_juan": ws["H21"].value,
     "tickets_martin": ws["H29"].value,
     "tickets_total_month": ws["H30"].value,
-    "airswift_action": ws["I12"].value,
+    "martin_year1": ws["J45"].value,
+    "action_box": ws["J12"].value,
 }
 for label, value in checks.items():
     print(f"{label}={value}")
@@ -48,5 +49,6 @@ assert checks["pu_share_martin"] == "60%"
 assert isclose(checks["tickets_juan"], 60 / 35, abs_tol=1e-9)
 assert checks["tickets_martin"] == 0
 assert isclose(checks["tickets_total_month"], 8 * 60 / 35, abs_tol=1e-9)
-assert "60% secondee salary-share reimbursement" in checks["airswift_action"]
+assert checks["martin_year1"] == 180000
+assert "Barbara" in checks["action_box"]
 print("CALCULATED VALUES VALIDATED")
