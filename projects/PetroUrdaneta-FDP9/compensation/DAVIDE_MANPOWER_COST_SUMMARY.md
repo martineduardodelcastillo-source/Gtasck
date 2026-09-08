@@ -6,6 +6,8 @@ For Months 1–6, the eight transition-team roles are planned on a **21 days on 
 
 At Month 7, Juan Conde, Alexander Stulme and Félix Valderrama receive a one-time repatriation / localization package and then move to the local framework. Alan McKeon remains an expatriate and receives a $2,000 monthly housing allowance from Month 7. Alexander, Alan and Martin are PU-paid secondees and are deducted from gross manpower cost to show net cost.
 
+> **Venezuelan employment-law review:** Airswift is still reviewing the applicable Venezuelan employment-law requirements for the proposed arrangement. Based on the current planning assumptions, the expected impact on the model should be limited or nil; however, this remains subject to Airswift's confirmation and any required legal, payroll or employment adjustments.
+
 | Category | Included in the model | Excluded or pending confirmation |
 |---|---|---|
 | Base salary | Included for all nine modeled personnel | — |
