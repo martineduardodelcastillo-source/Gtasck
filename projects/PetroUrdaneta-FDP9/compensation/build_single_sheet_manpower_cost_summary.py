@@ -35,13 +35,13 @@ PEOPLE = [
     ("Rig Company Man", "Marcelo Dantas", "Expat", "Expat", "Rotation", "AMBER — Assumption", 180000, 12000, "No", "—", "Rotation is confirmed; expatriate contract treatment remains subject to confirmation."),
     ("Planning & PMO", "Jose Miguel", "Local", "Local", "Fixed", "GREEN — Confirmed", 48000, 8000, "No", "—", "Local / staff-house approach; no cash housing allowance modeled."),
     ("Operations Support", "TBD — Person to be defined", "TBD", "TBD", "TBD", "RED — TBD", 48000, 8000, "No", "—", "Open role; salary and health care are budget placeholders. Contract and benefits remain TBD."),
-    ("Infrastructure Manager", "Martin Aguero", "PU Secondment", "PU Secondment", "Fixed", "AMBER — Benefits TBD", 180000, 0, "Yes", "PU Infra Manager", "PU-paid salary known from prior secondments model; health, housing, home leave and other benefits remain TBD."),
+    ("Infrastructure Manager", "Martin Aguero", "Local Secondee", "Local", "Fixed", "GREEN — Confirmed", 180000, 12000, "Yes", "PU Infra Manager", "Already assigned to the project as a local secondee. PU pays salary and health care; 30 paid vacation days apply."),
 ]
 
-PROFILE_START = 38
+PROFILE_START = 29
 PROFILE_END = PROFILE_START + len(PEOPLE) - 1
 PROFILE_TOTAL = PROFILE_END + 1
-MONTHLY_START = 52
+MONTHLY_START = 43
 MONTHLY_END = MONTHLY_START + len(PEOPLE) - 1
 MONTHLY_TOTAL = MONTHLY_END + 1
 
@@ -147,7 +147,7 @@ def build():
     ws.merge_cells("C8:R9")
     ws["C8"] = (
         "BIG NOTE — Alexander Stulme (PU General Manager), Alan McKeon (PU Technical Manager) and Martin Aguero (PU Infra Manager) are initially seconded to Petrourdaneta. "
-        "PU pays their costs. The model includes all manpower in gross cost and then deducts PU-paid secondees to calculate net manpower cost. Martin Aguero's $180,000 annual salary is included; his benefits remain TBD. "
+        "PU pays their costs. The model includes all manpower in gross cost and then deducts PU-paid secondees to calculate net manpower cost. Martin Aguero is already assigned to the project as a local secondee; his salary, health care and 30 paid vacation days are included. "
         "Planning tax assumption: repatriates becoming local pay individual income tax in their country of origin; no company tax gross-up or double-taxation cost is modeled. Expat tax support is excluded unless separately approved."
     )
     ws["C8"].font = Font(name="Arial", size=10, bold=True, color="C00000")
@@ -155,91 +155,68 @@ def build():
     ws["C8"].comment = management_note("Tax, payroll, labor-law and residence treatment require legal and tax review before implementation.")
     ws.row_dimensions[8].height = 50
 
-    # Assumptions
-    section(ws, 11, "EDITABLE ASSUMPTIONS AND POLICY INPUTS", 3, 7)
-    table_header(ws, 12, ["Input", "Value", "Unit", "Application", "Source / Policy Note"], 3)
-    assumptions = [
-        ("Repatriation package multiple", 1.50, "x monthly salary", "M7 — Juan, Alexander and Félix", "One-time moving, settling-in, temporary lodging, transport and onboarding package."),
-        ("Alan housing allowance", 2000, "USD / month", "M7–M12 — family relocation to Maracaibo", "Minimum $2,000/month for future approved family relocation to Maracaibo unless management approves more."),
-        ("Alan home leave", "Home leave", "Benefit", "M7+", "Stated benefit only; no home leave cost is included in this model."),
-        ("Local paid vacation", 30, "Days", "All local roles; M7+ for repatriates", "30 paid vacation days. Salary is assumed to cover this entitlement; no incremental cost is modeled."),
-        ("Martin Aguero annual salary", 180000, "USD / year", "PU-paid secondment M1–M12", "Known annual salary from prior secondments model; Martin benefits are not included."),
-    ]
-    for row, (label, value, unit, application, explanation) in enumerate(assumptions, start=13):
-        set_input(ws.cell(row, 3), label, management_note(explanation))
-        cell_note = prior_model_note(explanation) if label.startswith("Martin") else management_note(explanation)
-        set_input(ws.cell(row, 4), value, cell_note)
-        ws.cell(row, 4).number_format = MULTIPLE if row == 13 else (CURRENCY if row in (14, 17) else '#,##0')
-        set_input(ws.cell(row, 5), unit, management_note(unit))
-        set_input(ws.cell(row, 6), application, management_note(application))
-        set_input(ws.cell(row, 7), explanation, management_note(explanation))
-        for col in range(3, 8):
-            ws.cell(row, col).alignment = Alignment(horizontal="right" if col == 4 else "left", vertical="center", wrap_text=True)
-        ws.row_dimensions[row].height = 28
-    outline(ws, 12, 18, 3, 7)
-
     # Executive gross-to-net cost overview
-    section(ws, 21, "EXECUTIVE MANPOWER COST OVERVIEW — GROSS, PU-PAID AND NET", 3, 16)
+    section(ws, 11, "EXECUTIVE MANPOWER COST OVERVIEW — GROSS, PU-PAID AND NET", 3, 16)
     month_headers = ["Metric", "M1", "M2", "M3", "M4", "M5", "M6", "M7", "M8", "M9", "M10", "M11", "M12", "Year 1"]
-    table_header(ws, 22, month_headers, 3, warning_cols=(10,))
+    table_header(ws, 12, month_headers, 3, warning_cols=(10,))
     overview_rows = [
-        ("Gross manpower cost before PU allocation", "Includes the eight modeled positions plus Martin Aguero's known salary."),
+        ("Gross manpower cost before PU allocation", "Includes the eight modeled positions plus Martin Aguero's local secondee salary and health care."),
         ("Less: PU-paid secondees", "Alexander, Alan and Martin Aguero are paid by PU and therefore deducted."),
         ("NET manpower cost after PU allocation", "Overall manpower cost remaining after the PU allocation."),
     ]
-    for row, (label, explanation) in enumerate(overview_rows, start=23):
-        ws.cell(row, 3, label).font = Font(name="Arial", size=10, bold=(row == 25), color=BLACK)
+    for row, (label, explanation) in enumerate(overview_rows, start=13):
+        ws.cell(row, 3, label).font = Font(name="Arial", size=10, bold=(row == 15), color=BLACK)
         for month in range(1, 13):
             summary_col = 3 + month  # D:O
             detail_col = 4 + month   # E:P in monthly table
             detail_letter = get_column_letter(detail_col)
-            if row == 23:
+            if row == 13:
                 formula = f"=SUM({detail_letter}{MONTHLY_START}:{detail_letter}{MONTHLY_END})"
-            elif row == 24:
+            elif row == 14:
                 formula = f"=-SUMIF($D${MONTHLY_START}:$D${MONTHLY_END},\"Yes\",{detail_letter}${MONTHLY_START}:{detail_letter}${MONTHLY_END})"
             else:
-                formula = f"={get_column_letter(summary_col)}23+{get_column_letter(summary_col)}24"
+                formula = f"={get_column_letter(summary_col)}13+{get_column_letter(summary_col)}14"
             set_formula(ws.cell(row, summary_col), formula, currency_formula_format(row == 23 and month == 1))
             ws.cell(row, summary_col).alignment = Alignment(horizontal="right", vertical="center")
-        if row == 23:
+        if row == 13:
             annual_formula = f"=SUM(Q{MONTHLY_START}:Q{MONTHLY_END})"
-        elif row == 24:
+        elif row == 14:
             annual_formula = f"=-SUMIF($D${MONTHLY_START}:$D${MONTHLY_END},\"Yes\",$Q${MONTHLY_START}:$Q${MONTHLY_END})"
         else:
-            annual_formula = "=P23+P24"
+            annual_formula = "=P13+P14"
         set_formula(ws.cell(row, 16), annual_formula, CURRENCY)
         ws.cell(row, 16).alignment = Alignment(horizontal="right", vertical="center")
         ws.row_dimensions[row].height = 23
-    outline(ws, 22, 25, 3, 16)
+    outline(ws, 12, 15, 3, 16)
     for col in range(3, 17):
-        ws.cell(25, col).border = Border(top=Side(style="medium", color=BLACK), bottom=Side(style="double", color=BLACK))
+        ws.cell(15, col).border = Border(top=Side(style="medium", color=BLACK), bottom=Side(style="double", color=BLACK))
 
     # Key output table
-    section(ws, 28, "KEY OUTPUTS", 3, 5)
-    table_header(ws, 29, ["KPI", "Amount", "Meaning"], 3)
+    section(ws, 18, "KEY OUTPUTS", 3, 5)
+    table_header(ws, 19, ["KPI", "Amount", "Meaning"], 3)
     kpis = [
-        ("M1–M6 net monthly manpower cost", "=D25", "Cost after PU-paid secondments."),
-        ("M7 net manpower cost", "=J25", "Includes repatriation package and Alan's M7 housing."),
-        ("M8–M12 net monthly manpower cost", "=K25", "Salary, health care and Alan's housing; home leave is stated but not costed."),
-        ("Gross Year 1 manpower cost", "=P23", "Includes all modeled manpower, including Martin's known salary."),
-        ("PU-paid secondments", "=-P24", "Alexander and Alan's modeled cost plus Martin's salary."),
-        ("Net Year 1 manpower cost", "=P25", "Overall Year 1 manpower cost after the PU allocation."),
+        ("M1–M6 net monthly manpower cost", "=D15", "Cost after PU-paid secondees."),
+        ("M7 net manpower cost", "=J15", "Includes repatriation package and Alan's M7 housing."),
+        ("M8–M12 net monthly manpower cost", "=K15", "Salary, health care and Alan's housing; home leave is stated but not costed."),
+        ("Gross Year 1 manpower cost", "=P13", "Includes all modeled manpower, including Martin's local secondee package."),
+        ("PU-paid secondees", "=-P14", "Alexander and Alan's modeled cost plus Martin's salary and health care."),
+        ("Net Year 1 manpower cost", "=P15", "Overall Year 1 manpower cost after the PU allocation."),
     ]
-    for row, (label, formula, explanation) in enumerate(kpis, start=30):
-        ws.cell(row, 3, label).font = Font(name="Arial", size=10, bold=(row == 35), color=BLACK)
-        set_formula(ws.cell(row, 4), formula, currency_formula_format(row == 30))
+    for row, (label, formula, explanation) in enumerate(kpis, start=20):
+        ws.cell(row, 3, label).font = Font(name="Arial", size=10, bold=(row == 25), color=BLACK)
+        set_formula(ws.cell(row, 4), formula, currency_formula_format(row == 20))
         ws.cell(row, 4).alignment = Alignment(horizontal="right", vertical="center")
         ws.cell(row, 5, explanation).font = Font(name="Arial", size=10, color=BLACK)
         ws.cell(row, 5).alignment = Alignment(horizontal="left", vertical="center", wrap_text=True)
-    outline(ws, 29, 35, 3, 5)
+    outline(ws, 19, 25, 3, 5)
 
     # Profile and benefit table
-    section(ws, 36, "PERSONNEL, CONTRACTS AND BENEFITS", 3, 18)
+    section(ws, 27, "PERSONNEL, CONTRACTS AND BENEFITS", 3, 18)
     profile_headers = [
         "#", "Position", "Person", "M1–M6 Contract", "M7+ Basis", "Work Arrangement", "Traffic-Light Status",
         "Annual Base Salary", "Monthly Salary", "Health Care / Year", "M7 One-Time Package", "Housing / Month", "Home Leave", "Local Paid Vacation / Days", "PU-Paid?", "PU Appointment / Scope",
     ]
-    table_header(ws, 37, profile_headers, 3)
+    table_header(ws, PROFILE_START - 1, profile_headers, 3)
     for row, record in enumerate(PEOPLE, start=PROFILE_START):
         position, person, contract, basis, arrangement, status, annual_salary, annual_health, pu_paid, pu_scope, explanation = record
         set_input(ws.cell(row, 3), row - PROFILE_START + 1, source_note("row number"))
@@ -252,17 +229,17 @@ def build():
         set_input(ws.cell(row, 9), status, management_note(f"Status: {status}. {explanation}"))
         ws.cell(row, 9).fill = PatternFill("solid", fgColor=status_fill(status))
         if person == "Martin Aguero":
-            set_formula(ws.cell(row, 10), "=$D$17", CURRENCY)
+            set_formula(ws.cell(row, 10), "=180000", CURRENCY)
         else:
             set_input(ws.cell(row, 10), annual_salary, source_note("Base Salary (Annual)", explanation))
             ws.cell(row, 10).number_format = currency_formula_format(row == PROFILE_START)
         set_formula(ws.cell(row, 11), f"=J{row}/12", currency_formula_format(row == PROFILE_START))
-        set_input(ws.cell(row, 12), annual_health, management_note("Annual health care from source compensation table. Martin benefits remain TBD."))
+        set_input(ws.cell(row, 12), annual_health, management_note("Annual health care from source compensation table. Martin receives the same health-care treatment as all employees."))
         ws.cell(row, 12).number_format = CURRENCY
-        set_formula(ws.cell(row, 13), f'=IF(F{row}="Repatriate",$D$13*K{row},0)', CURRENCY)
-        set_formula(ws.cell(row, 14), f'=IF(E{row}="Alan McKeon",$D$14,0)', CURRENCY)
-        set_formula(ws.cell(row, 15), f'=IF(E{row}="Alan McKeon",$D$15,"—")')
-        set_formula(ws.cell(row, 16), f'=IF(OR(G{row}="Local — Venezuela",G{row}="Local"),$D$16,0)', '#,##0')
+        set_formula(ws.cell(row, 13), f'=IF(F{row}="Repatriate",1.5*K{row},0)', CURRENCY)
+        set_formula(ws.cell(row, 14), f'=IF(E{row}="Alan McKeon",2000,0)', CURRENCY)
+        set_formula(ws.cell(row, 15), f'=IF(E{row}="Alan McKeon","Home leave","—")')
+        set_formula(ws.cell(row, 16), f'=IF(OR(G{row}="Local — Venezuela",G{row}="Local"),30,0)', '#,##0')
         set_input(ws.cell(row, 17), pu_paid, management_note("PU pays cost for the initial secondees: Alexander, Alan and Martin."))
         set_input(ws.cell(row, 18), pu_scope, management_note(explanation))
         for col in range(3, 19):
@@ -285,12 +262,12 @@ def build():
     ws.cell(PROFILE_TOTAL, 18, "Use monthly table below for total gross and net manpower costs")
     for col in range(3, 19):
         ws.cell(PROFILE_TOTAL, col).border = Border(top=Side(style="medium", color=BLACK), bottom=Side(style="double", color=BLACK))
-    outline(ws, 37, PROFILE_TOTAL, 3, 18)
+    outline(ws, PROFILE_START - 1, PROFILE_TOTAL, 3, 18)
 
     # Monthly costs by person
-    section(ws, 50, "MONTHLY MANPOWER COST BY PERSON — COSTS INCLUDE SALARY, HEALTH AND APPROVED BENEFITS", 3, 17)
+    section(ws, 41, "MONTHLY MANPOWER COST BY PERSON — COSTS INCLUDE SALARY, HEALTH AND APPROVED BENEFITS", 3, 17)
     monthly_headers = ["Person", "PU-Paid?", "M1", "M2", "M3", "M4", "M5", "M6", "M7", "M8", "M9", "M10", "M11", "M12", "Year 1 Cost"]
-    table_header(ws, 51, monthly_headers, 3, warning_cols=(11,))
+    table_header(ws, MONTHLY_START - 1, monthly_headers, 3, warning_cols=(11,))
     for row, profile_row in enumerate(range(PROFILE_START, PROFILE_END + 1), start=MONTHLY_START):
         set_formula(ws.cell(row, 3), f"=E{profile_row}")
         set_formula(ws.cell(row, 4), f"=Q{profile_row}")
@@ -317,19 +294,19 @@ def build():
     for col in range(3, 18):
         ws.cell(MONTHLY_TOTAL, col).border = Border(top=Side(style="medium", color=BLACK), bottom=Side(style="double", color=BLACK))
     ws.row_dimensions[MONTHLY_TOTAL].height = 28
-    outline(ws, 51, MONTHLY_TOTAL, 3, 17)
+    outline(ws, MONTHLY_START - 1, MONTHLY_TOTAL, 3, 17)
     ws.conditional_formatting.add(f"Q{MONTHLY_START}:Q{MONTHLY_END}", DataBarRule(start_type="min", end_type="max", color=DARK_GREEN))
 
     # Closing policy note
-    ws.merge_cells("C64:R66")
-    ws["C64"] = (
+    ws.merge_cells("C54:R56")
+    ws["C54"] = (
         "Cost scope and policy: health care applies to everyone. M1–M6 includes salary plus health care. Repatriates receive the one-time M7 transition package and are then local. "
         "Alan remains an expat and receives $2,000/month housing in Maracaibo from M7. Home leave is stated as a benefit but no cost is included. All local employees, including repatriates after M7, receive 30 paid vacation days; salary is assumed to cover this entitlement. Housing, social charges, statutory benefits, transport and tax costs outside the stated assumptions require separate approval and specialist review."
     )
-    ws["C64"].font = Font(name="Arial", size=10, bold=True, color="C00000")
-    ws["C64"].alignment = Alignment(horizontal="left", vertical="top", wrap_text=True)
-    ws["C64"].comment = management_note("This management planning model is not a legal, tax, payroll or immigration determination.")
-    ws.row_dimensions[64].height = 42
+    ws["C54"].font = Font(name="Arial", size=10, bold=True, color="C00000")
+    ws["C54"].alignment = Alignment(horizontal="left", vertical="top", wrap_text=True)
+    ws["C54"].comment = management_note("This management planning model is not a legal, tax, payroll or immigration determination.")
+    ws.row_dimensions[54].height = 42
 
     # Layout and print configuration
     widths = {
@@ -338,10 +315,10 @@ def build():
     }
     for col, width in widths.items():
         ws.column_dimensions[col].width = width
-    ws.freeze_panes = "E52"
-    ws.auto_filter.ref = f"C51:Q{MONTHLY_END}"
-    ws.row_breaks.append(Break(id=49))
-    ws.print_area = "B2:R66"
+    ws.freeze_panes = f"E{MONTHLY_START}"
+    ws.auto_filter.ref = f"C{MONTHLY_START - 1}:Q{MONTHLY_END}"
+    ws.row_breaks.append(Break(id=40))
+    ws.print_area = "B2:R56"
     ws.page_setup.orientation = "landscape"
     ws.page_setup.paperSize = ws.PAPERSIZE_LETTER
     ws.page_setup.fitToWidth = 1
@@ -362,31 +339,29 @@ def validate():
     assert wb.sheetnames == ["Manpower Cost Summary"]
     ws = wb.active
     assert ws["C3"].value.startswith("Petrourdaneta")
-    assert ws["D13"].value == 1.50
-    assert ws["D14"].value == 2000
-    assert ws["D15"].value == "Home leave"
-    assert ws["D16"].value == 30
-    assert ws["D17"].value == 180000
-    assert ws["E39"].value == "Alexander Stulme"
-    assert ws["E41"].value == "Alan McKeon"
-    assert ws["E46"].value == "Martin Aguero"
-    assert ws["Q39"].value == "Yes"
-    assert ws["Q41"].value == "Yes"
-    assert ws["Q46"].value == "Yes"
-    assert ws["M38"].value == '=IF(F38="Repatriate",$D$13*K38,0)'
-    assert ws["N41"].value == '=IF(E41="Alan McKeon",$D$14,0)'
-    assert ws["O41"].value == '=IF(E41="Alan McKeon",$D$15,"—")'
-    assert ws["P38"].value == '=IF(OR(G38="Local — Venezuela",G38="Local"),$D$16,0)'
-    assert ws["E52"].value == "=$K$38+$L$38/12"
-    assert ws["K52"].value == "=$K$38+$L$38/12+$M$38+$N$38"
-    assert ws["M55"].value == "=$K$41+$L$41/12+$N$41"
-    assert ws["D23"].value == "=SUM(E52:E60)"
-    assert ws["D24"].value == '=-SUMIF($D$52:$D$60,"Yes",E$52:E$60)'
-    assert ws["D25"].value == "=D23+D24"
-    assert ws["P23"].value == "=SUM(Q52:Q60)"
-    assert ws["P24"].value == '=-SUMIF($D$52:$D$60,"Yes",$Q$52:$Q$60)'
-    assert ws["P25"].value == "=P23+P24"
-    print("VALIDATED: one worksheet | gross includes Martin | PU allocation deducted once | monthly and annual net costs calculated")
+    assert ws["E30"].value == "Alexander Stulme"
+    assert ws["E32"].value == "Alan McKeon"
+    assert ws["E37"].value == "Martin Aguero"
+    assert ws["F37"].value == "Local Secondee"
+    assert ws["G37"].value == "Local"
+    assert ws["Q30"].value == "Yes"
+    assert ws["Q32"].value == "Yes"
+    assert ws["Q37"].value == "Yes"
+    assert ws["M29"].value == '=IF(F29="Repatriate",1.5*K29,0)'
+    assert ws["N32"].value == '=IF(E32="Alan McKeon",2000,0)'
+    assert ws["O32"].value == '=IF(E32="Alan McKeon","Home leave","—")'
+    assert ws["P29"].value == '=IF(OR(G29="Local — Venezuela",G29="Local"),30,0)'
+    assert ws["P37"].value == '=IF(OR(G37="Local — Venezuela",G37="Local"),30,0)'
+    assert ws["E43"].value == "=$K$29+$L$29/12"
+    assert ws["K43"].value == "=$K$29+$L$29/12+$M$29+$N$29"
+    assert ws["M46"].value == "=$K$32+$L$32/12+$N$32"
+    assert ws["D13"].value == "=SUM(E43:E51)"
+    assert ws["D14"].value == '=-SUMIF($D$43:$D$51,"Yes",E$43:E$51)'
+    assert ws["D15"].value == "=D13+D14"
+    assert ws["P13"].value == "=SUM(Q43:Q51)"
+    assert ws["P14"].value == '=-SUMIF($D$43:$D$51,"Yes",$Q$43:$Q$51)'
+    assert ws["P15"].value == "=P13+P14"
+    print("VALIDATED: one worksheet | no editable assumptions | Martin is local PU secondee | monthly and annual net costs calculated")
 
 
 if __name__ == "__main__":

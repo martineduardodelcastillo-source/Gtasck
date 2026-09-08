@@ -1,27 +1,29 @@
 # Manpower Cost History — Single-Sheet Consolidation
 
-**As of:** 7 September 2026  
+**As of:** 8 September 2026  
 **Workbook:** `manpower_cost_summary_single_sheet.xlsx`  
 **Scope:** COO excluded and treated separately. All values are in USD.
 
-## Reported inputs and management decisions
+## Confirmed employment treatment
 
-The source compensation table supplied in the task provided annual base salaries and annual medical-insurance budgets for eight listed roles after excluding the COO. The consolidated model adds **Martin Aguero** as a separate PU-paid Infrastructure Manager secondment with known annual base salary of **$180,000** from the previously approved secondments model. Martin's medical, housing, home-leave and other benefits remain **TBD** and are excluded from the current cost allocation.
+The workbook has **no editable assumptions section**. The policy and benefits below are the approved planning treatment built directly into the model.
 
-Alexander Stulme, Alan McKeon and Martin Aguero are initial Petrourdaneta secondees whose costs are paid by **PU**. The consolidated model includes their cost in gross manpower and deducts it once as the PU-paid allocation to calculate net manpower cost.
+The first six months are modeled as international employment through Airswift with base salary and health care. At Month 7, Juan Conde, Alexander Stulme and Félix Valderrama receive a one-time repatriation / localization package equal to **1.5 times monthly salary** and then move to the local framework. Health care applies to everyone during the full year.
 
-The recurring M1–M6 cost basis is salary plus health care. Repatriates receive a one-time M7 transition package equal to **1.50x monthly salary**. Health care applies to every employee throughout the year. Alan McKeon is an expatriate and receives an approved **$2,000/month housing allowance** from M7 for family relocation to Maracaibo. **Home leave is stated as a benefit but is not costed.** A future approved family relocation to Maracaibo should be modeled with minimum housing of **$2,000/month** unless management approves more.
+Alan McKeon remains an expatriate. From Month 7, he receives **$2,000/month housing** in Maracaibo. Home leave is a stated benefit only and is not costed in the workbook.
 
-All local employees, including repatriates after their M7 transition, receive **30 paid vacation days**. Salary is assumed to cover this entitlement; no incremental vacation cost is modeled.
+All local employees receive **30 paid vacation days**, with no incremental cost because salary is assumed to cover the entitlement. This applies to local employees and to repatriates after M7.
 
-For repatriates becoming local, the planning assumption is that the employee bears individual income tax in the country of origin. The model includes neither company tax gross-up nor double-taxation cost. Expat tax support is outside the model unless separately approved. These are management planning assumptions and require legal, payroll and tax validation before implementation.
+Alexander Stulme, Alan McKeon and Martin Aguero are secondees paid by **PU**. The workbook includes all manpower in gross cost, then deducts the PU-paid secondees once to calculate net manpower cost.
+
+**Martin Aguero is already part of the project as a local secondee.** His $180,000 annual salary, $12,000 health-care budget and 30 paid vacation days are included. PU pays his cost.
 
 ## Calculated manpower cost
 
 | Metric | M1–M6 | M7 | M8–M12 | Year 1 |
 |---|---:|---:|---:|---:|
-| Gross manpower cost | $121,333.33 | $199,833.33 | $123,333.33 | $1,544,500.00 |
-| Less: PU-paid secondees | ($47,000.00) | ($71,500.00) | ($49,000.00) | ($598,500.00) |
+| Gross manpower cost | $122,333.33 | $200,833.33 | $124,333.33 | $1,556,500.00 |
+| Less: PU-paid secondees | ($48,000.00) | ($72,500.00) | ($50,000.00) | ($610,500.00) |
 | **Net manpower cost** | **$74,333.33** | **$128,333.33** | **$74,333.33** | **$946,000.00** |
 
 ## PU-paid allocation by secondee
@@ -29,10 +31,10 @@ For repatriates becoming local, the planning assumption is that the employee bea
 | Secondee | Role | Year 1 modeled PU-paid cost | Scope |
 |---|---|---:|---|
 | Alexander Stulme | PU General Manager | $214,500.00 | Salary, health care and M7 repatriation package |
-| Alan McKeon | PU Technical Manager | $204,000.00 | Salary, health care and M7–M12 housing; home leave not costed |
-| Martin Aguero | PU Infra Manager | $180,000.00 | Salary only; benefits remain TBD |
-| **Total** |  | **$598,500.00** |  |
+| Alan McKeon | PU Technical Manager | $204,000.00 | Salary, health care and M7–M12 housing; home leave is not costed |
+| Martin Aguero | PU Infra Manager | $192,000.00 | Local secondee salary, health care and 30 paid vacation days |
+| **Total** |  | **$610,500.00** |  |
 
 ## Controls
 
-The workbook contains a single `Manpower Cost Summary` worksheet, formulas for all monthly and annual calculations, source comments on hardcoded inputs, and a traffic-light status column. Automated recalculation and value checks confirmed that the annual gross cost, PU-paid allocation and net cost reconcile to the values above.
+The workbook contains a single `Manpower Cost Summary` worksheet, formulas for all monthly and annual calculations, source comments on hardcoded inputs, and a traffic-light status column. Automated recalculation and value checks confirm the annual gross cost, PU-paid allocation and net cost shown above.
